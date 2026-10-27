@@ -1,0 +1,34 @@
+{
+  "attackStrategy": "DEFENSE_RANDOM_MC",
+  "defenseStrategy": "CINEMATIC_ATTACK_WHEN_POSSIBLE",
+  "sortType": "ESTIMATOR",
+  "attackers": [
+    {
+      "pokemonId": "PALKIA",
+      "byMove": [
+        {
+          "move1": "DRAGON_TAIL_FAST",
+          "move2": "DRACO_METEOR",
+          "defenders": [
+            {
+              "pokemonId": "GARDEVOIR",
+              "byMove": [
+                {
+                  "move1": "CONFUSION_FAST",
+                  "move2": "PSYCHIC",
+                  "result": {
+                    "totalCombatTime": 273271,
+                    "deaths": 1,
+                    "tdo": 144.98609762489184,
+                    "estimator": 4.3798137,
+                    "edps": 11.173849
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

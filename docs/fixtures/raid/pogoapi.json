@@ -1,0 +1,25 @@
+{
+  "current": {
+    "1": [
+      {
+        "boosted_weather": ["Fog", "Windy"],
+        "form": "Normal",
+        "id": 633,
+        "max_boosted_cp": 758,
+        "max_unboosted_cp": 606,
+        "min_boosted_cp": 701,
+        "min_unboosted_cp": 560,
+        "name": "Deino",
+        "possible_shiny": true,
+        "tier": 1,
+        "type": ["Dark", "Dragon"]
+      }
+    ],
+    "2": [],
+    "3": [],
+    "4": [],
+    "5": [],
+    "mega": []
+  },
+  "previous": {}
+}

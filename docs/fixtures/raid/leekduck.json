@@ -1,0 +1,27 @@
+{
+  "1-Star Raids": [
+    {
+      "name": "Axew",
+      "shiny_available": true,
+      "asset_url": "https://cdn.leekduck.com/assets/img/pokemon_icons/pm610.icon.png",
+      "tier": 1,
+      "cp_range": {"min": 729, "max": 782},
+      "boosted_cp_range": {"min": 912, "max": 977},
+      "types": ["Dragon"],
+      "is_shadow": false
+    },
+    {
+      "name": "Shadow Gastly",
+      "shiny_available": true,
+      "asset_url": "https://cdn.leekduck.com/assets/img/pokemon_icons/pm92.icon.png",
+      "tier": 1,
+      "cp_range": {"min": 608, "max": 702},
+      "boosted_cp_range": {"min": 760, "max": 878},
+      "types": ["Ghost", "Poison"],
+      "is_shadow": true
+    }
+  ],
+  "3-Star Raids": [],
+  "5-Star Raids": [],
+  "Mega Raids": []
+}

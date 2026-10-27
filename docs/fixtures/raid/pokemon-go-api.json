@@ -1,0 +1,33 @@
+{
+  "currentList": {
+    "lvl1": [],
+    "lvl3": [],
+    "lvl5": [],
+    "mega": [
+      {
+        "id": "CHARIZARD",
+        "form": "CHARIZARD_MEGA_X",
+        "costume": null,
+        "assets": {
+          "image": "https://raw.githubusercontent.com/pokemon-go-api/assets/main/Pokemon/pm6.fMEGA_X.icon.png",
+          "shinyImage": "https://raw.githubusercontent.com/pokemon-go-api/assets/main/Pokemon/pm6.fMEGA_X.s.icon.png"
+        },
+        "level": "mega",
+        "names": {"English": "Mega Charizard X"},
+        "shiny": true,
+        "types": ["Fire", "Dragon"],
+        "counter": {"Dragon": 1.6, "Ground": 1.6, "Rock": 1.6},
+        "weather": ["sunny", "windy"],
+        "cpRange": [1574, 1651],
+        "cpRangeBoost": [1968, 2064],
+        "battleResult": {
+          "easy": {"name": "easy", "friendshipLevel": 0, "pokemonLevel": 20, "totalEstimator": 1.8743833}
+        }
+      }
+    ],
+    "shadow_lvl1": [],
+    "shadow_lvl3": [],
+    "shadow_lvl5": []
+  },
+  "graphics": {}
+}
