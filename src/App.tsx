@@ -1,10 +1,16 @@
 import RaidListPage from "./features/raids/RaidListPage";
+import RaidDetailPage from "./features/raids/RaidDetailPage";
 
 export default function App() {
   const path = window.location.pathname.replace(/\/$/, "") || "/";
 
   if (path === "/" || path === "/raids") {
     return <RaidListPage />;
+  }
+
+  const raidDetailMatch = path.match(/^\/raids\/([^/]+)$/);
+  if (raidDetailMatch) {
+    return <RaidDetailPage raidBossId={decodeURIComponent(raidDetailMatch[1])} />;
   }
 
   return (

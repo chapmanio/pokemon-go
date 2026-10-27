@@ -29,7 +29,7 @@ function RaidCard({ boss }: { boss: RaidBoss }) {
           <div className="raid-card__image raid-card__image--empty" aria-hidden="true">?</div>
         )}
         <div>
-          <h3>{boss.displayName}</h3>
+          <h3><a className="raid-card__link" href={`/raids/${encodeURIComponent(boss.raidBossId)}`}>{boss.displayName}</a></h3>
           <p className="raid-card__types">{boss.types.join(" · ")}</p>
         </div>
       </div>

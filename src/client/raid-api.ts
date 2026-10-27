@@ -1,4 +1,4 @@
-import type { Freshness, RaidRosterResult } from "../domain/raid";
+import type { Freshness, RaidBossDetailResult, RaidRosterResult } from "../domain/raid";
 
 const freshnessValues: Freshness[] = ["fresh", "stale", "degraded", "unavailable"];
 
@@ -12,6 +12,20 @@ function isRaidRosterResult(value: unknown): value is RaidRosterResult {
     Array.isArray(result.warnings) &&
     typeof result.freshness === "string" &&
     freshnessValues.includes(result.freshness as Freshness)
+  );
+}
+
+function isRaidBossDetailResult(value: unknown): value is RaidBossDetailResult {
+  if (!value || typeof value !== "object") return false;
+
+  const result = value as Partial<RaidBossDetailResult>;
+  return (
+    typeof result.raidBossId === "string" &&
+    typeof result.displayName === "string" &&
+    Array.isArray(result.types) &&
+    typeof result.freshness === "string" &&
+    freshnessValues.includes(result.freshness as Freshness) &&
+    Array.isArray(result.warnings)
   );
 }
 
@@ -29,6 +43,28 @@ export async function fetchRaidRoster(signal?: AbortSignal): Promise<RaidRosterR
   const payload: unknown = await response.json();
   if (!isRaidRosterResult(payload)) {
     throw new Error("Raid service returned an unexpected response");
+  }
+
+  return payload;
+}
+
+export async function fetchRaidBoss(
+  raidBossId: string,
+  signal?: AbortSignal,
+): Promise<RaidBossDetailResult> {
+  const response = await fetch(`/api/v1/raids/${encodeURIComponent(raidBossId)}`, {
+    signal,
+    cache: "no-store",
+    headers: { accept: "application/json" },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Raid service returned HTTP ${response.status}`);
+  }
+
+  const payload: unknown = await response.json();
+  if (!isRaidBossDetailResult(payload)) {
+    throw new Error("Raid service returned an unexpected raid detail response");
   }
 
   return payload;

@@ -45,3 +45,8 @@ export interface RaidRosterResult {
   asOf?: string;
   warnings: string[];
 }
+
+export interface RaidBossDetailResult extends RaidBoss {
+  freshness: Freshness;
+  warnings: string[];
+}
