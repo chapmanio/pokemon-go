@@ -16,9 +16,9 @@ body {
 .app-shell {
   box-sizing: border-box;
   margin: 0 auto;
-  max-width: 720px;
+  max-width: 960px;
   min-height: 100vh;
-  padding: 2rem 1rem;
+  padding: 1rem;
 }
 
 .eyebrow {
@@ -27,4 +27,265 @@ body {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.site-header {
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0 1rem;
+}
+
+.brand,
+.nav-link {
+  color: #172033;
+  text-decoration: none;
+}
+
+.brand {
+  font-weight: 800;
+}
+
+.nav-link {
+  border-radius: 999px;
+  color: #475569;
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.nav-link--active,
+.nav-link:hover {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.page-heading {
+  padding: 2.5rem 0 1.5rem;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  color: #0f172a;
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  letter-spacing: -0.04em;
+  margin-bottom: 0.75rem;
+}
+
+.page-heading > p:last-child {
+  color: #475569;
+  font-size: 1.05rem;
+  max-width: 42rem;
+}
+
+.loading-state,
+.empty-state {
+  color: #475569;
+  padding: 2rem 0;
+}
+
+.status-panel,
+.warning-panel,
+.error-panel {
+  border: 1px solid #cbd5e1;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.status-panel {
+  align-items: flex-start;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.status-panel p,
+.warning-panel p,
+.error-panel p {
+  margin-bottom: 0;
+}
+
+.status-panel__label {
+  font-weight: 800;
+  margin-bottom: 0.25rem !important;
+}
+
+.status-panel__time {
+  color: #475569;
+  font-size: 0.875rem;
+  text-align: right;
+}
+
+.status-panel--stale,
+.status-panel--degraded {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.status-panel--unavailable,
+.error-panel {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.warning-panel {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.warning-panel ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.roster-summary {
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding: 0.25rem 0 1rem;
+}
+
+.roster-summary p {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+button {
+  background: #1d4ed8;
+  border: 0;
+  border-radius: 999px;
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.6rem 1rem;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.raid-tier {
+  margin-bottom: 2rem;
+}
+
+.raid-tier__heading {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.raid-tier__heading h2 {
+  color: #1e293b;
+  font-size: 1.35rem;
+  margin: 0;
+}
+
+.raid-tier__heading span {
+  align-items: center;
+  background: #e2e8f0;
+  border-radius: 999px;
+  color: #475569;
+  display: inline-flex;
+  font-size: 0.75rem;
+  height: 1.5rem;
+  justify-content: center;
+  min-width: 1.5rem;
+}
+
+.raid-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.raid-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px rgb(15 23 42 / 5%);
+  padding: 1rem;
+}
+
+.raid-card__header {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.raid-card__image {
+  background: #eff6ff;
+  border-radius: 0.75rem;
+  height: 3.5rem;
+  object-fit: contain;
+  width: 3.5rem;
+}
+
+.raid-card__image--empty {
+  align-items: center;
+  color: #64748b;
+  display: flex;
+  font-size: 1.5rem;
+  justify-content: center;
+}
+
+.raid-card h3 {
+  color: #0f172a;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.raid-card__types {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.raid-card__details {
+  border-top: 1px solid #f1f5f9;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr 1fr;
+  margin: 1rem 0 0;
+  padding-top: 0.75rem;
+}
+
+.raid-card__details dt {
+  color: #64748b;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.raid-card__details dd {
+  font-size: 0.875rem;
+  margin: 0.2rem 0 0;
+}
+
+.raid-card__tag {
+  color: #b45309;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin: 0.75rem 0 0;
+}
+
+@media (min-width: 640px) {
+  .app-shell {
+    padding: 1.5rem 2rem 3rem;
+  }
 }

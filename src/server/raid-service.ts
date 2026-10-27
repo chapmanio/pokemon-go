@@ -1,4 +1,4 @@
-import type { Freshness, RaidBoss, RaidSource } from "../domain/raid";
+import type { Freshness, RaidBoss, RaidRosterResult, RaidSource } from "../domain/raid";
 import { createProvenance, type RaidSourceAdapter } from "./source-adapter";
 import {
   freshnessForSnapshot,
@@ -10,13 +10,7 @@ const SOURCE_ORDER: RaidSource[] = ["leekduck", "pogoapi", "pokemon-go-api"];
 const REFRESH_COOLDOWN_MS = 30 * 60 * 1000;
 const FRESH_AFTER_MS = 2 * 60 * 60 * 1000;
 
-export interface RaidRosterResult {
-  bosses: RaidBoss[];
-  sources: RaidSource[];
-  freshness: Freshness;
-  asOf?: string;
-  warnings: string[];
-}
+export type { RaidRosterResult } from "../domain/raid";
 
 export interface RaidServiceOptions {
   store: SnapshotStore;

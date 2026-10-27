@@ -36,3 +36,11 @@ export interface RaidBoss {
   counterSource?: string;
   provenance: RaidProvenance;
 }
+
+export interface RaidRosterResult {
+  bosses: RaidBoss[];
+  sources: RaidSource[];
+  freshness: Freshness;
+  asOf?: string;
+  warnings: string[];
+}
