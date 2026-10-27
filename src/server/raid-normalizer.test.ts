@@ -53,6 +53,7 @@ describe("raid source normalizers", () => {
       formId: "CHARIZARD_MEGA_X",
       tier: "mega",
       battleEstimator: 1.8743833,
+      counterTypes: ["Dragon", "Ground", "Rock"],
     });
   });
 });

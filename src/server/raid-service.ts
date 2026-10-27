@@ -1,9 +1,11 @@
 import type {
   Freshness,
   RaidBoss,
+  RaidDisagreementField,
   RaidProvenance,
   RaidRosterResult,
   RaidSource,
+  RaidSourceDisagreement,
 } from "../domain/raid";
 import { createProvenance, type RaidSourceAdapter } from "./source-adapter";
 import {
@@ -106,8 +108,56 @@ function sourceReferencesForBoss(boss: RaidBoss): RaidProvenance[] {
   return boss.sourceReferences?.length ? boss.sourceReferences : [boss.provenance];
 }
 
+function mergeKey(boss: RaidBoss): string {
+  const displayIdentity = boss.displayName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  return `${displayIdentity}:${boss.tier}:${boss.isShadow ? "shadow" : "normal"}`;
+}
+
+const comparableFields: Array<{
+  field: RaidDisagreementField;
+  label: string;
+  getValue: (boss: RaidBoss) => unknown;
+}> = [
+  { field: "displayName", label: "Name", getValue: (boss) => boss.displayName },
+  { field: "tier", label: "Tier", getValue: (boss) => boss.tier },
+  { field: "isShadow", label: "Shadow status", getValue: (boss) => boss.isShadow },
+  { field: "shinyAvailable", label: "Shiny availability", getValue: (boss) => boss.shinyAvailable },
+  { field: "types", label: "Types", getValue: (boss) => boss.types },
+  { field: "catchCp", label: "Catch CP", getValue: (boss) => boss.catchCp },
+  { field: "boostedCatchCp", label: "Weather-boosted CP", getValue: (boss) => boss.boostedCatchCp },
+  { field: "boostedWeather", label: "Boosted weather", getValue: (boss) => boss.boostedWeather },
+  { field: "battleEstimator", label: "Battle estimate", getValue: (boss) => boss.battleEstimator },
+];
+
+function comparableValue(value: unknown): string | undefined {
+  if (value === undefined) return undefined;
+  if (Array.isArray(value)) return value.join(", ");
+  if (typeof value === "object" && value !== null && "min" in value && "max" in value) {
+    const range = value as { min: unknown; max: unknown };
+    return `${String(range.min)}–${String(range.max)}`;
+  }
+  return String(value);
+}
+
+function sourceDisagreements(sourceBosses: Array<{ source: RaidSource; boss: RaidBoss }>): RaidSourceDisagreement[] {
+  if (sourceBosses.length < 2) return [];
+
+  return comparableFields.flatMap(({ field, label, getValue }) => {
+    const values = sourceBosses.flatMap(({ source, boss }) => {
+      const value = comparableValue(getValue(boss));
+      return value === undefined ? [] : [{ source, value }];
+    });
+    const distinctValues = new Set(values.map(({ value }) => value));
+    return distinctValues.size > 1 ? [{ field, label, values }] : [];
+  });
+}
+
 function mergeBosses(snapshots: StoredRaidSnapshot[]): RaidBoss[] {
-  const merged = new Map<string, { boss: RaidBoss; sourceReferences: RaidProvenance[] }>();
+  const merged = new Map<string, {
+    boss: RaidBoss;
+    sourceReferences: RaidProvenance[];
+    sourceBosses: Array<{ source: RaidSource; boss: RaidBoss }>;
+  }>();
 
   for (const source of SOURCE_ORDER) {
     const snapshot = snapshots.find((candidate) => candidate.source === source);
@@ -115,11 +165,17 @@ function mergeBosses(snapshots: StoredRaidSnapshot[]): RaidBoss[] {
 
     for (const boss of snapshot.bosses) {
       const sourceReferences = sourceReferencesForBoss(boss);
-      const current = merged.get(boss.raidBossId);
+      const current = merged.get(mergeKey(boss));
       if (!current) {
-        merged.set(boss.raidBossId, { boss, sourceReferences: [...sourceReferences] });
+        merged.set(mergeKey(boss), {
+          boss,
+          sourceReferences: [...sourceReferences],
+          sourceBosses: [{ source: snapshot.source, boss }],
+        });
         continue;
       }
+
+      current.sourceBosses.push({ source: snapshot.source, boss });
 
       for (const reference of sourceReferences) {
         if (!current.sourceReferences.some((item) => item.source === reference.source)) {
@@ -129,9 +185,10 @@ function mergeBosses(snapshots: StoredRaidSnapshot[]): RaidBoss[] {
     }
   }
 
-  return [...merged.values()].map(({ boss, sourceReferences }) => ({
+  return [...merged.values()].map(({ boss, sourceReferences, sourceBosses }) => ({
     ...boss,
     sourceReferences,
+    sourceDisagreements: sourceDisagreements(sourceBosses),
   }));
 }
 

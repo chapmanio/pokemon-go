@@ -16,6 +16,28 @@ export interface RaidProvenance {
   contentHash?: string;
 }
 
+export type RaidDisagreementField =
+  | "displayName"
+  | "tier"
+  | "isShadow"
+  | "shinyAvailable"
+  | "types"
+  | "catchCp"
+  | "boostedCatchCp"
+  | "boostedWeather"
+  | "battleEstimator";
+
+export interface RaidSourceValue {
+  source: RaidSource;
+  value: string;
+}
+
+export interface RaidSourceDisagreement {
+  field: RaidDisagreementField;
+  label: string;
+  values: RaidSourceValue[];
+}
+
 export interface RaidBoss {
   raidBossId: string;
   speciesId?: number | string;
@@ -34,8 +56,10 @@ export interface RaidBoss {
   isLocalTime?: boolean;
   battleEstimator?: number;
   counterSource?: string;
+  counterTypes?: string[];
   provenance: RaidProvenance;
   sourceReferences?: RaidProvenance[];
+  sourceDisagreements?: RaidSourceDisagreement[];
 }
 
 export interface RaidRosterResult {

@@ -31,7 +31,7 @@ describe("raid service", () => {
       sourceUrl: `https://${source}.example.test/${endpoint}`,
       fetchPayload: async () => ({}),
       normalize: (_payload, provenance) => [{
-        raidBossId: "palkia:normal:5:normal",
+        raidBossId: source === "leekduck" ? "palkia:normal:5:normal" : "484:normal:5:normal",
         displayName: "Palkia",
         tier: 5,
         isShadow: false,
@@ -53,6 +53,57 @@ describe("raid service", () => {
       "pogoapi",
     ]);
     expect(result.warnings).toEqual([]);
+  });
+
+  it("surfaces important field differences between sources", async () => {
+    const adapter = (
+      source: "leekduck" | "pogoapi",
+      types: string[],
+      catchCp: { min: number; max: number },
+    ): RaidSourceAdapter => ({
+      source,
+      endpoint: `${source}.json`,
+      sourceUrl: `https://${source}.example.test/raids.json`,
+      fetchPayload: async () => ({}),
+      normalize: (_payload, provenance) => [{
+        raidBossId: source === "leekduck" ? "palkia:normal:5:normal" : "484:normal:5:normal",
+        displayName: "Palkia",
+        tier: 5,
+        isShadow: false,
+        types,
+        catchCp,
+        provenance,
+        sourceReferences: [provenance],
+      }],
+    });
+
+    const result = await createRaidService({
+      store: createMemorySnapshotStore(),
+      adapters: [
+        adapter("leekduck", ["Water", "Dragon"], { min: 1_000, max: 1_100 }),
+        adapter("pogoapi", ["Water"], { min: 1_100, max: 1_200 }),
+      ],
+      now: () => new Date("2026-10-27T12:00:00.000Z"),
+    }).getRaids();
+
+    expect(result.bosses[0].sourceDisagreements).toEqual([
+      {
+        field: "types",
+        label: "Types",
+        values: [
+          { source: "leekduck", value: "Water, Dragon" },
+          { source: "pogoapi", value: "Water" },
+        ],
+      },
+      {
+        field: "catchCp",
+        label: "Catch CP",
+        values: [
+          { source: "leekduck", value: "1000–1100" },
+          { source: "pogoapi", value: "1100–1200" },
+        ],
+      },
+    ]);
   });
 
   it("retains last-known-good data after a refresh failure", async () => {

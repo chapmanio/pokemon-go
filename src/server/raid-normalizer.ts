@@ -23,6 +23,11 @@ function asStringArray(value: unknown): string[] {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
 }
 
+function asRecordKeys(value: unknown): string[] {
+  const record = asRecord(value);
+  return record ? Object.keys(record) : [];
+}
+
 function asRange(value: unknown): RaidRange | undefined {
   const record = asRecord(value);
   const min = asNumber(record?.min);
@@ -206,6 +211,7 @@ export function normalizePokemonGoApiRaids(
             assetUrl: asString(asRecord(record.assets)?.image),
             battleEstimator: asNumber(estimateResult?.totalEstimator),
             counterSource: "pokemon-go-api",
+            counterTypes: asRecordKeys(record.counter),
           },
           provenance,
         ),

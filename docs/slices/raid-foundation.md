@@ -36,6 +36,11 @@ Provide a reliable generic raid-planning experience from cached community data:
 
 Use clear bands such as `Likely`, `Borderline`, and `Unlikely`. Always display the assumptions and label the result as approximate.
 
+The first family estimate is a transparent heuristic around a source-provided
+capable-trainer estimate: Casual contributes `0.75`, Capable `1.0`, Optimised
+`1.25`, Mixed remote/local `0.95`, Mostly remote `0.9`, and Party Play `1.15`.
+These values are configuration assumptions, not battle-simulation results.
+
 ## Source strategy
 
 - **PoGoAPI** is the primary reference for Pokémon, forms, types, moves, weather, type effectiveness, and CP data.
@@ -58,7 +63,7 @@ source, source_url, fetched_at, content_hash, source_updated_at
 species_id?, form_id?, display_name, tier, is_shadow, shiny_available?
 types, catch_cp_min?, catch_cp_max?, boosted_cp_min?, boosted_cp_max?
 boosted_weather?, asset_url?, starts_at?, ends_at?, is_local_time?
-battle_estimator?, counter_source?, raw_source_record
+battle_estimator?, counter_source?, counter_types?, source_disagreements?, raw_source_record
 ```
 
 Optional fields must remain optional when a source does not provide them. Do not invent timing or battle values.
@@ -73,6 +78,10 @@ Optional fields must remain optional when a source does not provide them. Do not
 - The raid list includes valid bosses found only in a secondary source and shows per-boss source references.
 - The raids list is grouped by tier and includes freshness information.
 - The detail view handles missing optional fields without misleading placeholders.
+- The detail view allows retrying an unavailable boss and distinguishes a rotated-out boss from a general load failure.
+- The detail view shows source-level differences for important fields when valid sources disagree.
+- Counter guidance remains source-based and recommends attack types when specific Pokémon and move data is unavailable.
+- Estimate settings support Generic or Our group mode, trainer count, strength, local/remote mix and an approximate Party Play toggle.
 - Counter cache keys include every estimate input: boss/form, tier, attacker level, weather, dodge or strategy mode, and aggregation settings.
 - Changing estimate settings changes the displayed approximation and its assumptions.
 - No authentication or personal roster data is required.

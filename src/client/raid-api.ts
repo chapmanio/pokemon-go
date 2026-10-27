@@ -2,6 +2,13 @@ import type { Freshness, RaidBossDetailResult, RaidRosterResult } from "../domai
 
 const freshnessValues: Freshness[] = ["fresh", "stale", "degraded", "unavailable"];
 
+export class RaidApiError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message);
+    this.name = "RaidApiError";
+  }
+}
+
 function isRaidRosterResult(value: unknown): value is RaidRosterResult {
   if (!value || typeof value !== "object") return false;
 
@@ -37,7 +44,7 @@ export async function fetchRaidRoster(signal?: AbortSignal): Promise<RaidRosterR
   });
 
   if (!response.ok) {
-    throw new Error(`Raid service returned HTTP ${response.status}`);
+    throw new RaidApiError(`Raid service returned HTTP ${response.status}`, response.status);
   }
 
   const payload: unknown = await response.json();
@@ -59,7 +66,7 @@ export async function fetchRaidBoss(
   });
 
   if (!response.ok) {
-    throw new Error(`Raid service returned HTTP ${response.status}`);
+    throw new RaidApiError(`Raid service returned HTTP ${response.status}`, response.status);
   }
 
   const payload: unknown = await response.json();
