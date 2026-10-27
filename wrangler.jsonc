@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pokemon-go-companion",
+  "compatibility_date": "2026-10-27",
+  "pages_build_output_dir": "dist",
+  "kv_namespaces": [
+    {
+      "binding": "RAID_SNAPSHOTS",
+      "id": "44f77a51f64d458ca160a36720735635",
+      "preview_id": "27401a44f99d46adbc93b14de341678c"
+    }
+  ]
+}
