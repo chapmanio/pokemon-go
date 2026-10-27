@@ -12,10 +12,11 @@ write-heavy state, or historical analytics.
 
 ## Decision
 
-Use a small server-side ingestion module deployed as Cloudflare Pages
-Functions. Pages Functions support bindings to Cloudflare KV and other storage
-options through the existing Pages deployment model; see the
-[Cloudflare bindings documentation](https://developers.cloudflare.com/pages/functions/bindings/).
+Use a small server-side ingestion module deployed as a Cloudflare Worker beside
+the built frontend in Workers Static Assets. Workers are the preferred platform
+for new Cloudflare applications and keep the API, static assets, observability,
+and future scheduled refreshes in one deployment; see the
+[Cloudflare Pages-to-Workers migration guidance](https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/).
 
 The module has these internal seams:
 
@@ -64,6 +65,6 @@ old snapshot is `stale`; it is not silently presented as fresh.
   seam.
 - Demand-driven refresh is sufficient for a small family app and avoids a
   scheduler in the first release.
-- A later scheduled Worker or larger store can replace the coordinator or
+- A later scheduled trigger or larger store can replace the coordinator or
   store implementation without changing the UI contract.
 

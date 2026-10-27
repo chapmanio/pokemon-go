@@ -21,5 +21,5 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "functions", "vite.config.ts", "vitest.config.ts"]
+  "include": ["src", "worker", "worker-configuration.d.ts", "vite.config.ts", "vitest.config.ts"]
 }

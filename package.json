@@ -1,5 +1,5 @@
 {
-  "name": "pokemon-go-companion",
+  "name": "pokemon-go",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -36,6 +36,7 @@
     "typescript": "~5.7.2",
     "vite": "^6.0.3",
     "vite-plugin-pwa": "^0.21.1",
-    "vitest": "^3.0.0"
+    "vitest": "^3.0.0",
+    "wrangler": "^4.153.0"
   }
 }

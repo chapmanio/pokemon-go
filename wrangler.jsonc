@@ -1,8 +1,21 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "pokemon-go-companion",
+  "name": "pokemon-go",
   "compatibility_date": "2026-10-27",
-  "pages_build_output_dir": "dist",
+  "main": "./worker/index.ts",
+  "workers_dev": true,
+  "upload_source_maps": true,
+  "observability": {
+    "enabled": true,
+    "logs": { "enabled": true, "head_sampling_rate": 1 },
+    "traces": { "enabled": true, "head_sampling_rate": 0.01 }
+  },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
   "kv_namespaces": [
     {
       "binding": "RAID_SNAPSHOTS",

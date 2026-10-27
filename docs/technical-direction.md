@@ -7,7 +7,7 @@
 - Put community-source access behind an app-owned server-side ingestion boundary. The browser should consume normalized app data, not call community endpoints directly.
 - Keep source adapters, validation, freshness metadata, and last-known-good snapshots behind that boundary.
 - Start with the smallest server-side storage that supports normalized snapshots, raw-response provenance, hashes, and health status. Choose long-term storage after fixture sizes and refresh frequency are measured.
-- Use Cloudflare Pages Functions as the server-side ingestion seam and Cloudflare KV as the first snapshot-store implementation. See [ADR 0001](adr/0001-ingestion-and-storage.md).
+- Use a Cloudflare Worker with Workers Static Assets as the server-side ingestion seam and Cloudflare KV as the first snapshot-store implementation. See [ADR 0001](adr/0001-ingestion-and-storage.md).
 - Use demand-driven refresh with per-source cooldowns before introducing scheduled jobs.
 
 ## Why this fits
