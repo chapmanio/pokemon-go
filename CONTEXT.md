@@ -22,4 +22,5 @@ This glossary is the shared vocabulary for product decisions, source adapters, t
 - **Source snapshot** — A cached, validated external dataset at a known point in time, including its provenance.
 - **Freshness** — How recently a source was fetched successfully and how recently its content changed. Freshness is separate from validity.
 - **Source disagreement** — A meaningful difference between valid snapshots from different sources. It must be preserved and surfaced rather than silently resolved.
+- **Source reference** — A valid source snapshot that currently lists a raid boss. A boss may have one or several source references; this indicates coverage, not guaranteed agreement on every field.
 

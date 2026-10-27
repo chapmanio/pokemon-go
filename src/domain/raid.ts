@@ -35,6 +35,7 @@ export interface RaidBoss {
   battleEstimator?: number;
   counterSource?: string;
   provenance: RaidProvenance;
+  sourceReferences?: RaidProvenance[];
 }
 
 export interface RaidRosterResult {

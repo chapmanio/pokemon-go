@@ -66,6 +66,7 @@ function withIdentity(
     ...values,
     raidBossId: raidBossId(values.speciesId, values.formId, values.displayName, values.tier, values.isShadow),
     provenance,
+    sourceReferences: [provenance],
   };
 }
 

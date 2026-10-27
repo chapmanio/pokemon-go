@@ -47,6 +47,8 @@ Keep raid roster and raid window as separate concepts. Join a window to a boss o
 
 Source adapters should hide provider-specific payloads behind a normalized interface. Each adapter must retain the raw record, source URL, fetch time, source update time when available, content hash, and validation result.
 
+The normalized raid response should return the union of valid source rosters, preferring the configured primary source for display fields while retaining source references for every boss. The list shows a compact "Listed by N sources" disclosure on each card; the disclosure is tap-friendly and lists the source names and links. Source coverage is not presented as proof that every field agrees.
+
 ## Normalized raid record
 
 The first shared record should support these fields:
@@ -68,6 +70,7 @@ Optional fields must remain optional when a source does not provide them. Do not
 - Invalid responses never replace the last known-good snapshot.
 - A stale or unavailable source produces a visible degraded state, not an empty success state.
 - Valid but conflicting rosters are represented as source disagreement.
+- The raid list includes valid bosses found only in a secondary source and shows per-boss source references.
 - The raids list is grouped by tier and includes freshness information.
 - The detail view handles missing optional fields without misleading placeholders.
 - Counter cache keys include every estimate input: boss/form, tier, attacker level, weather, dodge or strategy mode, and aggregation settings.

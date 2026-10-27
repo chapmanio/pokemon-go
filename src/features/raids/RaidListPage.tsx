@@ -18,6 +18,8 @@ function formatUpdatedAt(asOf?: string): string | undefined {
 }
 
 function RaidCard({ boss }: { boss: RaidBoss }) {
+  const sourceReferences = boss.sourceReferences?.length ? boss.sourceReferences : [boss.provenance];
+
   return (
     <article className="raid-card">
       <div className="raid-card__header">
@@ -44,6 +46,24 @@ function RaidCard({ boss }: { boss: RaidBoss }) {
         )}
       </dl>
       {boss.isShadow && <p className="raid-card__tag">Shadow raid</p>}
+      <details className="source-disclosure">
+        <summary>
+          <span>Listed by {sourceReferences.length} {sourceReferences.length === 1 ? "source" : "sources"}</span>
+          <span className="source-disclosure__icon" aria-hidden="true">ⓘ</span>
+        </summary>
+        <div className="source-disclosure__content">
+          <p>Community feeds that currently list this raid boss:</p>
+          <ul>
+            {sourceReferences.map((reference) => (
+              <li key={reference.source}>
+                <a href={reference.sourceUrl} target="_blank" rel="noreferrer">
+                  {sourceLabel(reference.source)}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </details>
     </article>
   );
 }

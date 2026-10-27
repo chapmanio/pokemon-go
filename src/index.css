@@ -284,6 +284,55 @@ button:disabled {
   margin: 0.75rem 0 0;
 }
 
+.source-disclosure {
+  border-top: 1px solid #f1f5f9;
+  color: #475569;
+  font-size: 0.8rem;
+  margin-top: 0.9rem;
+  padding-top: 0.75rem;
+}
+
+.source-disclosure summary {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-weight: 700;
+  gap: 0.35rem;
+  justify-content: space-between;
+  list-style: none;
+}
+
+.source-disclosure summary::-webkit-details-marker {
+  display: none;
+}
+
+.source-disclosure__icon {
+  color: #1d4ed8;
+  font-size: 1rem;
+}
+
+.source-disclosure__content {
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  margin-top: 0.65rem;
+  padding: 0.75rem;
+}
+
+.source-disclosure__content p {
+  color: #64748b;
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.source-disclosure__content ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.source-disclosure__content a {
+  color: #1d4ed8;
+}
+
 @media (min-width: 640px) {
   .app-shell {
     padding: 1.5rem 2rem 3rem;

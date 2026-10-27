@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 import leekDuckFixture from "../../docs/fixtures/raid/leekduck.json";
 import pogoApiFixture from "../../docs/fixtures/raid/pogoapi.json";
 import { createMemorySnapshotStore } from "./snapshot-store";
-import { createFixtureAdapter } from "./source-adapter";
+import { createFixtureAdapter, type RaidSourceAdapter } from "./source-adapter";
 import { createRaidService } from "./raid-service";
 
 describe("raid service", () => {
-  it("serves a normalized roster and reports source disagreement", async () => {
+  it("serves the union of normalized rosters with source references", async () => {
     const service = createRaidService({
       store: createMemorySnapshotStore(),
       adapters: [
@@ -18,10 +18,41 @@ describe("raid service", () => {
 
     const result = await service.getRaids();
 
-    expect(result.bosses.length).toBeGreaterThan(0);
+    expect(result.bosses.length).toBeGreaterThan(2);
     expect(result.freshness).toBe("fresh");
-    expect(result.warnings).toContain("Raid sources disagree");
+    expect(result.bosses.every((boss) => (boss.sourceReferences?.length ?? 0) > 0)).toBe(true);
     expect(result.sources).toEqual(["pogoapi", "leekduck"]);
+  });
+
+  it("combines source references for the same boss", async () => {
+    const adapter = (source: "leekduck" | "pogoapi", endpoint: string): RaidSourceAdapter => ({
+      source,
+      endpoint,
+      sourceUrl: `https://${source}.example.test/${endpoint}`,
+      fetchPayload: async () => ({}),
+      normalize: (_payload, provenance) => [{
+        raidBossId: "palkia:normal:5:normal",
+        displayName: "Palkia",
+        tier: 5,
+        isShadow: false,
+        types: ["Water", "Dragon"],
+        provenance,
+        sourceReferences: [provenance],
+      }],
+    });
+
+    const result = await createRaidService({
+      store: createMemorySnapshotStore(),
+      adapters: [adapter("pogoapi", "pogo.json"), adapter("leekduck", "leek.json")],
+      now: () => new Date("2026-10-27T12:00:00.000Z"),
+    }).getRaids();
+
+    expect(result.bosses).toHaveLength(1);
+    expect(result.bosses[0].sourceReferences?.map((reference) => reference.source)).toEqual([
+      "leekduck",
+      "pogoapi",
+    ]);
+    expect(result.warnings).toEqual([]);
   });
 
   it("retains last-known-good data after a refresh failure", async () => {
