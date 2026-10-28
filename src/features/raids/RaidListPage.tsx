@@ -112,6 +112,7 @@ export default function RaidListPage() {
       <header className="site-header">
         <a className="brand" href="/">PokéGO companion</a>
         <nav aria-label="Primary navigation">
+          <a className="nav-link" href="/pokedex">Pokédex</a>
           <a className="nav-link nav-link--active" href="/raids">Raids</a>
         </nav>
       </header>

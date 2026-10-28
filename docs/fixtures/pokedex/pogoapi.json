@@ -1,0 +1,54 @@
+{
+  "stats": [
+    {
+      "pokemon_id": 25,
+      "pokemon_name": "Pikachu",
+      "form": "Normal",
+      "base_attack": 112,
+      "base_defense": 96,
+      "base_stamina": 111
+    },
+    {
+      "pokemon_id": 26,
+      "pokemon_name": "Raichu",
+      "form": "Alola",
+      "base_attack": 201,
+      "base_defense": 154,
+      "base_stamina": 155
+    }
+  ],
+  "types": [
+    {
+      "pokemon_id": 25,
+      "pokemon_name": "Pikachu",
+      "form": "Normal",
+      "type": ["Electric"]
+    },
+    {
+      "pokemon_id": 26,
+      "pokemon_name": "Raichu",
+      "form": "Alola",
+      "type": ["Electric", "Psychic"]
+    }
+  ],
+  "moves": [
+    {
+      "pokemon_id": 25,
+      "pokemon_name": "Pikachu",
+      "form": "Normal",
+      "fast_moves": ["Thunder Shock"],
+      "charged_moves": ["Wild Charge"],
+      "elite_fast_moves": ["Present"],
+      "elite_charged_moves": ["Surf"]
+    },
+    {
+      "pokemon_id": 26,
+      "pokemon_name": "Raichu",
+      "form": "Alola",
+      "fast_moves": ["Volt Switch"],
+      "charged_moves": ["Thunder Punch"],
+      "elite_fast_moves": [],
+      "elite_charged_moves": []
+    }
+  ]
+}

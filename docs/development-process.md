@@ -1,6 +1,6 @@
 # Development process
 
-## Current stage: ready for first slice
+## Current stage: Pokédex foundation awaiting manual acceptance
 
 Do not start feature implementation until the following are agreed:
 
@@ -16,6 +16,11 @@ confirmed front-end baseline, server-side ingestion seam, reviewed domain
 model, captured fixtures, refresh policy, storage decision, and acceptance
 criteria. Further model changes should be driven by an adapter or fixture
 finding, not speculative feature design.
+
+The raid foundation has passed automated checks and manual acceptance. The
+Pokédex foundation now has its first normalized PoGoAPI snapshot, list/detail
+API routes, and searchable UI. Manual acceptance should verify the deployed
+Pokédex on desktop Firefox and Firefox for Android before extending the model.
 
 ## First vertical slice
 

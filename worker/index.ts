@@ -1,4 +1,4 @@
-import { createRuntimeRaidService } from "../src/server/runtime-service";
+import { createRuntimePokemonService, createRuntimeRaidService } from "../src/server/runtime-service";
 
 const jsonHeaders = { "content-type": "application/json; charset=utf-8" };
 
@@ -24,6 +24,25 @@ async function handleApiRequest(request: Request, environment: Env): Promise<Res
     const result = await createRuntimeRaidService(environment).getRaids({
       forceRefresh: url.searchParams.get("refresh") === "1",
     });
+    return jsonResponse(result);
+  }
+
+  if (url.pathname === "/api/v1/pokemon") {
+    const result = await createRuntimePokemonService(environment).getPokedex({
+      forceRefresh: url.searchParams.get("refresh") === "1",
+    });
+    return jsonResponse(result);
+  }
+
+  const pokemonMatch = url.pathname.match(/^\/api\/v1\/pokemon\/([^/]+)$/);
+  if (pokemonMatch) {
+    const pokemonKey = decodeURIComponent(pokemonMatch[1]);
+    const result = await createRuntimePokemonService(environment).getPokemon(pokemonKey);
+
+    if (!result) {
+      return jsonResponse({ error: "Pokémon not found" }, 404);
+    }
+
     return jsonResponse(result);
   }
 

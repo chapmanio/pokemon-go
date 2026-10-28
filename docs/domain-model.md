@@ -16,6 +16,10 @@ PokemonReference {
 }
 ```
 
+The first implementation uses `pokemon_id + form_id` as `pokemonKey` and keeps
+Pokémon GO base stats and current move pools optional until the source provides
+them for that form.
+
 ### Move reference
 
 ```text
