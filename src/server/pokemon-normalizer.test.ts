@@ -31,4 +31,28 @@ describe("Pokédex normalizer", () => {
     });
     expect(raichu?.types).toEqual(["Electric", "Psychic"]);
   });
+
+  it("marks equivalent event forms separately from forms with gameplay differences", () => {
+    const entries = normalizePokemonReference({
+      ...fixture,
+      stats: [
+        ...fixture.stats,
+        { pokemon_id: 25, pokemon_name: "Pikachu", form: "Copy_2019", base_attack: 112, base_defense: 96, base_stamina: 111 },
+        { pokemon_id: 26, pokemon_name: "Raichu", form: "Normal", base_attack: 193, base_defense: 151, base_stamina: 155 },
+      ],
+      types: [
+        ...fixture.types,
+        { pokemon_id: 25, pokemon_name: "Pikachu", form: "Copy_2019", type: ["Electric"] },
+        { pokemon_id: 26, pokemon_name: "Raichu", form: "Normal", type: ["Electric"] },
+      ],
+      moves: [
+        ...fixture.moves,
+        { pokemon_id: 25, pokemon_name: "Pikachu", form: "Copy_2019", fast_moves: ["Thunder Shock"], charged_moves: ["Wild Charge"], elite_fast_moves: ["Present"], elite_charged_moves: ["Surf"] },
+        { pokemon_id: 26, pokemon_name: "Raichu", form: "Normal", fast_moves: ["Volt Switch"], charged_moves: ["Thunder Punch"], elite_fast_moves: [], elite_charged_moves: [] },
+      ],
+    }, provenance);
+
+    expect(entries.find((entry) => entry.pokemonKey === "25:copy-2019")?.functionalDifference).toBe("none");
+    expect(entries.find((entry) => entry.pokemonKey === "26:alola")?.functionalDifference).toBe("multiple");
+  });
 });

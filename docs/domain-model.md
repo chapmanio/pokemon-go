@@ -7,18 +7,25 @@ optional when the available sources cannot support them reliably.
 
 ### Pokémon reference
 
-Identity is `species_id + form_id + variant` where available.
+The Pokédex list identity is `pokemon_id`. A form-level reference keeps the
+source form identity as `pokemonKey = pokemon_id + form_id`.
 
 ```text
-PokemonReference {
-  species_id, form_id?, variant?, display_name, types,
-  stats?, moves?, evolution?, availability?, assets?, provenance
+PokemonEntry {
+  pokemon_id, display_name, default_form, forms[], assets?, provenance
+}
+
+PokemonForm {
+  pokemon_key, pokemon_id, form_id, display_name, types,
+  stats?, moves?, functional_difference, assets?, provenance
 }
 ```
 
-The first implementation uses `pokemon_id + form_id` as `pokemonKey` and keeps
-Pokémon GO base stats and current move pools optional until the source provides
-them for that form.
+The list contains one entry per `pokemon_id`, using the `Normal` form when
+available. All source forms remain in the detail model. `functional_difference`
+is computed by comparing stats, types and move pools with the default form, so
+equivalent event or costume forms can be nested without losing meaningful
+regional, battle or move-changing variants.
 
 ### Move reference
 

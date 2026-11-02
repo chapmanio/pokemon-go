@@ -1,6 +1,6 @@
 # Development process
 
-## Current stage: Pokédex foundation awaiting manual acceptance
+## Current stage: Pokédex form grouping awaiting manual acceptance
 
 Do not start feature implementation until the following are agreed:
 
@@ -19,8 +19,10 @@ finding, not speculative feature design.
 
 The raid foundation has passed automated checks and manual acceptance. The
 Pokédex foundation now has its first normalized PoGoAPI snapshot, list/detail
-API routes, and searchable UI. Manual acceptance should verify the deployed
-Pokédex on desktop Firefox and Firefox for Android before extending the model.
+API routes, searchable UI, one-entry-per-number grouping, retained form data,
+and optional icon assets. Manual acceptance should verify duplicate grouping,
+form selection, image fallback, and freshness behaviour on desktop Firefox and
+Firefox for Android before extending the model.
 
 ## First vertical slice
 

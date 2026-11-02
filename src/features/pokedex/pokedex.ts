@@ -1,4 +1,4 @@
-import type { PokemonListEntry } from "../../domain/pokemon";
+import type { PokemonFunctionalDifference, PokemonListEntry } from "../../domain/pokemon";
 
 export function formLabel(formId: string): string | undefined {
   if (formId.toLowerCase() === "normal") return undefined;
@@ -10,7 +10,17 @@ export function filterPokemon(entries: PokemonListEntry[], query: string): Pokem
   if (!normalizedQuery) return entries;
   return entries.filter((entry) => (
     entry.displayName.toLowerCase().includes(normalizedQuery)
-    || entry.formId.toLowerCase().includes(normalizedQuery)
+    || (entry.formIds ?? [entry.formId]).some((formId) => formId.toLowerCase().includes(normalizedQuery))
     || String(entry.pokemonId) === normalizedQuery
   ));
+}
+
+export function functionalDifferenceLabel(difference: PokemonFunctionalDifference): string {
+  switch (difference) {
+    case "moves": return "Different moves";
+    case "types": return "Different types";
+    case "stats": return "Different stats";
+    case "multiple": return "Different battle data";
+    default: return "Equivalent variant";
+  }
 }

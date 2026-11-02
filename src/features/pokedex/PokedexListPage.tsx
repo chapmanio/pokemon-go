@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Freshness, PokemonListResult } from "../../domain/pokemon";
 import { fetchPokemonList } from "../../client/pokemon-api";
-import { filterPokemon, formLabel } from "./pokedex";
+import { filterPokemon } from "./pokedex";
+import PokemonImage from "./PokemonImage";
 
 const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "The Pokédex was recently fetched and validated." },
@@ -90,7 +91,7 @@ export default function PokedexListPage() {
             </section>
           )}
           <div className="pokedex-toolbar">
-            <label className="search-label" htmlFor="pokemon-search">Search species or form</label>
+            <label className="search-label" htmlFor="pokemon-search">Search Pokémon, form, or number</label>
             <input
               id="pokemon-search"
               className="search-input"
@@ -99,16 +100,23 @@ export default function PokedexListPage() {
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Try Pikachu, Alola, or 25"
             />
-            <p>{entries.length.toLocaleString()} of {result.entries.length.toLocaleString()} entries</p>
+            <p>{entries.length.toLocaleString()} of {result.entries.length.toLocaleString()} Pokédex numbers</p>
           </div>
           {entries.length > 0 ? (
             <div className="pokedex-grid">
               {entries.map((entry) => (
-                <article className="pokedex-card" key={entry.pokemonKey}>
-                  <p className="pokedex-card__number">#{String(entry.pokemonId).padStart(4, "0")}</p>
-                  <h2><a href={`/pokedex/${encodeURIComponent(entry.pokemonKey)}`}>{entry.displayName}</a></h2>
-                  {formLabel(entry.formId) && <p className="pokedex-card__form">{formLabel(entry.formId)}</p>}
+                <article className="pokedex-card" key={entry.pokemonId}>
+                  <div className="pokedex-card__header">
+                    <PokemonImage className="pokedex-card__image" src={entry.assetUrl} alt={`${entry.displayName} icon`} />
+                    <div>
+                      <p className="pokedex-card__number">#{String(entry.pokemonId).padStart(4, "0")}</p>
+                      <h2><a href={`/pokedex/${encodeURIComponent(entry.pokemonKey)}`}>{entry.displayName}</a></h2>
+                    </div>
+                  </div>
                   <p className="pokedex-card__types">{entry.types.join(" · ") || "Types not listed"}</p>
+                  {entry.formCount > 1 && (
+                    <p className="pokedex-card__forms">{entry.formCount} forms{entry.meaningfulFormCount > 0 ? ` · ${entry.meaningfulFormCount} with different battle data` : ""}</p>
+                  )}
                 </article>
               ))}
             </div>

@@ -3,8 +3,26 @@ import type { PokemonListEntry } from "../../domain/pokemon";
 import { filterPokemon, formLabel } from "./pokedex";
 
 const entries: PokemonListEntry[] = [
-  { pokemonKey: "25:normal", pokemonId: 25, displayName: "Pikachu", formId: "Normal", types: ["Electric"] },
-  { pokemonKey: "26:alola", pokemonId: 26, displayName: "Raichu", formId: "Alola", types: ["Electric", "Psychic"] },
+  {
+    pokemonKey: "25:normal",
+    pokemonId: 25,
+    displayName: "Pikachu",
+    formId: "Normal",
+    types: ["Electric"],
+    formIds: ["Normal", "Copy_2019"],
+    formCount: 2,
+    meaningfulFormCount: 0,
+  },
+  {
+    pokemonKey: "26:alola",
+    pokemonId: 26,
+    displayName: "Raichu",
+    formId: "Alola",
+    types: ["Electric", "Psychic"],
+    formIds: ["Alola"],
+    formCount: 1,
+    meaningfulFormCount: 0,
+  },
 ];
 
 describe("pokedex helpers", () => {

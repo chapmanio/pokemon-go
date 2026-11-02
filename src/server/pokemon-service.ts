@@ -1,10 +1,12 @@
 import type {
   Freshness,
   PokemonDetailResult,
+  PokemonFormSummary,
   PokemonListEntry,
   PokemonListResult,
+  PokemonReference,
 } from "../domain/pokemon";
-import { normalizePokemonReference } from "./pokemon-normalizer";
+import { annotatePokemonReferences, normalizePokemonReference } from "./pokemon-normalizer";
 import {
   fetchPokemonSourcePayload,
   pokemonProvenance,
@@ -43,14 +45,58 @@ async function hashPayload(payload: unknown): Promise<string> {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
+function snapshotEntries(snapshot: StoredPokemonSnapshot): PokemonReference[] {
+  return annotatePokemonReferences(snapshot.entries);
+}
+
+function formOrder(left: PokemonReference, right: PokemonReference): number {
+  const leftNormal = left.formId.toLowerCase() === "normal";
+  const rightNormal = right.formId.toLowerCase() === "normal";
+  if (leftNormal !== rightNormal) return leftNormal ? -1 : 1;
+  return left.formId.localeCompare(right.formId);
+}
+
+function formsFor(entries: PokemonReference[], pokemonId: number): PokemonReference[] {
+  return entries.filter((entry) => entry.pokemonId === pokemonId).sort(formOrder);
+}
+
+function formSummary(entry: PokemonReference): PokemonFormSummary {
+  return {
+    pokemonKey: entry.pokemonKey,
+    formId: entry.formId,
+    types: [...entry.types],
+    assetUrl: entry.assetUrl,
+    functionalDifference: entry.functionalDifference,
+  };
+}
+
 function listEntries(snapshot: StoredPokemonSnapshot): PokemonListEntry[] {
-  return snapshot.entries.map(({ pokemonKey, pokemonId, displayName, formId, types }) => ({
-    pokemonKey,
-    pokemonId,
-    displayName,
-    formId,
-    types,
-  }));
+  const entries = snapshotEntries(snapshot);
+  const grouped = new Map<number, PokemonReference[]>();
+  for (const entry of entries) {
+    const group = grouped.get(entry.pokemonId) ?? [];
+    group.push(entry);
+    grouped.set(entry.pokemonId, group);
+  }
+
+  return [...grouped.values()]
+    .map((forms) => {
+      const sortedForms = [...forms].sort(formOrder);
+      const defaultForm = sortedForms[0];
+      if (!defaultForm) throw new Error("Pokédex species group contained no form");
+      return {
+        pokemonKey: defaultForm.pokemonKey,
+        pokemonId: defaultForm.pokemonId,
+        displayName: defaultForm.displayName,
+        formId: defaultForm.formId,
+        types: [...defaultForm.types],
+        assetUrl: defaultForm.assetUrl,
+        formIds: sortedForms.map((form) => form.formId),
+        formCount: sortedForms.length,
+        meaningfulFormCount: sortedForms.filter((form) => form.functionalDifference !== "none").length,
+      };
+    })
+    .sort((left, right) => left.pokemonId - right.pokemonId);
 }
 
 function resultFromSnapshot(snapshot: StoredPokemonSnapshot | undefined, now: Date): PokemonListResult {
@@ -128,10 +174,13 @@ export function createPokemonService({ store, fetcher = fetch, now = () => new D
       const lastAttempt = previous ? new Date(previous.lastAttemptAt).getTime() : 0;
       const eligible = options.forceRefresh || !previous || currentTime.getTime() - lastAttempt >= REFRESH_COOLDOWN_MS;
       const snapshot = eligible ? await refreshSnapshot(previous, currentTime, fetcher, store) : previous;
-      const entry = snapshot?.entries.find((candidate) => candidate.pokemonKey === pokemonKey);
+      const entries = snapshot ? snapshotEntries(snapshot) : [];
+      const entry = entries.find((candidate) => candidate.pokemonKey === pokemonKey);
       if (!entry) return undefined;
+      const forms = formsFor(entries, entry.pokemonId);
       return {
         ...entry,
+        forms: forms.map(formSummary),
         freshness: snapshotFreshness(snapshot, currentTime),
         warnings: snapshot?.error ? ["The cached Pokédex is being served because the source refresh failed"] : [],
       };

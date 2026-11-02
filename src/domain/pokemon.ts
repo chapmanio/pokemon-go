@@ -22,6 +22,8 @@ export interface PokemonMovePools {
   eliteCharged: string[];
 }
 
+export type PokemonFunctionalDifference = "none" | "moves" | "types" | "stats" | "multiple";
+
 export interface PokemonReference {
   pokemonKey: string;
   pokemonId: number;
@@ -30,8 +32,18 @@ export interface PokemonReference {
   types: string[];
   stats?: PokemonStats;
   moves?: PokemonMovePools;
+  assetUrl?: string;
+  functionalDifference: PokemonFunctionalDifference;
   shinyAvailable?: boolean;
   provenance: PokemonProvenance;
+}
+
+export interface PokemonFormSummary {
+  pokemonKey: string;
+  formId: string;
+  types: string[];
+  assetUrl?: string;
+  functionalDifference: PokemonFunctionalDifference;
 }
 
 export interface PokemonListEntry {
@@ -40,6 +52,10 @@ export interface PokemonListEntry {
   displayName: string;
   formId: string;
   types: string[];
+  assetUrl?: string;
+  formIds: string[];
+  formCount: number;
+  meaningfulFormCount: number;
 }
 
 export interface PokemonListResult {
@@ -50,6 +66,7 @@ export interface PokemonListResult {
 }
 
 export interface PokemonDetailResult extends PokemonReference {
+  forms: PokemonFormSummary[];
   freshness: Freshness;
   warnings: string[];
 }

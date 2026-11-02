@@ -19,6 +19,7 @@ function isPokemonDetailResult(value: unknown): value is PokemonDetailResult {
     && typeof result.displayName === "string"
     && typeof result.formId === "string"
     && Array.isArray(result.types)
+    && Array.isArray(result.forms)
     && typeof result.freshness === "string"
     && freshnessValues.includes(result.freshness as Freshness)
     && Array.isArray(result.warnings);

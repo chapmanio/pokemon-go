@@ -1,9 +1,11 @@
 import type {
   PokemonMovePools,
+  PokemonFunctionalDifference,
   PokemonReference,
   PokemonStats,
 } from "../domain/pokemon";
 import type { PokemonNormalizationProvenance } from "./pokemon-source";
+import { pokemonIconUrl } from "./pokemon-assets";
 
 type RecordValue = Record<string, unknown>;
 
@@ -45,6 +47,66 @@ function emptyMoves(): PokemonMovePools {
   return { fast: [], charged: [], eliteFast: [], eliteCharged: [] };
 }
 
+function sameArray(left: string[], right: string[]): boolean {
+  if (left.length !== right.length) return false;
+  const sortedLeft = [...left].sort();
+  const sortedRight = [...right].sort();
+  return sortedLeft.every((value, index) => value === sortedRight[index]);
+}
+
+function sameStats(left: PokemonStats | undefined, right: PokemonStats | undefined): boolean {
+  return JSON.stringify(left ?? null) === JSON.stringify(right ?? null);
+}
+
+function sameMoves(left: PokemonMovePools | undefined, right: PokemonMovePools | undefined): boolean {
+  if (!left || !right) return left === right;
+  return sameArray(left.fast, right.fast)
+    && sameArray(left.charged, right.charged)
+    && sameArray(left.eliteFast, right.eliteFast)
+    && sameArray(left.eliteCharged, right.eliteCharged);
+}
+
+function functionalDifference(
+  entry: PokemonReference,
+  baseline: PokemonReference,
+): PokemonFunctionalDifference {
+  const differences = [
+    !sameStats(entry.stats, baseline.stats) ? "stats" : undefined,
+    !sameArray(entry.types, baseline.types) ? "types" : undefined,
+    !sameMoves(entry.moves, baseline.moves) ? "moves" : undefined,
+  ].filter((value): value is "stats" | "types" | "moves" => value !== undefined);
+
+  if (differences.length === 0) return "none";
+  if (differences.length > 1) return "multiple";
+  return differences[0];
+}
+
+function formOrder(left: PokemonReference, right: PokemonReference): number {
+  const leftNormal = left.formId.toLowerCase() === "normal";
+  const rightNormal = right.formId.toLowerCase() === "normal";
+  if (leftNormal !== rightNormal) return leftNormal ? -1 : 1;
+  return left.formId.localeCompare(right.formId);
+}
+
+export function annotatePokemonReferences(entries: PokemonReference[]): PokemonReference[] {
+  const grouped = new Map<number, PokemonReference[]>();
+  for (const entry of entries) {
+    const group = grouped.get(entry.pokemonId) ?? [];
+    group.push(entry);
+    grouped.set(entry.pokemonId, group);
+  }
+
+  return entries.map((entry) => {
+    const forms = grouped.get(entry.pokemonId) ?? [entry];
+    const baseline = forms.find((form) => form.formId.toLowerCase() === "normal") ?? [...forms].sort(formOrder)[0] ?? entry;
+    return {
+      ...entry,
+      assetUrl: entry.assetUrl ?? pokemonIconUrl(entry.pokemonId, entry.formId),
+      functionalDifference: entry.pokemonKey === baseline.pokemonKey ? "none" : functionalDifference(entry, baseline),
+    };
+  });
+}
+
 export function normalizePokemonReference(
   payload: PokemonReferencePayload,
   provenance: PokemonNormalizationProvenance,
@@ -62,6 +124,7 @@ export function normalizePokemonReference(
       displayName: item.displayName,
       formId: item.formId,
       types: [],
+      functionalDifference: "none",
       provenance,
     };
     entries.set(item.key, created);
@@ -106,11 +169,11 @@ export function normalizePokemonReference(
     }
   }
 
-  return [...entries.values()]
+  return annotatePokemonReferences([...entries.values()]
     .map((entry) => ({
       ...entry,
       types: [...entry.types],
       moves: entry.moves ?? emptyMoves(),
     }))
-    .sort((left, right) => left.pokemonId - right.pokemonId || left.formId.localeCompare(right.formId));
+    .sort((left, right) => left.pokemonId - right.pokemonId || formOrder(left, right)));
 }

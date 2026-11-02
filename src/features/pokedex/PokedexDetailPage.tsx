@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import type { Freshness, PokemonDetailResult } from "../../domain/pokemon";
 import { fetchPokemonDetail } from "../../client/pokemon-api";
-import { formLabel } from "./pokedex";
+import { formLabel, functionalDifferenceLabel } from "./pokedex";
+import PokemonImage from "./PokemonImage";
 
 const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "This Pokémon detail was recently fetched and validated." },
@@ -35,6 +36,10 @@ function MoveList({ title, moves }: { title: string; moves: string[] }) {
       <ul>{moves.map((move) => <li key={move}>{move}</li>)}</ul>
     </div>
   );
+}
+
+function differenceLabel(difference: PokemonDetailResult["functionalDifference"]): string {
+  return functionalDifferenceLabel(difference);
 }
 
 export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }) {
@@ -81,11 +86,16 @@ export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }
       {detail && (
         <>
           <section className="detail-heading">
-            <p className="eyebrow">Pokédex entry #{detail.pokemonId}</p>
-            <h1>{detail.displayName}</h1>
-            {formLabel(detail.formId) && <p className="detail-heading__subheading">{formLabel(detail.formId)} form</p>}
-            <div className="type-pills" aria-label="Pokémon types">
-              {detail.types.map((type) => <span className="type-pill" key={type}>{type}</span>)}
+            <div className="detail-heading__identity">
+              <PokemonImage className="detail-heading__image" src={detail.assetUrl} alt={`${detail.displayName} icon`} />
+              <div>
+                <p className="eyebrow">Pokédex entry #{detail.pokemonId}</p>
+                <h1>{detail.displayName}</h1>
+                {formLabel(detail.formId) && <p className="detail-heading__subheading">{formLabel(detail.formId)} form</p>}
+                <div className="type-pills" aria-label="Pokémon types">
+                  {detail.types.map((type) => <span className="type-pill" key={type}>{type}</span>)}
+                </div>
+              </div>
             </div>
           </section>
           <DetailStatus detail={detail} />
@@ -93,6 +103,32 @@ export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }
             <section className="warning-panel" aria-label="Pokédex warnings">
               <strong>Source notes</strong>
               <ul>{detail.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul>
+            </section>
+          )}
+          {detail.forms.length > 1 && (
+            <section className="detail-panel form-panel">
+              <h2>Forms</h2>
+              <label className="search-label" htmlFor="pokemon-form">Choose a form</label>
+              <select
+                id="pokemon-form"
+                className="form-select"
+                value={detail.pokemonKey}
+                onChange={(event) => { window.location.href = `/pokedex/${encodeURIComponent(event.target.value)}`; }}
+              >
+                {detail.forms.map((form) => (
+                  <option key={form.pokemonKey} value={form.pokemonKey}>
+                    {form.formId.toLowerCase() === "normal" ? "Normal" : formLabel(form.formId)}
+                    {form.formId.toLowerCase() === "normal"
+                      ? " — default form"
+                      : form.functionalDifference !== "none"
+                        ? ` — ${differenceLabel(form.functionalDifference)}`
+                        : " — equivalent battle data"}
+                  </option>
+                ))}
+              </select>
+              {detail.functionalDifference !== "none" && (
+                <p className="detail-panel__note">This form has {differenceLabel(detail.functionalDifference).toLowerCase()} compared with the default form.</p>
+              )}
             </section>
           )}
           <section className="detail-panel">

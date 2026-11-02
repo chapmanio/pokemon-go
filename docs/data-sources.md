@@ -20,6 +20,14 @@ Secondary source for raid bosses and Max Battles:
 
 Use it to cross-check raid data and provide fallback data. It is unofficial and educational, so do not treat it as the sole authority.
 
+## Pokémon GO assets
+
+The community-maintained [`pokemon-go-api/assets` repository](https://github.com/pokemon-go-api/assets/tree/main/Pokemon)
+provides optional Pokémon GO icon PNGs for list and detail presentation. These
+are presentation assets, not a gameplay data source. Filenames and coverage may
+change, so the app must keep a placeholder fallback and avoid making gameplay
+data depend on image availability.
+
 ## leak-duck
 
 Community-scraped data from Leek Duck:

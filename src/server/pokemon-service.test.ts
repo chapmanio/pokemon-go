@@ -9,17 +9,18 @@ const hashes = {
   "current_pokemon_moves.json": { hash_sha256: "moves-hash" },
 };
 
-function createFetcher(options: { fail?: boolean } = {}): typeof fetch {
+function createFetcher(options: { fail?: boolean; payload?: typeof fixture } = {}): typeof fetch {
   return (async (input: RequestInfo | URL) => {
     if (options.fail) throw new Error("source unavailable");
+    const payload = options.payload ?? fixture;
     const url = String(input);
     const value = url.endsWith("api_hashes.json")
       ? hashes
       : url.endsWith("pokemon_stats.json")
-        ? fixture.stats
+        ? payload.stats
         : url.endsWith("pokemon_types.json")
-          ? fixture.types
-          : fixture.moves;
+          ? payload.types
+          : payload.moves;
     return new Response(JSON.stringify(value), { status: 200 });
   }) as typeof fetch;
 }
@@ -39,6 +40,36 @@ describe("Pokédex service", () => {
     expect(list.entries).toHaveLength(2);
     expect(detail?.displayName).toBe("Pikachu");
     expect(detail?.freshness).toBe("fresh");
+    expect(detail?.forms).toHaveLength(1);
+  });
+
+  it("returns one list entry per number while retaining all forms in detail", async () => {
+    const duplicateFixture = {
+      ...fixture,
+      stats: [
+        ...fixture.stats,
+        { pokemon_id: 25, pokemon_name: "Pikachu", form: "Copy_2019", base_attack: 112, base_defense: 96, base_stamina: 111 },
+      ],
+      types: [
+        ...fixture.types,
+        { pokemon_id: 25, pokemon_name: "Pikachu", form: "Copy_2019", type: ["Electric"] },
+      ],
+      moves: [
+        ...fixture.moves,
+        { pokemon_id: 25, pokemon_name: "Pikachu", form: "Copy_2019", fast_moves: ["Thunder Shock"], charged_moves: ["Wild Charge"], elite_fast_moves: ["Present"], elite_charged_moves: ["Surf"] },
+      ],
+    };
+    const service = createPokemonService({
+      store: createMemoryPokemonSnapshotStore(),
+      fetcher: createFetcher({ payload: duplicateFixture }),
+      now: () => new Date("2026-10-28T12:00:00.000Z"),
+    });
+    const list = await service.getPokedex();
+    const detail = await service.getPokemon("25:normal");
+
+    expect(list.entries.map((entry) => entry.pokemonId)).toEqual([25, 26]);
+    expect(list.entries.find((entry) => entry.pokemonId === 25)?.formCount).toBe(2);
+    expect(detail?.forms).toHaveLength(2);
   });
 
   it("retains last-known-good data after a refresh failure", async () => {

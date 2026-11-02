@@ -2,7 +2,9 @@
 
 ## Pokédex
 
-Search any Pokémon GO species or form. Use detail sections for:
+Show one list entry per Pokédex number while retaining regional, battle,
+costume, pattern and event forms under that number. Search matches species,
+form labels and numbers. Use detail sections for:
 
 - Overview: types, forms, stats and CP.
 - Battle: moves, roles, weaknesses and raid relevance.
