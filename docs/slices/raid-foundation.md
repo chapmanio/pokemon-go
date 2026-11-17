@@ -7,7 +7,7 @@ Provide a reliable generic raid-planning experience from cached community data:
 1. Show the current raid roster grouped by tier.
 2. Show useful boss details and a known raid window when available.
 3. Suggest generic counters and move types.
-4. Show an approximate difficulty estimate with its assumptions.
+4. Show an approximate capable-trainer estimate and a four-trainer Party Play check.
 5. Make freshness, degraded data, and source disagreement visible.
 
 ## Non-goals
@@ -26,20 +26,18 @@ Provide a reliable generic raid-planning experience from cached community data:
 - The detail view shows types, weaknesses, weather, catch CP, shiny availability, and the raid window when known.
 - The view shows which source supplied each important fact when sources disagree.
 
-## Estimate settings
+## Estimate behaviour
 
-- Mode: `Generic` or `Our group`.
-- Trainer count: 1–4.
-- Typical strength: `Casual`, `Capable`, or `Optimised`.
-- Local/remote mix: a simple setting, not a detailed network model.
-- Party Play: off or approximate benefit.
+- Show the approximate whole number of capable trainers needed, rounding the source estimate up.
+- Show whether four capable trainers using Party Play are likely to be enough.
+- Show `Unknown` when the source does not provide a battle estimate.
+- Keep the explanation short and visible; do not expose per-user trainer, strength, remote-mix or Party Play controls.
 
-Use clear bands such as `Likely`, `Borderline`, and `Unlikely`. Always display the assumptions and label the result as approximate.
+Use clear `Likely yes`, `Probably not`, and `Unknown` outcomes. Always label the result as approximate.
 
-The first family estimate is a transparent heuristic around a source-provided
-capable-trainer estimate: Casual contributes `0.75`, Capable `1.0`, Optimised
-`1.25`, Mixed remote/local `0.95`, Mostly remote `0.9`, and Party Play `1.15`.
-These values are configuration assumptions, not battle-simulation results.
+The four-trainer check treats four capable trainers with Party Play as `4.6`
+capable-trainer equivalents (`4 × 1.15`). This is a product heuristic, not a
+battle-simulation result.
 
 ## Source strategy
 
@@ -81,9 +79,8 @@ Optional fields must remain optional when a source does not provide them. Do not
 - The detail view allows retrying an unavailable boss and distinguishes a rotated-out boss from a general load failure.
 - The detail view shows source-level differences for important fields when valid sources disagree.
 - Counter guidance remains source-based and recommends attack types when specific Pokémon and move data is unavailable.
-- Estimate settings support Generic or Our group mode, trainer count, strength, local/remote mix and an approximate Party Play toggle.
-- Counter cache keys include every estimate input: boss/form, tier, attacker level, weather, dodge or strategy mode, and aggregation settings.
-- Changing estimate settings changes the displayed approximation and its assumptions.
+- The estimate section shows the capable-trainer count and the four-trainer Party Play check without configuration controls.
+- Missing source battle estimates produce an explicit Unknown state.
 - No authentication or personal roster data is required.
 
 ## Required tests
@@ -96,4 +93,5 @@ Optional fields must remain optional when a source does not provide them. Do not
 - Detect and surface source disagreement.
 - Prevent counter-cache collisions between different query parameters.
 - Cover empty, stale, degraded, and unavailable states.
+- Cover capable-trainer rounding, the four-trainer Party Play threshold, and missing estimates.
 

@@ -53,14 +53,14 @@ state. A raid rotation or time window is not part of the identity.
 
 ```text
 BattleEstimate {
-  raid_boss_id, profile, estimator?, combat_time?, deaths?,
-  confidence?, source, source_url, fetched_at, content_hash?
+  raid_boss_id, capable_trainers_needed?, party_of_four_result?,
+  source, source_url, fetched_at, content_hash?
 }
 ```
 
-`profile` contains the explicit trainer count, strength, local/remote mix,
-Party Play setting, attacker level, weather, and strategy inputs used by the
-estimate. The result is never presented without its profile.
+The app presents a source-based capable-trainer count and a separate
+party-of-four check. The latter assumes four capable trainers using Party Play
+and remains explicitly approximate.
 
 ### Event
 

@@ -17,8 +17,8 @@ This glossary is the shared vocabulary for product decisions, source adapters, t
 - **Raid roster** — The set of bosses currently reported by a source. A roster may not contain start and end times.
 - **Raid window** — The time interval during which a boss or rotation is active. It is event context, not an intrinsic property of a boss.
 - **Counter recommendation** — A generic suggestion for Pokémon, move types, or strategies that are effective against a boss. It is not a recommendation based on a user's collection.
-- **Battle estimate** — A simulation or heuristic result under explicit assumptions. It is an estimate, not a guarantee.
-- **Estimate profile** — The assumptions used for an estimate: trainer count, group strength, local/remote mix, and Party Play setting.
+- **Battle estimate** — A source-based or heuristic indication of how many capable trainers are likely needed. It is an estimate, not a guarantee.
+- **Party-of-four check** — A simple heuristic that asks whether four capable trainers using Party Play are likely to have enough estimated strength for a raid. It is not an exact simulation.
 
 ## Data quality
 

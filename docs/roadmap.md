@@ -20,7 +20,7 @@
 - Build the Pokémon GO Pokédex.
 - Add current/upcoming raids.
 - Add raid detail pages, counters and generic estimates.
-- Add configurable “Our group” estimates and Party Play heuristic.
+- Add a simple capable-trainer estimate and four-trainer Party Play check.
 
 ## Phase 3: current-play tools
 

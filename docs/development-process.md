@@ -26,7 +26,7 @@ Firefox for Android before extending the model.
 
 ## First vertical slice
 
-Build raids first: source ingestion, caching, validation, current raid list, raid details, generic estimate settings and freshness status.
+Build raids first: source ingestion, caching, validation, current raid list, raid details, capable-trainer guidance and freshness status.
 
 ## Lightweight coordinator loop
 

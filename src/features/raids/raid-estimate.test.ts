@@ -18,48 +18,27 @@ const boss: RaidBoss = {
 };
 
 describe("raid estimates", () => {
-  it("shows the source estimate in generic mode", () => {
-    expect(estimateRaid(boss, {
-      mode: "generic",
-      trainerCount: 2,
-      strength: "capable",
-      remoteMix: "local",
-      partyPlay: false,
-    })).toMatchObject({
-      headline: "About 2 capable trainers",
+  it("rounds the source estimate up to whole capable trainers", () => {
+    expect(estimateRaid({ ...boss, battleEstimator: 2.1 })).toMatchObject({
+      capableTrainersNeeded: 3,
     });
   });
 
-  it("changes the family estimate when Party Play is enabled", () => {
-    const withoutPartyPlay = estimateRaid(boss, {
-      mode: "our-group",
-      trainerCount: 2,
-      strength: "capable",
-      remoteMix: "local",
-      partyPlay: false,
+  it("checks whether four capable trainers with Party Play are enough", () => {
+    expect(estimateRaid(boss).partyOfFour).toMatchObject({
+      result: "likely",
+      headline: "Likely yes",
     });
-    const withPartyPlay = estimateRaid(boss, {
-      mode: "our-group",
-      trainerCount: 2,
-      strength: "capable",
-      remoteMix: "local",
-      partyPlay: true,
+    expect(estimateRaid({ ...boss, battleEstimator: 5 }).partyOfFour).toMatchObject({
+      result: "unlikely",
+      headline: "Probably not",
     });
-
-    expect(withoutPartyPlay.band).toBe("borderline");
-    expect(withPartyPlay.band).toBe("likely");
-    expect(withPartyPlay.detail).not.toBe(withoutPartyPlay.detail);
   });
 
-  it("does not invent a trainer estimate when the source has none", () => {
-    const result = estimateRaid({ ...boss, battleEstimator: undefined }, {
-      mode: "generic",
-      trainerCount: 2,
-      strength: "capable",
-      remoteMix: "local",
-      partyPlay: false,
-    });
+  it("does not invent either answer when the source has no estimate", () => {
+    const result = estimateRaid({ ...boss, battleEstimator: undefined });
 
-    expect(result.headline).toBe("No source estimate available");
+    expect(result.capableTrainersNeeded).toBeUndefined();
+    expect(result.partyOfFour.result).toBe("unknown");
   });
 });

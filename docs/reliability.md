@@ -38,4 +38,7 @@ Show the timestamp and source on detailed data pages.
 
 ## Estimates
 
-Raid trainer counts are approximate. Display assumptions such as trainer count, group strength, local/remote mix and Party Play status. Treat Party Play as a configurable heuristic, not an exact simulation.
+Raid trainer counts are approximate. Round the source estimate up to a whole
+number of capable trainers. The party check assumes four capable trainers with
+Party Play and applies a small documented heuristic multiplier. Treat it as a
+quick planning signal, not an exact simulation or guarantee.

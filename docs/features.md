@@ -17,9 +17,8 @@ Show current and upcoming bosses, tiers, forms, shiny availability, weaknesses, 
 
 Each raid should support:
 
-- Generic estimate: source-based estimate for capable trainers.
-- Our group estimate: configured trainer count and strength profile.
-- Party Play toggle: a clearly labelled approximate benefit.
+- Capable-trainer estimate: the approximate whole number of capable trainers needed.
+- Party-of-four check: whether four capable trainers using Party Play are likely to be enough.
 - Counter guidance: recommended Pokémon and move types, with accessible alternatives.
 
 Do not require users to maintain individual Pokémon teams.
@@ -41,4 +40,4 @@ Provide month, list and event-detail views. Show event name, category, start/end
 - Global search covers Pokémon, raids, events, Rocket entries and egg species.
 - Pokémon pages are linked from raids, events, Rocket and eggs.
 - Current-data pages show last updated time and source status.
-- Raid settings are global and compact: estimate mode, trainer count, group strength, local/remote mix and Party Play.
+- Raid estimates use one fixed, clearly labelled capable-trainer assumption and a four-trainer Party Play check; there are no per-user battle settings.

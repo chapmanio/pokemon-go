@@ -605,62 +605,50 @@ button:disabled {
   padding: 0.45rem 0.75rem;
 }
 
-.estimate-controls {
+.estimate-summary {
   display: grid;
   gap: 0.75rem;
-  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   margin-bottom: 1rem;
 }
 
-.estimate-controls label {
-  color: #475569;
-  display: grid;
-  font-size: 0.8rem;
-  font-weight: 700;
-  gap: 0.35rem;
-}
-
-.estimate-controls select {
-  background: white;
-  border: 1px solid #cbd5e1;
-  border-radius: 0.5rem;
-  color: #172033;
-  font: inherit;
-  padding: 0.55rem;
-}
-
-.checkbox-label {
-  align-content: end;
-  display: flex !important;
-  flex-direction: row;
-  gap: 0.5rem !important;
-}
-
-.estimate-result {
+.estimate-card {
   background: #eff6ff;
   border: 1px solid #bfdbfe;
   border-radius: 0.75rem;
-  margin-bottom: 1rem;
   padding: 0.85rem;
 }
 
-.estimate-result--likely {
+.estimate-card--likely {
   background: #f0fdf4;
   border-color: #bbf7d0;
 }
 
-.estimate-result--borderline {
+.estimate-card--unlikely {
   background: #fffbeb;
   border-color: #fde68a;
 }
 
-.estimate-result--unlikely {
-  background: #fef2f2;
-  border-color: #fecaca;
+.estimate-card--unknown {
+  background: #f8fafc;
+  border-color: #cbd5e1;
 }
 
-.estimate-result p {
+.estimate-card p {
   margin: 0.35rem 0 0;
+}
+
+.estimate-card__label {
+  color: #475569;
+  font-weight: 700;
+  margin: 0 !important;
+}
+
+.estimate-card__value {
+  color: #0f172a;
+  display: block;
+  font-size: 1.6rem;
+  margin-top: 0.35rem;
 }
 
 @media (min-width: 640px) {

@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import type { Freshness, RaidBossDetailResult, RaidProvenance } from "../../domain/raid";
 import { fetchRaidBoss, RaidApiError } from "../../client/raid-api";
 import { formatCpRange, sourceLabel } from "./raid-list";
-import {
-  defaultRaidEstimateSettings,
-  estimateRaid,
-  type RaidEstimateSettings,
-} from "./raid-estimate";
+import { estimateRaid } from "./raid-estimate";
 
 const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "This raid detail was recently fetched and validated." },
@@ -158,77 +154,24 @@ function CounterGuidance({ detail }: { detail: RaidBossDetailResult }) {
 }
 
 function EstimatePanel({ detail }: { detail: RaidBossDetailResult }) {
-  const [settings, setSettings] = useState<RaidEstimateSettings>(defaultRaidEstimateSettings);
-  const estimate = estimateRaid(detail, settings);
-
-  useEffect(() => {
-    try {
-      const stored = window.localStorage.getItem("pokemon-go:raid-estimate-settings");
-      if (stored) setSettings({ ...defaultRaidEstimateSettings, ...JSON.parse(stored) });
-    } catch {
-      // Keep defaults when browser storage is unavailable or malformed.
-    }
-  }, []);
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem("pokemon-go:raid-estimate-settings", JSON.stringify(settings));
-    } catch {
-      // Estimation remains usable without persistence.
-    }
-  }, [settings]);
-
-  function updateSettings(change: Partial<RaidEstimateSettings>) {
-    setSettings((current) => ({ ...current, ...change }));
-  }
+  const estimate = estimateRaid(detail);
 
   return (
     <section className="detail-panel">
       <h2>Estimate</h2>
-      <div className="estimate-controls">
-        <label>
-          Estimate mode
-          <select value={settings.mode} onChange={(event) => updateSettings({ mode: event.target.value as RaidEstimateSettings["mode"] })}>
-            <option value="generic">Generic</option>
-            <option value="our-group">Our group</option>
-          </select>
-        </label>
-        {settings.mode === "our-group" && (
-          <>
-            <label>
-              Trainers
-              <select value={settings.trainerCount} onChange={(event) => updateSettings({ trainerCount: Number(event.target.value) })}>
-                {[1, 2, 3, 4].map((count) => <option value={count} key={count}>{count}</option>)}
-              </select>
-            </label>
-            <label>
-              Typical strength
-              <select value={settings.strength} onChange={(event) => updateSettings({ strength: event.target.value as RaidEstimateSettings["strength"] })}>
-                <option value="casual">Casual</option>
-                <option value="capable">Capable</option>
-                <option value="optimised">Optimised</option>
-              </select>
-            </label>
-            <label>
-              Local/remote mix
-              <select value={settings.remoteMix} onChange={(event) => updateSettings({ remoteMix: event.target.value as RaidEstimateSettings["remoteMix"] })}>
-                <option value="local">Mostly local</option>
-                <option value="mixed">Mixed</option>
-                <option value="remote">Mostly remote</option>
-              </select>
-            </label>
-            <label className="checkbox-label">
-              <input type="checkbox" checked={settings.partyPlay} onChange={(event) => updateSettings({ partyPlay: event.target.checked })} />
-              Party Play active
-            </label>
-          </>
-        )}
+      <div className="estimate-summary">
+        <div className="estimate-card">
+          <p className="estimate-card__label">Capable trainers needed</p>
+          <strong className="estimate-card__value">{estimate.capableTrainersNeeded ?? "Unknown"}</strong>
+          <p>{estimate.capableDetail}</p>
+        </div>
+        <div className={`estimate-card estimate-card--${estimate.partyOfFour.result}`}>
+          <p className="estimate-card__label">Can 4 capable trainers beat it?</p>
+          <strong className="estimate-card__value">{estimate.partyOfFour.headline}</strong>
+          <p>{estimate.partyOfFour.detail}</p>
+        </div>
       </div>
-      <div className={`estimate-result estimate-result--${estimate.band ?? "unknown"}`}>
-        <strong>{estimate.headline}</strong>
-        <p>{estimate.detail}</p>
-      </div>
-      <p className="detail-panel__note">Approximate guidance only. It does not inspect anyone’s Pokémon or guarantee a win.</p>
+      <p className="detail-panel__note">Approximate guidance only. The four-trainer check assumes Party Play is active and does not inspect anyone’s Pokémon or guarantee a win.</p>
     </section>
   );
 }
