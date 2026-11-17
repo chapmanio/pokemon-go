@@ -7,7 +7,8 @@ Provide a searchable, generic Pokémon GO reference from cached PoGoAPI data:
 1. List one entry per Pokédex number and retain its forms.
 2. Search by name, form, or Pokédex number.
 3. Show types, Pokémon GO base stats, and current move pools.
-4. Show freshness and degraded-cache status.
+4. Show a battle reference with weaknesses, resistances, and move metadata.
+5. Show freshness and degraded-cache status.
 
 ## Non-goals
 
@@ -20,6 +21,8 @@ Provide a searchable, generic Pokémon GO reference from cached PoGoAPI data:
 
 - PoGoAPI is the initial reference source.
 - Fetch `api_hashes.json` before `pokemon_stats.json`, `pokemon_types.json`, and `current_pokemon_moves.json`.
+- Fetch `fast_moves.json`, `charged_moves.json`, and `type_effectiveness.json`
+  for battle-reference data, using the same hash-checked snapshot.
 - Store the raw composite payload and normalized entries in the existing KV namespace under a Pokémon-specific key.
 - Refresh at most every 24 hours; show fresh data for 48 hours, then stale.
 - Keep last-known-good data when refresh or validation fails.
@@ -54,6 +57,8 @@ treated as PoGoAPI gameplay data.
   equivalent and gameplay-different forms.
 - The list contains one entry per Pokémon number while detail data retains all
   normalized forms.
+- Detail responses include generic weaknesses, resistances, and move metadata
+  for the selected form.
 - List and detail images render when the community asset is available and have
   a fallback when it is not.
 - Hash manifest changes trigger a source refresh; unchanged hashes reuse the cached normalized snapshot.

@@ -18,7 +18,14 @@ export interface PokemonSourcePayload {
 const BASE_URL = "https://pogoapi.net/api/v1";
 const SOURCE_URL = "https://pogoapi.net/documentation/";
 
-const files = ["pokemon_stats.json", "pokemon_types.json", "current_pokemon_moves.json"] as const;
+const files = [
+  "pokemon_stats.json",
+  "pokemon_types.json",
+  "current_pokemon_moves.json",
+  "fast_moves.json",
+  "charged_moves.json",
+  "type_effectiveness.json",
+] as const;
 
 async function fetchJson(url: string, fetcher: typeof fetch): Promise<unknown> {
   const response = await fetcher(url);
@@ -43,11 +50,11 @@ export async function fetchPokemonSourcePayload(fetcher: typeof fetch = fetch): 
     upstreamHashes[file] = hash;
   }
 
-  const [stats, types, moves] = await Promise.all(
+  const [stats, types, moves, fastMoves, chargedMoves, typeEffectiveness] = await Promise.all(
     files.map((file) => fetchJson(`${BASE_URL}/${file}`, fetcher)),
   );
 
-  return { payload: { stats, types, moves }, upstreamHashes };
+  return { payload: { stats, types, moves, fastMoves, chargedMoves, typeEffectiveness }, upstreamHashes };
 }
 
 export function pokemonProvenance(fetchedAt: Date, contentHash?: string): PokemonNormalizationProvenance {

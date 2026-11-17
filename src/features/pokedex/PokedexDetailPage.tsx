@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Freshness, PokemonDetailResult } from "../../domain/pokemon";
+import type { Freshness, PokemonDetailResult, PokemonMoveReference, PokemonTypeMatchup } from "../../domain/pokemon";
 import { fetchPokemonDetail } from "../../client/pokemon-api";
 import { formLabel, functionalDifferenceLabel } from "./pokedex";
 import PokemonImage from "./PokemonImage";
@@ -28,12 +28,40 @@ function DetailStatus({ detail }: { detail: PokemonDetailResult }) {
   );
 }
 
-function MoveList({ title, moves }: { title: string; moves: string[] }) {
+function MoveList({ title, moves }: { title: string; moves: PokemonMoveReference[] }) {
   if (moves.length === 0) return null;
   return (
     <div className="move-group">
       <h3>{title}</h3>
-      <ul>{moves.map((move) => <li key={move}>{move}</li>)}</ul>
+      <ul>{moves.map((move) => (
+        <li key={move.name}>
+          <span>{move.name}</span>
+          {(move.type || move.power !== undefined || move.energyDelta !== undefined) && (
+            <span className="move-meta">
+              {[move.type, move.power !== undefined ? `Power ${move.power}` : undefined, move.energyDelta !== undefined ? `Energy ${move.energyDelta}` : undefined]
+                .filter((value): value is string => value !== undefined)
+                .join(" · ")}
+            </span>
+          )}
+        </li>
+      ))}</ul>
+    </div>
+  );
+}
+
+function MatchupList({ title, matchups, empty }: { title: string; matchups: PokemonTypeMatchup[]; empty: string }) {
+  return (
+    <div className="battle-matchups">
+      <h3>{title}</h3>
+      {matchups.length > 0 ? (
+        <div className="type-pills" aria-label={title}>
+          {matchups.map((matchup) => (
+            <span className="type-pill" key={matchup.attackType}>
+              {matchup.attackType} ×{matchup.multiplier.toFixed(2).replace(/0+$/, "").replace(/\.$/, "")}
+            </span>
+          ))}
+        </div>
+      ) : <p className="detail-panel__note">{empty}</p>}
     </div>
   );
 }
@@ -142,19 +170,32 @@ export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }
             ) : <p className="detail-panel__note">Stats are not available for this form.</p>}
           </section>
           <section className="detail-panel">
+            <h2>Battle reference</h2>
+            <MatchupList
+              title="Weaknesses"
+              matchups={detail.battle.weaknesses}
+              empty="Weakness data is not available for this form."
+            />
+            <MatchupList
+              title="Resistances"
+              matchups={detail.battle.resistances}
+              empty="No resistances are listed for this form."
+            />
+          </section>
+          <section className="detail-panel">
             <h2>Move pools</h2>
-            {detail.moves && (detail.moves.fast.length + detail.moves.charged.length + detail.moves.eliteFast.length + detail.moves.eliteCharged.length > 0) ? (
+            {detail.battle.moveDetails.fast.length + detail.battle.moveDetails.charged.length + detail.battle.moveDetails.eliteFast.length + detail.battle.moveDetails.eliteCharged.length > 0 ? (
               <div className="move-groups">
-                <MoveList title="Fast moves" moves={detail.moves.fast} />
-                <MoveList title="Charged moves" moves={detail.moves.charged} />
-                <MoveList title="Elite fast moves" moves={detail.moves.eliteFast} />
-                <MoveList title="Elite charged moves" moves={detail.moves.eliteCharged} />
+                <MoveList title="Fast moves" moves={detail.battle.moveDetails.fast} />
+                <MoveList title="Charged moves" moves={detail.battle.moveDetails.charged} />
+                <MoveList title="Elite fast moves" moves={detail.battle.moveDetails.eliteFast} />
+                <MoveList title="Elite charged moves" moves={detail.battle.moveDetails.eliteCharged} />
               </div>
             ) : <p className="detail-panel__note">Move pools are not available for this form.</p>}
           </section>
           <section className="detail-panel detail-panel--placeholder">
             <h2>More about this Pokémon</h2>
-            <p>Evolution, availability, CP, and battle guidance will be added as the shared Pokédex model grows.</p>
+            <p>Evolution, availability, CP, and richer raid guidance will be added as the shared Pokédex model grows.</p>
           </section>
         </>
       )}

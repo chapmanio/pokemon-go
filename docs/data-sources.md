@@ -11,6 +11,8 @@ Primary reference source for Pokémon GO data:
 Useful data includes Pokémon stats, forms, types, moves, current moves, type effectiveness, weather boosts, CP multipliers, evolutions, buddy distances, shiny data, Mega data and raid bosses.
 
 Use `/api/v1/api_hashes.json` to detect changed files before downloading them.
+The battle-reference slice also uses `fast_moves.json`, `charged_moves.json`,
+and `type_effectiveness.json` for move metadata and type matchups.
 
 ## Pokémon GO API
 

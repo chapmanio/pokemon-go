@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
+import type { PokemonMovePools } from "../domain/pokemon";
 import fixture from "../../docs/fixtures/pokedex/pogoapi.json";
-import { normalizePokemonReference } from "./pokemon-normalizer";
+import { normalizePokemonBattleReference, normalizePokemonReference } from "./pokemon-normalizer";
 
 const provenance = {
   source: "pogoapi" as const,
@@ -54,5 +55,19 @@ describe("Pokédex normalizer", () => {
 
     expect(entries.find((entry) => entry.pokemonKey === "25:copy-2019")?.functionalDifference).toBe("none");
     expect(entries.find((entry) => entry.pokemonKey === "26:alola")?.functionalDifference).toBe("multiple");
+  });
+
+  it("normalizes move metadata and type matchups for a form", () => {
+    const moves: PokemonMovePools = {
+      fast: ["Thunder Shock"],
+      charged: ["Wild Charge"],
+      eliteFast: ["Present"],
+      eliteCharged: ["Surf"],
+    };
+    const pikachu = normalizePokemonBattleReference(fixture, ["Electric"], moves);
+
+    expect(pikachu.moveDetails.fast[0]).toMatchObject({ name: "Thunder Shock", type: "Electric", power: 5 });
+    expect(pikachu.weaknesses).toEqual([{ attackType: "Ground", multiplier: 1.6 }]);
+    expect(pikachu.resistances).toEqual([{ attackType: "Electric", multiplier: 0.625 }]);
   });
 });

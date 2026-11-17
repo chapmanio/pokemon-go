@@ -1,8 +1,11 @@
 import type {
+  PokemonBattleReference,
+  PokemonMoveReference,
   PokemonMovePools,
   PokemonFunctionalDifference,
   PokemonReference,
   PokemonStats,
+  PokemonTypeMatchup,
 } from "../domain/pokemon";
 import type { PokemonNormalizationProvenance } from "./pokemon-source";
 import { pokemonIconUrl } from "./pokemon-assets";
@@ -13,6 +16,9 @@ export interface PokemonReferencePayload {
   stats: unknown;
   types: unknown;
   moves: unknown;
+  fastMoves?: unknown;
+  chargedMoves?: unknown;
+  typeEffectiveness?: unknown;
 }
 
 function asRecord(value: unknown): RecordValue | undefined {
@@ -45,6 +51,84 @@ function identity(record: RecordValue): { pokemonId: number; displayName: string
 
 function emptyMoves(): PokemonMovePools {
   return { fast: [], charged: [], eliteFast: [], eliteCharged: [] };
+}
+
+function normalizeMoveCatalog(value: unknown): Map<string, PokemonMoveReference> {
+  if (!Array.isArray(value)) return new Map();
+  const moves = value.flatMap((item): PokemonMoveReference[] => {
+    const record = asRecord(item);
+    const name = asString(record?.name);
+    if (!name) return [];
+    return [{
+      name,
+      moveId: asNumber(record?.move_id),
+      type: asString(record?.type),
+      power: asNumber(record?.power),
+      energyDelta: asNumber(record?.energy_delta),
+      durationMs: asNumber(record?.duration),
+    }];
+  });
+  return new Map(moves.map((move) => [move.name, move]));
+}
+
+function moveDetailsForNames(names: string[], catalog: Map<string, PokemonMoveReference>): PokemonMoveReference[] {
+  return names.map((name) => catalog.get(name) ?? { name });
+}
+
+function normalizeTypeEffectiveness(value: unknown): Record<string, Record<string, number>> {
+  const root = asRecord(value);
+  if (!root) return {};
+  return Object.fromEntries(
+    Object.entries(root).flatMap(([attackType, values]) => {
+      const record = asRecord(values);
+      if (!record) return [];
+      const matchups = Object.fromEntries(
+        Object.entries(record).flatMap(([defenderType, multiplier]) => {
+          const parsed = asNumber(multiplier);
+          return parsed === undefined ? [] : [[defenderType, parsed]];
+        }),
+      );
+      return Object.keys(matchups).length > 0 ? [[attackType, matchups]] : [];
+    }),
+  );
+}
+
+function typeMatchups(
+  defenderTypes: string[],
+  effectiveness: Record<string, Record<string, number>>,
+): PokemonTypeMatchup[] {
+  return Object.keys(effectiveness)
+    .map((attackType) => ({
+      attackType,
+      multiplier: defenderTypes.reduce(
+        (total, defenderType) => total * (effectiveness[attackType]?.[defenderType] ?? 1),
+        1,
+      ),
+    }))
+    .filter((matchup) => matchup.multiplier !== 1)
+    .sort((left, right) => right.multiplier - left.multiplier || left.attackType.localeCompare(right.attackType));
+}
+
+export function normalizePokemonBattleReference(
+  payload: PokemonReferencePayload,
+  types: string[],
+  moves: PokemonMovePools,
+): PokemonBattleReference {
+  const fastCatalog = normalizeMoveCatalog(payload.fastMoves);
+  const chargedCatalog = normalizeMoveCatalog(payload.chargedMoves);
+  const effectiveness = normalizeTypeEffectiveness(payload.typeEffectiveness);
+  const matchups = typeMatchups(types, effectiveness);
+
+  return {
+    weaknesses: matchups.filter((matchup) => matchup.multiplier > 1),
+    resistances: matchups.filter((matchup) => matchup.multiplier < 1),
+    moveDetails: {
+      fast: moveDetailsForNames(moves.fast, fastCatalog),
+      charged: moveDetailsForNames(moves.charged, chargedCatalog),
+      eliteFast: moveDetailsForNames(moves.eliteFast, fastCatalog),
+      eliteCharged: moveDetailsForNames(moves.eliteCharged, chargedCatalog),
+    },
+  };
 }
 
 function sameArray(left: string[], right: string[]): boolean {

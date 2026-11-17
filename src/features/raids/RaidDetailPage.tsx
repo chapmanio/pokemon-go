@@ -17,6 +17,15 @@ function formatUpdatedAt(provenance: RaidProvenance): string | undefined {
   return date.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
 }
 
+function pokedexUrl(detail: RaidBossDetailResult): string | undefined {
+  if (typeof detail.speciesId !== "number") return undefined;
+  const rawForm = detail.formId?.trim();
+  const form = !rawForm || rawForm.toLowerCase() === detail.displayName.toLowerCase() || rawForm.toLowerCase() === "normal"
+    ? "normal"
+    : rawForm.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return `/pokedex/${detail.speciesId}:${form}`;
+}
+
 function DetailStatus({ detail }: { detail: RaidBossDetailResult }) {
   const status = freshnessCopy[detail.freshness];
   const updatedAt = formatUpdatedAt(detail.provenance);
@@ -85,6 +94,8 @@ function DisagreementDisclosure({ detail }: { detail: RaidBossDetailResult }) {
 }
 
 function RaidOverview({ detail }: { detail: RaidBossDetailResult }) {
+  const pokemonLink = pokedexUrl(detail);
+
   return (
     <section className="detail-panel">
       <h2>Overview</h2>
@@ -126,6 +137,7 @@ function RaidOverview({ detail }: { detail: RaidBossDetailResult }) {
           </div>
         )}
       </dl>
+      {pokemonLink && <p><a href={pokemonLink}>Open this Pokémon in the Pokédex</a></p>}
       <SourceDisclosure detail={detail} />
       <DisagreementDisclosure detail={detail} />
     </section>

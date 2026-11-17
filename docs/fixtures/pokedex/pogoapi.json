@@ -50,5 +50,55 @@
       "elite_fast_moves": [],
       "elite_charged_moves": []
     }
-  ]
+  ],
+  "fastMoves": [
+    {
+      "move_id": 201,
+      "name": "Thunder Shock",
+      "power": 5,
+      "duration": 500,
+      "energy_delta": 8,
+      "type": "Electric"
+    },
+    {
+      "move_id": 202,
+      "name": "Volt Switch",
+      "power": 12,
+      "duration": 1600,
+      "energy_delta": 16,
+      "type": "Electric"
+    }
+  ],
+  "chargedMoves": [
+    {
+      "move_id": 301,
+      "name": "Wild Charge",
+      "power": 90,
+      "duration": 2600,
+      "energy_delta": -50,
+      "type": "Electric"
+    },
+    {
+      "move_id": 302,
+      "name": "Thunder Punch",
+      "power": 55,
+      "duration": 1800,
+      "energy_delta": -40,
+      "type": "Electric"
+    }
+  ],
+  "typeEffectiveness": {
+    "Ground": {
+      "Electric": 1.6,
+      "Psychic": 1
+    },
+    "Dark": {
+      "Electric": 1,
+      "Psychic": 1.6
+    },
+    "Electric": {
+      "Electric": 0.625,
+      "Psychic": 1
+    }
+  }
 }

@@ -9,6 +9,8 @@ This glossary is the shared vocabulary for product decisions, source adapters, t
 - **Pokédex number** — The list-level identity for a Pokémon species. The app shows one Pokédex entry per number.
 - **Pokémon form** — A regional, battle, costume, pattern, or event variant nested under its Pokédex number. A form may share or change the species' gameplay data.
 - **Functional difference** — A data-driven indication that a form differs from the default form in moves, types, stats, or more than one of those fields. Equivalent forms remain retained but are not separate list entries.
+- **Battle reference** — Generic Pokémon GO information that helps explain a Pokémon in battle: weaknesses, resistances, and move metadata. It is not a personal team recommendation or a battle simulation.
+- **Type matchup** — The multiplier produced when an attack type is used against a defending Pokémon's type or types.
 - **Event** — A time-bounded Pokémon GO activity or content change, such as Community Day, a raid rotation, a bonus, or a featured Pokémon.
 
 ## Raids

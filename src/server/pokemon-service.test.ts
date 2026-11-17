@@ -7,6 +7,9 @@ const hashes = {
   "pokemon_stats.json": { hash_sha256: "stats-hash" },
   "pokemon_types.json": { hash_sha256: "types-hash" },
   "current_pokemon_moves.json": { hash_sha256: "moves-hash" },
+  "fast_moves.json": { hash_sha256: "fast-moves-hash" },
+  "charged_moves.json": { hash_sha256: "charged-moves-hash" },
+  "type_effectiveness.json": { hash_sha256: "type-effectiveness-hash" },
 };
 
 function createFetcher(options: { fail?: boolean; payload?: typeof fixture } = {}): typeof fetch {
@@ -20,7 +23,13 @@ function createFetcher(options: { fail?: boolean; payload?: typeof fixture } = {
         ? payload.stats
         : url.endsWith("pokemon_types.json")
           ? payload.types
-          : payload.moves;
+          : url.endsWith("current_pokemon_moves.json")
+            ? payload.moves
+            : url.endsWith("fast_moves.json")
+              ? payload.fastMoves
+              : url.endsWith("charged_moves.json")
+                ? payload.chargedMoves
+                : payload.typeEffectiveness;
     return new Response(JSON.stringify(value), { status: 200 });
   }) as typeof fetch;
 }
@@ -41,6 +50,8 @@ describe("Pokédex service", () => {
     expect(detail?.displayName).toBe("Pikachu");
     expect(detail?.freshness).toBe("fresh");
     expect(detail?.forms).toHaveLength(1);
+    expect(detail?.battle.moveDetails.fast[0]).toMatchObject({ name: "Thunder Shock", type: "Electric", power: 5 });
+    expect(detail?.battle.weaknesses).toEqual([{ attackType: "Ground", multiplier: 1.6 }]);
   });
 
   it("returns one list entry per number while retaining all forms in detail", async () => {

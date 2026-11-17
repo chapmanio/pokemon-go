@@ -586,8 +586,32 @@ button:disabled {
 }
 
 .move-group li {
+  align-items: baseline;
   border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
   padding: 0.35rem 0;
+}
+
+.move-meta {
+  color: #64748b;
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+.battle-matchups {
+  margin-bottom: 1rem;
+}
+
+.battle-matchups:last-child {
+  margin-bottom: 0;
+}
+
+.battle-matchups h3 {
+  color: #475569;
+  font-size: 0.9rem;
+  margin-bottom: 0.6rem;
 }
 
 .type-pills {

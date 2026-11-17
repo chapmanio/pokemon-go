@@ -38,6 +38,22 @@ MoveReference {
 Moves and Pokémon are reference data. They do not contain a user's owned
 Pokémon, levels, movesets, or inventory.
 
+### Pokémon battle reference
+
+```text
+PokemonBattleReference {
+  weaknesses[], resistances[], move_details
+}
+
+TypeMatchup {
+  attack_type, multiplier
+}
+```
+
+This is generic explanatory data derived from the Pokémon's form types, the
+PoGoAPI type-effectiveness table, and move metadata. It must not be presented as
+an exact raid simulation or a recommendation based on a user's collection.
+
 ## Current-content entities
 
 ### Raid boss

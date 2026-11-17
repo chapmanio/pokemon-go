@@ -22,6 +22,33 @@ export interface PokemonMovePools {
   eliteCharged: string[];
 }
 
+export interface PokemonMoveReference {
+  name: string;
+  moveId?: number;
+  type?: string;
+  power?: number;
+  energyDelta?: number;
+  durationMs?: number;
+}
+
+export interface PokemonMoveDetails {
+  fast: PokemonMoveReference[];
+  charged: PokemonMoveReference[];
+  eliteFast: PokemonMoveReference[];
+  eliteCharged: PokemonMoveReference[];
+}
+
+export interface PokemonTypeMatchup {
+  attackType: string;
+  multiplier: number;
+}
+
+export interface PokemonBattleReference {
+  weaknesses: PokemonTypeMatchup[];
+  resistances: PokemonTypeMatchup[];
+  moveDetails: PokemonMoveDetails;
+}
+
 export type PokemonFunctionalDifference = "none" | "moves" | "types" | "stats" | "multiple";
 
 export interface PokemonReference {
@@ -67,6 +94,7 @@ export interface PokemonListResult {
 
 export interface PokemonDetailResult extends PokemonReference {
   forms: PokemonFormSummary[];
+  battle: PokemonBattleReference;
   freshness: Freshness;
   warnings: string[];
 }

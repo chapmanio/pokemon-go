@@ -1,12 +1,13 @@
 import type {
   Freshness,
+  PokemonBattleReference,
   PokemonDetailResult,
   PokemonFormSummary,
   PokemonListEntry,
   PokemonListResult,
   PokemonReference,
 } from "../domain/pokemon";
-import { annotatePokemonReferences, normalizePokemonReference } from "./pokemon-normalizer";
+import { annotatePokemonReferences, normalizePokemonBattleReference, normalizePokemonReference } from "./pokemon-normalizer";
 import {
   fetchPokemonSourcePayload,
   pokemonProvenance,
@@ -68,6 +69,15 @@ function formSummary(entry: PokemonReference): PokemonFormSummary {
     assetUrl: entry.assetUrl,
     functionalDifference: entry.functionalDifference,
   };
+}
+
+function battleReference(snapshot: StoredPokemonSnapshot, entry: PokemonReference): PokemonBattleReference {
+  return normalizePokemonBattleReference(snapshot.raw, entry.types, entry.moves ?? {
+    fast: [],
+    charged: [],
+    eliteFast: [],
+    eliteCharged: [],
+  });
 }
 
 function listEntries(snapshot: StoredPokemonSnapshot): PokemonListEntry[] {
@@ -174,13 +184,15 @@ export function createPokemonService({ store, fetcher = fetch, now = () => new D
       const lastAttempt = previous ? new Date(previous.lastAttemptAt).getTime() : 0;
       const eligible = options.forceRefresh || !previous || currentTime.getTime() - lastAttempt >= REFRESH_COOLDOWN_MS;
       const snapshot = eligible ? await refreshSnapshot(previous, currentTime, fetcher, store) : previous;
-      const entries = snapshot ? snapshotEntries(snapshot) : [];
+      if (!snapshot) return undefined;
+      const entries = snapshotEntries(snapshot);
       const entry = entries.find((candidate) => candidate.pokemonKey === pokemonKey);
       if (!entry) return undefined;
       const forms = formsFor(entries, entry.pokemonId);
       return {
         ...entry,
         forms: forms.map(formSummary),
+        battle: battleReference(snapshot, entry),
         freshness: snapshotFreshness(snapshot, currentTime),
         warnings: snapshot?.error ? ["The cached Pokédex is being served because the source refresh failed"] : [],
       };

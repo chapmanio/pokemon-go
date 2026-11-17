@@ -7,7 +7,7 @@ costume, pattern and event forms under that number. Search matches species,
 form labels and numbers. Use detail sections for:
 
 - Overview: types, forms, stats and CP.
-- Battle: moves, roles, weaknesses and raid relevance.
+- Battle: move metadata, weaknesses, resistances and raid relevance.
 - Evolution: family, candy, items and power-up information.
 - Availability: shiny, raid, egg, research, Rocket and other sources.
 
