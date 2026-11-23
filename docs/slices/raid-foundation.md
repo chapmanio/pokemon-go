@@ -79,7 +79,7 @@ Optional fields must remain optional when a source does not provide them. Do not
 - The detail view allows retrying an unavailable boss and distinguishes a rotated-out boss from a general load failure.
 - The detail view shows source-level differences for important fields when valid sources disagree.
 - Counter guidance remains source-based, shows attack types, and adds a small generic shortlist when the cached Pokédex can resolve matching moves.
-- Counter suggestions link to the relevant form-aware Pokédex detail and are labelled as examples rather than rankings or personal-team recommendations.
+- Counter suggestions link to the relevant form-aware Pokédex detail, separate stronger generic matches from other effective alternatives, and explain that the groups are not personal-team recommendations or exact rankings.
 - The estimate section shows the capable-trainer count and the four-trainer Party Play check without configuration controls.
 - Missing source battle estimates produce an explicit Unknown state.
 - No authentication or personal roster data is required.

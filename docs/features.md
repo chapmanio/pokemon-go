@@ -19,7 +19,7 @@ Each raid should support:
 
 - Capable-trainer estimate: the approximate whole number of capable trainers needed.
 - Party-of-four check: whether four capable trainers using Party Play are likely to be enough.
-- Counter guidance: recommended Pokémon and move types, with accessible alternatives.
+- Counter guidance: recommended Pokémon and move types, with generic alternatives and short trade-off explanations.
 
 Do not require users to maintain individual Pokémon teams.
 

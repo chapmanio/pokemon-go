@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Freshness, RaidBossDetailResult, RaidProvenance } from "../../domain/raid";
 import { fetchRaidBoss, RaidApiError } from "../../client/raid-api";
-import { formatCpRange, sourceLabel } from "./raid-list";
+import { formatCpRange, groupCounterSuggestions, sourceLabel } from "./raid-list";
 import { estimateRaid } from "./raid-estimate";
 import ShinyIndicator from "../shared/ShinyIndicator";
 
@@ -147,6 +147,7 @@ function RaidOverview({ detail }: { detail: RaidBossDetailResult }) {
 
 function CounterGuidance({ detail }: { detail: RaidBossDetailResult }) {
   const suggestions = detail.counterSuggestions ?? [];
+  const suggestionGroups = groupCounterSuggestions(suggestions);
 
   return (
     <section className="detail-panel">
@@ -163,22 +164,32 @@ function CounterGuidance({ detail }: { detail: RaidBossDetailResult }) {
           {suggestions.length > 0 ? (
             <>
               <p>Generic Pokémon examples that can use these attack types:</p>
-              <div className="counter-suggestion-grid">
-                {suggestions.map((suggestion) => (
-                  <article className="counter-suggestion" key={suggestion.pokemonKey}>
-                    {suggestion.assetUrl && <img className="counter-suggestion__image" src={suggestion.assetUrl} alt="" loading="lazy" />}
-                    <div>
-                      <h3>
-                        <a href={`/pokedex/${encodeURIComponent(suggestion.pokemonKey)}`}>{suggestion.displayName}</a>
-                      </h3>
-                      {suggestion.formId.toLowerCase() !== "normal" && <p className="counter-suggestion__form">{suggestion.formId.replace(/_/g, " ")}</p>}
-                      <p className="counter-suggestion__types">{suggestion.types.join(" · ") || "Type not listed"}</p>
-                      <p className="counter-suggestion__moves">Moves: {suggestion.matchingMoves.join(", ")}</p>
+              <div className="counter-suggestion-groups">
+                {suggestionGroups.map((group) => (
+                  <section className="counter-suggestion-group" key={group.key}>
+                    <div className="counter-suggestion-group__heading">
+                      <h3>{group.label}</h3>
+                      <p>{group.detail}</p>
                     </div>
-                  </article>
+                    <div className="counter-suggestion-grid">
+                      {group.suggestions.map((suggestion) => (
+                        <article className="counter-suggestion" key={suggestion.pokemonKey}>
+                          {suggestion.assetUrl && <img className="counter-suggestion__image" src={suggestion.assetUrl} alt="" loading="lazy" />}
+                          <div>
+                            <h4>
+                              <a href={`/pokedex/${encodeURIComponent(suggestion.pokemonKey)}`}>{suggestion.displayName}</a>
+                            </h4>
+                            {suggestion.formId.toLowerCase() !== "normal" && <p className="counter-suggestion__form">{suggestion.formId.replace(/_/g, " ")}</p>}
+                            <p className="counter-suggestion__types">{suggestion.types.join(" · ") || "Type not listed"}</p>
+                            <p className="counter-suggestion__moves">Moves: {suggestion.matchingMoves.join(", ")}</p>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
                 ))}
               </div>
-              <p className="detail-panel__note">These are generic examples, not a ranking or a recommendation based on anyone’s collection.</p>
+              <p className="detail-panel__note">These are generic examples, not recommendations based on anyone’s collection. The ordering is a cached-data match, not a battle simulation or exact ranking.</p>
             </>
           ) : (
             <p className="detail-panel__note">Matching Pokémon examples are not available from the current Pokédex snapshot.</p>

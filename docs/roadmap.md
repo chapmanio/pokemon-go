@@ -29,9 +29,8 @@
 
 ## Phase 4: deeper guidance
 
-- Add evolution and power-up planning.
 - Add richer raid alternatives and explanations.
-- Add source disagreement and change history.
+- Optionally add a low-visibility source change log linked from the footer.
 
 ## Completion rule
 

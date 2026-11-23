@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { RaidBoss } from "../../domain/raid";
-import { formatCpRange, groupRaidsByTier } from "./raid-list";
+import { formatCpRange, groupCounterSuggestions, groupRaidsByTier } from "./raid-list";
 
 function boss(tier: RaidBoss["tier"], displayName: string): RaidBoss {
   return {
@@ -38,5 +38,26 @@ describe("raid list helpers", () => {
   it("formats optional catch CP ranges", () => {
     expect(formatCpRange({ min: 1_234, max: 2_345 })).toBe("1,234–2,345 CP");
     expect(formatCpRange()).toBeUndefined();
+  });
+
+  it("separates the strongest counter matches from alternatives", () => {
+    const suggestions = Array.from({ length: 5 }, (_, index) => ({
+      pokemonKey: `pokemon-${index}`,
+      pokemonId: index + 1,
+      displayName: `Pokémon ${index}`,
+      formId: "normal",
+      types: ["Ground"],
+      matchingMoveTypes: ["Ground"],
+      matchingMoves: ["Mud Shot"],
+    }));
+
+    const groups = groupCounterSuggestions(suggestions);
+
+    expect(groups.map((group) => group.key)).toEqual(["primary", "alternative"]);
+    expect(groups[0].suggestions).toHaveLength(3);
+    expect(groups[1].suggestions.map((suggestion) => suggestion.displayName)).toEqual([
+      "Pokémon 3",
+      "Pokémon 4",
+    ]);
   });
 });

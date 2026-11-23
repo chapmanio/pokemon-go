@@ -1,9 +1,17 @@
+import type { PokemonCounterCandidate } from "../../domain/pokemon";
 import type { RaidBoss, RaidTier } from "../../domain/raid";
 
 export interface RaidTierGroup {
   tier: RaidTier;
   label: string;
   bosses: RaidBoss[];
+}
+
+export interface CounterSuggestionGroup {
+  key: "primary" | "alternative";
+  label: string;
+  detail: string;
+  suggestions: PokemonCounterCandidate[];
 }
 
 function tierSortValue(tier: RaidTier): number {
@@ -34,6 +42,25 @@ export function groupRaidsByTier(bosses: RaidBoss[]): RaidTierGroup[] {
 export function formatCpRange(range?: { min: number; max: number }): string | undefined {
   if (!range) return undefined;
   return `${range.min.toLocaleString()}–${range.max.toLocaleString()} CP`;
+}
+
+export function groupCounterSuggestions(suggestions: PokemonCounterCandidate[]): CounterSuggestionGroup[] {
+  const groups: CounterSuggestionGroup[] = [
+    {
+      key: "primary",
+      label: "Strong generic options",
+      detail: "The strongest matches in the cached Pokédex based on attack types and move coverage.",
+      suggestions: suggestions.slice(0, 3),
+    },
+    {
+      key: "alternative",
+      label: "Other effective options",
+      detail: "Other Pokémon with matching moves. They may trade off damage, availability or durability.",
+      suggestions: suggestions.slice(3),
+    },
+  ];
+
+  return groups.filter((group) => group.suggestions.length > 0);
 }
 
 export function sourceLabel(source: string): string {

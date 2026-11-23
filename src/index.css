@@ -101,11 +101,15 @@ h1 {
 
 .status-panel {
   align-items: flex-start;
-  background: #eff6ff;
-  border-color: #bfdbfe;
+  background: transparent;
+  border-color: #e2e8f0;
+  border-radius: 0;
+  border-width: 0 0 1px;
   display: flex;
   gap: 1rem;
   justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding: 0.45rem 0 0.65rem;
 }
 
 .status-panel p,
@@ -115,31 +119,47 @@ h1 {
 }
 
 .status-panel__label {
-  font-weight: 800;
+  color: #475569;
+  font-size: 0.8rem;
+  font-weight: 700;
   margin-bottom: 0.25rem !important;
 }
 
+.status-panel > div > p:not(.status-panel__label) {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
 .status-panel__time {
-  color: #475569;
-  font-size: 0.875rem;
+  color: #94a3b8;
+  font-size: 0.75rem;
   text-align: right;
 }
 
 .status-panel--stale,
 .status-panel--degraded {
-  background: #fffbeb;
-  border-color: #fde68a;
+  background: transparent;
+  border-color: #fcd34d;
 }
 
-.status-panel--unavailable,
+.status-panel--unavailable {
+  background: transparent;
+  border-color: #fca5a5;
+}
+
 .error-panel {
   background: #fef2f2;
   border-color: #fecaca;
 }
 
 .warning-panel {
-  background: #fff7ed;
-  border-color: #fed7aa;
+  background: transparent;
+  border: 0;
+  border-left: 3px solid #fdba74;
+  border-radius: 0;
+  color: #64748b;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.75rem;
 }
 
 .warning-panel ul {
@@ -162,6 +182,11 @@ h1 {
   color: #64748b;
   font-size: 0.875rem;
   margin: 0;
+}
+
+.roster-summary p + p {
+  color: #94a3b8;
+  font-size: 0.75rem;
 }
 
 .pokedex-toolbar {
@@ -712,6 +737,27 @@ button:disabled {
   margin: 0.75rem 0;
 }
 
+.counter-suggestion-groups {
+  display: grid;
+  gap: 1rem;
+}
+
+.counter-suggestion-group__heading {
+  margin-bottom: 0.45rem;
+}
+
+.counter-suggestion-group__heading h3 {
+  color: #334155;
+  font-size: 0.95rem;
+  margin-bottom: 0.15rem;
+}
+
+.counter-suggestion-group__heading p {
+  color: #64748b;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
 .counter-suggestion {
   align-items: center;
   background: #f8fafc;
@@ -732,12 +778,12 @@ button:disabled {
   width: 3rem;
 }
 
-.counter-suggestion h3 {
+.counter-suggestion h4 {
   font-size: 0.95rem;
   margin-bottom: 0.15rem;
 }
 
-.counter-suggestion h3 a {
+.counter-suggestion h4 a {
   color: #1d4ed8;
 }
 
@@ -900,6 +946,7 @@ button:disabled {
 
 .detail-panel__note {
   color: #475569;
+  font-size: 0.85rem;
   margin-bottom: 0;
 }
 
