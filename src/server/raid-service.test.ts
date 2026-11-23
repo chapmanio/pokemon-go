@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { RaidBoss } from "../domain/raid";
 import leekDuckFixture from "../../docs/fixtures/raid/leekduck.json";
 import pogoApiFixture from "../../docs/fixtures/raid/pogoapi.json";
 import { createMemorySnapshotStore } from "./snapshot-store";
@@ -53,6 +54,44 @@ describe("raid service", () => {
       "pogoapi",
     ]);
     expect(result.warnings).toEqual([]);
+  });
+
+  it("retains counter guidance and battle estimates from a secondary source", async () => {
+    const adapter = (
+      source: "leekduck" | "pokemon-go-api",
+      values: Partial<Pick<RaidBoss, "counterTypes" | "counterSource" | "battleEstimator">>,
+    ): RaidSourceAdapter => ({
+      source,
+      endpoint: `${source}.json`,
+      sourceUrl: `https://${source}.example.test/raids.json`,
+      fetchPayload: async () => ({}),
+      normalize: (_payload, provenance) => [{
+        raidBossId: source === "leekduck" ? "mega-banette:normal:mega:normal" : "mega-banette:mega:mega:normal",
+        speciesId: source === "leekduck" ? undefined : "354",
+        displayName: "Mega Banette",
+        tier: "mega",
+        isShadow: false,
+        types: ["Ghost"],
+        provenance,
+        sourceReferences: [provenance],
+        ...values,
+      }],
+    });
+
+    const result = await createRaidService({
+      store: createMemorySnapshotStore(),
+      adapters: [
+        adapter("leekduck", {}),
+        adapter("pokemon-go-api", { counterTypes: ["Dark", "Ghost"], counterSource: "pokemon-go-api", battleEstimator: 1.219 }),
+      ],
+      now: () => new Date("2026-10-27T12:00:00.000Z"),
+    }).getRaids();
+
+    expect(result.bosses[0]).toMatchObject({
+      counterTypes: ["Dark", "Ghost"],
+      counterSource: "pokemon-go-api",
+      battleEstimator: 1.219,
+    });
   });
 
   it("surfaces important field differences between sources", async () => {

@@ -113,6 +113,31 @@ function mergeKey(boss: RaidBoss): string {
   return `${displayIdentity}:${boss.tier}:${boss.isShadow ? "shadow" : "normal"}`;
 }
 
+function fallbackOptional<T>(primary: T | undefined, secondary: T | undefined): T | undefined {
+  if (Array.isArray(primary) && primary.length === 0) return secondary;
+  return primary ?? secondary;
+}
+
+function mergeBossFacts(primary: RaidBoss, secondary: RaidBoss): RaidBoss {
+  return {
+    ...primary,
+    speciesId: primary.speciesId ?? secondary.speciesId,
+    formId: primary.formId ?? secondary.formId,
+    shinyAvailable: primary.shinyAvailable ?? secondary.shinyAvailable,
+    types: primary.types.length > 0 ? primary.types : secondary.types,
+    catchCp: primary.catchCp ?? secondary.catchCp,
+    boostedCatchCp: primary.boostedCatchCp ?? secondary.boostedCatchCp,
+    boostedWeather: fallbackOptional(primary.boostedWeather, secondary.boostedWeather),
+    assetUrl: primary.assetUrl ?? secondary.assetUrl,
+    startsAt: primary.startsAt ?? secondary.startsAt,
+    endsAt: primary.endsAt ?? secondary.endsAt,
+    isLocalTime: primary.isLocalTime ?? secondary.isLocalTime,
+    battleEstimator: primary.battleEstimator ?? secondary.battleEstimator,
+    counterSource: primary.counterSource ?? secondary.counterSource,
+    counterTypes: fallbackOptional(primary.counterTypes, secondary.counterTypes),
+  };
+}
+
 const comparableFields: Array<{
   field: RaidDisagreementField;
   label: string;
@@ -176,6 +201,7 @@ function mergeBosses(snapshots: StoredRaidSnapshot[]): RaidBoss[] {
       }
 
       current.sourceBosses.push({ source: snapshot.source, boss });
+      current.boss = mergeBossFacts(current.boss, boss);
 
       for (const reference of sourceReferences) {
         if (!current.sourceReferences.some((item) => item.source === reference.source)) {
