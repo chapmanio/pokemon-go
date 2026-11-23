@@ -3,6 +3,7 @@ import type { Freshness, RaidBossDetailResult, RaidProvenance } from "../../doma
 import { fetchRaidBoss, RaidApiError } from "../../client/raid-api";
 import { formatCpRange, sourceLabel } from "./raid-list";
 import { estimateRaid } from "./raid-estimate";
+import ShinyIndicator from "../shared/ShinyIndicator";
 
 const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "This raid detail was recently fetched and validated." },
@@ -127,7 +128,7 @@ function RaidOverview({ detail }: { detail: RaidBossDetailResult }) {
         {detail.shinyAvailable !== undefined && (
           <div>
             <dt>Shiny</dt>
-            <dd>{detail.shinyAvailable ? "Available" : "Not listed"}</dd>
+            <dd><ShinyIndicator available={detail.shinyAvailable} /></dd>
           </div>
         )}
         {detail.isShadow && (

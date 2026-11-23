@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Freshness, RaidBoss, RaidRosterResult } from "../../domain/raid";
 import { fetchRaidRoster } from "../../client/raid-api";
 import { formatCpRange, groupRaidsByTier, sourceLabel } from "./raid-list";
+import ShinyIndicator from "../shared/ShinyIndicator";
 
 const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "The roster was recently fetched and validated." },
@@ -41,7 +42,7 @@ function RaidCard({ boss }: { boss: RaidBoss }) {
         {boss.shinyAvailable !== undefined && (
           <div>
             <dt>Shiny</dt>
-            <dd>{boss.shinyAvailable ? "Available" : "Not listed"}</dd>
+          <dd><ShinyIndicator available={boss.shinyAvailable} /></dd>
           </div>
         )}
       </dl>

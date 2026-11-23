@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { EggPool, EggPoolsResult } from "../../domain/egg";
 import type { Freshness } from "../../domain/raid";
 import { fetchEggPools } from "../../client/egg-api";
+import ShinyIndicator from "../shared/ShinyIndicator";
 
 const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "Egg pools were recently fetched and validated." },
@@ -26,7 +27,7 @@ function EggPoolSection({ pool }: { pool: EggPool }) {
       <div className="egg-grid">
         {pool.entries.map((entry) => <article className="egg-card" key={entry.name}>
           {entry.assetUrl ? <img src={entry.assetUrl} alt="" loading="lazy" /> : <div className="egg-card__image--empty" aria-hidden="true">?</div>}
-          <div><h3>{entry.name}</h3><p>{entry.rarityTier ? `Rarity tier ${entry.rarityTier}` : "Rarity not listed"}</p>{entry.shinyAvailable && <small>Shiny available</small>}</div>
+          <div><h3>{entry.name}</h3><p>{entry.rarityTier ? `Rarity tier ${entry.rarityTier}` : "Rarity not listed"}</p><ShinyIndicator available={entry.shinyAvailable} /></div>
         </article>)}
       </div>
     </section>

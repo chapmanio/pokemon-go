@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { EventDetailResult, EventFreshness } from "../../domain/event";
 import { fetchEvent } from "../../client/event-api";
 import { formatEventDate, groupRelatedBySection } from "./event-calendar";
+import ShinyIndicator from "../shared/ShinyIndicator";
 
 const freshnessCopy: Record<EventFreshness, string> = {
   fresh: "Fresh event data",
@@ -71,7 +72,7 @@ function EventDetails({ result }: { result: EventDetailResult }) {
             {group.items.map((item, index) => (
               <article className="event-reference" key={`${item.name}-${index}`}>
                 {item.assetUrl && <img src={item.assetUrl} alt="" loading="lazy" />}
-                <div><strong>{item.name}</strong>{item.shinyAvailable !== undefined && <small>{item.shinyAvailable ? "Shiny available" : "Shiny not listed"}</small>}</div>
+                <div><strong>{item.name}</strong>{item.shinyAvailable !== undefined && <ShinyIndicator available={item.shinyAvailable} />}</div>
               </article>
             ))}
           </div>
