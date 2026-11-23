@@ -1,3 +1,5 @@
+import type { PokemonCounterCandidate } from "./pokemon";
+
 export type RaidSource = "pogoapi" | "leekduck" | "pokemon-go-api";
 export type RaidTier = number | "mega";
 export type Freshness = "fresh" | "stale" | "degraded" | "unavailable";
@@ -71,6 +73,8 @@ export interface RaidRosterResult {
 }
 
 export interface RaidBossDetailResult extends RaidBoss {
+  counterSuggestions?: PokemonCounterCandidate[];
+  counterSuggestionsFreshness?: Freshness;
   freshness: Freshness;
   warnings: string[];
 }

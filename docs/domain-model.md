@@ -65,6 +65,11 @@ an associated event.
 Its canonical identity is the Pokémon species/form/variant plus tier and Shadow
 state. A raid rotation or time window is not part of the identity.
 
+Raid details may include generic `PokemonCounterCandidate` records resolved from
+the source counter types and the cached Pokédex. These are examples of Pokémon
+with matching attack types, not a user's team recommendation or a battle
+ranking.
+
 ### Battle estimate
 
 ```text

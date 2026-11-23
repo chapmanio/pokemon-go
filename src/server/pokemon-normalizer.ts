@@ -109,14 +109,13 @@ function typeMatchups(
     .sort((left, right) => right.multiplier - left.multiplier || left.attackType.localeCompare(right.attackType));
 }
 
-export function normalizePokemonBattleReference(
-  payload: PokemonReferencePayload,
+function battleReferenceFromCatalog(
   types: string[],
   moves: PokemonMovePools,
+  fastCatalog: Map<string, PokemonMoveReference>,
+  chargedCatalog: Map<string, PokemonMoveReference>,
+  effectiveness: Record<string, Record<string, number>>,
 ): PokemonBattleReference {
-  const fastCatalog = normalizeMoveCatalog(payload.fastMoves);
-  const chargedCatalog = normalizeMoveCatalog(payload.chargedMoves);
-  const effectiveness = normalizeTypeEffectiveness(payload.typeEffectiveness);
   const matchups = typeMatchups(types, effectiveness);
 
   return {
@@ -129,6 +128,28 @@ export function normalizePokemonBattleReference(
       eliteCharged: moveDetailsForNames(moves.eliteCharged, chargedCatalog),
     },
   };
+}
+
+export function createPokemonBattleReferenceNormalizer(payload: PokemonReferencePayload) {
+  const fastCatalog = normalizeMoveCatalog(payload.fastMoves);
+  const chargedCatalog = normalizeMoveCatalog(payload.chargedMoves);
+  const effectiveness = normalizeTypeEffectiveness(payload.typeEffectiveness);
+
+  return (types: string[], moves: PokemonMovePools): PokemonBattleReference => battleReferenceFromCatalog(
+    types,
+    moves,
+    fastCatalog,
+    chargedCatalog,
+    effectiveness,
+  );
+}
+
+export function normalizePokemonBattleReference(
+  payload: PokemonReferencePayload,
+  types: string[],
+  moves: PokemonMovePools,
+): PokemonBattleReference {
+  return createPokemonBattleReferenceNormalizer(payload)(types, moves);
 }
 
 function sameArray(left: string[], right: string[]): boolean {

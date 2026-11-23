@@ -56,7 +56,17 @@ async function handleApiRequest(request: Request, environment: Env): Promise<Res
       return jsonResponse({ error: "Raid boss not found", ...result }, 404);
     }
 
-    return jsonResponse({ ...boss, freshness: result.freshness, warnings: result.warnings });
+    const counterResult = boss.counterTypes && boss.counterTypes.length > 0
+      ? await createRuntimePokemonService(environment).getCounterCandidates(boss.counterTypes)
+      : undefined;
+
+    return jsonResponse({
+      ...boss,
+      counterSuggestions: counterResult?.candidates ?? [],
+      counterSuggestionsFreshness: counterResult?.freshness,
+      freshness: result.freshness,
+      warnings: [...result.warnings, ...(counterResult?.warnings ?? [])],
+    });
   }
 
   return jsonResponse({ error: "Not found" }, 404);

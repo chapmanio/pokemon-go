@@ -145,6 +145,8 @@ function RaidOverview({ detail }: { detail: RaidBossDetailResult }) {
 }
 
 function CounterGuidance({ detail }: { detail: RaidBossDetailResult }) {
+  const suggestions = detail.counterSuggestions ?? [];
+
   return (
     <section className="detail-panel">
       <h2>Counters</h2>
@@ -155,8 +157,31 @@ function CounterGuidance({ detail }: { detail: RaidBossDetailResult }) {
             {detail.counterTypes.map((type) => <span className="type-pill" key={type}>{type}</span>)}
           </div>
           <p className="detail-panel__note">
-            This is source-based type guidance from {detail.counterSource ? sourceLabel(detail.counterSource) : "the current raid data"}. Specific Pokémon and moves will be added when a trusted counter response is available.
+            This is source-based type guidance from {detail.counterSource ? sourceLabel(detail.counterSource) : "the current raid data"}.
           </p>
+          {suggestions.length > 0 ? (
+            <>
+              <p>Generic Pokémon examples that can use these attack types:</p>
+              <div className="counter-suggestion-grid">
+                {suggestions.map((suggestion) => (
+                  <article className="counter-suggestion" key={suggestion.pokemonKey}>
+                    {suggestion.assetUrl && <img className="counter-suggestion__image" src={suggestion.assetUrl} alt="" loading="lazy" />}
+                    <div>
+                      <h3>
+                        <a href={`/pokedex/${encodeURIComponent(suggestion.pokemonKey)}`}>{suggestion.displayName}</a>
+                      </h3>
+                      {suggestion.formId.toLowerCase() !== "normal" && <p className="counter-suggestion__form">{suggestion.formId.replace(/_/g, " ")}</p>}
+                      <p className="counter-suggestion__types">{suggestion.types.join(" · ") || "Type not listed"}</p>
+                      <p className="counter-suggestion__moves">Moves: {suggestion.matchingMoves.join(", ")}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <p className="detail-panel__note">These are generic examples, not a ranking or a recommendation based on anyone’s collection.</p>
+            </>
+          ) : (
+            <p className="detail-panel__note">Matching Pokémon examples are not available from the current Pokédex snapshot.</p>
+          )}
         </>
       ) : (
         <p className="detail-panel__note">Counter guidance is not available from the current raid sources.</p>

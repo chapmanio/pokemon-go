@@ -83,6 +83,20 @@ describe("Pokédex service", () => {
     expect(detail?.forms).toHaveLength(2);
   });
 
+  it("returns generic counter candidates from matching move types", async () => {
+    const service = createPokemonService({
+      store: createMemoryPokemonSnapshotStore(),
+      fetcher: createFetcher(),
+      now: () => new Date("2026-10-28T12:00:00.000Z"),
+    });
+
+    const result = await service.getCounterCandidates(["Electric"]);
+
+    expect(result.freshness).toBe("fresh");
+    expect(result.candidates.map((candidate) => candidate.displayName)).toEqual(["Raichu", "Pikachu"]);
+    expect(result.candidates[1]?.matchingMoves).toContain("Thunder Shock");
+  });
+
   it("retains last-known-good data after a refresh failure", async () => {
     const store = createMemoryPokemonSnapshotStore();
     const service = createPokemonService({

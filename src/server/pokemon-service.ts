@@ -1,13 +1,20 @@
 import type {
   Freshness,
   PokemonBattleReference,
+  PokemonCounterCandidate,
+  PokemonCounterCandidateResult,
   PokemonDetailResult,
   PokemonFormSummary,
   PokemonListEntry,
   PokemonListResult,
   PokemonReference,
 } from "../domain/pokemon";
-import { annotatePokemonReferences, normalizePokemonBattleReference, normalizePokemonReference } from "./pokemon-normalizer";
+import {
+  annotatePokemonReferences,
+  createPokemonBattleReferenceNormalizer,
+  normalizePokemonBattleReference,
+  normalizePokemonReference,
+} from "./pokemon-normalizer";
 import {
   fetchPokemonSourcePayload,
   pokemonProvenance,
@@ -78,6 +85,77 @@ function battleReference(snapshot: StoredPokemonSnapshot, entry: PokemonReferenc
     eliteFast: [],
     eliteCharged: [],
   });
+}
+
+function emptyMovePools(): NonNullable<PokemonReference["moves"]> {
+  return { fast: [], charged: [], eliteFast: [], eliteCharged: [] };
+}
+
+function counterCandidate(
+  entry: PokemonReference,
+  battle: PokemonBattleReference,
+  counterTypes: Set<string>,
+): { candidate: PokemonCounterCandidate; score: number } | undefined {
+  const moveDetails = [
+    ...battle.moveDetails.fast,
+    ...battle.moveDetails.charged,
+    ...battle.moveDetails.eliteFast,
+    ...battle.moveDetails.eliteCharged,
+  ];
+  const matchingMoves = [...new Map(
+    moveDetails
+      .filter((move) => move.type && counterTypes.has(move.type.toLowerCase()))
+      .map((move) => [move.name, move]),
+  ).values()];
+  if (matchingMoves.length === 0) return undefined;
+
+  const hasFastMatch = battle.moveDetails.fast.some((move) => move.type && counterTypes.has(move.type.toLowerCase()));
+  const hasChargedMatch = battle.moveDetails.charged.some((move) => move.type && counterTypes.has(move.type.toLowerCase()));
+  const score = (entry.stats?.attack ?? 0)
+    + (hasFastMatch ? 100 : 0)
+    + (hasChargedMatch ? 100 : 0)
+    + matchingMoves.length * 5
+    + (entry.formId.toLowerCase() === "normal" ? 1 : 0);
+
+  return {
+    score,
+    candidate: {
+      pokemonKey: entry.pokemonKey,
+      pokemonId: entry.pokemonId,
+      displayName: entry.displayName,
+      formId: entry.formId,
+      types: [...entry.types],
+      assetUrl: entry.assetUrl,
+      matchingMoveTypes: [...new Set(matchingMoves.flatMap((move) => move.type ? [move.type] : []))],
+      matchingMoves: matchingMoves.slice(0, 4).map((move) => move.name),
+    },
+  };
+}
+
+function counterCandidates(
+  snapshot: StoredPokemonSnapshot,
+  counterTypes: string[],
+): PokemonCounterCandidate[] {
+  const normalizedCounterTypes = new Set(counterTypes.map((type) => type.toLowerCase()));
+  if (normalizedCounterTypes.size === 0) return [];
+
+  const battleNormalizer = createPokemonBattleReferenceNormalizer(snapshot.raw);
+  const bestByPokemon = new Map<number, { candidate: PokemonCounterCandidate; score: number }>();
+  for (const entry of snapshotEntries(snapshot)) {
+    const candidate = counterCandidate(
+      entry,
+      battleNormalizer(entry.types, entry.moves ?? emptyMovePools()),
+      normalizedCounterTypes,
+    );
+    if (!candidate) continue;
+    const current = bestByPokemon.get(entry.pokemonId);
+    if (!current || candidate.score > current.score) bestByPokemon.set(entry.pokemonId, candidate);
+  }
+
+  return [...bestByPokemon.values()]
+    .sort((left, right) => right.score - left.score || left.candidate.pokemonId - right.candidate.pokemonId)
+    .slice(0, 6)
+    .map(({ candidate }) => candidate);
 }
 
 function listEntries(snapshot: StoredPokemonSnapshot): PokemonListEntry[] {
@@ -168,22 +246,25 @@ async function refreshSnapshot(
 }
 
 export function createPokemonService({ store, fetcher = fetch, now = () => new Date() }: PokemonServiceOptions) {
+  async function loadSnapshot(options: GetPokemonOptions): Promise<{ snapshot: StoredPokemonSnapshot | undefined; currentTime: Date }> {
+    const currentTime = now();
+    const previous = await store.get(SNAPSHOT_KEY);
+    const lastAttempt = previous ? new Date(previous.lastAttemptAt).getTime() : 0;
+    const eligible = options.forceRefresh || !previous || currentTime.getTime() - lastAttempt >= REFRESH_COOLDOWN_MS;
+    return {
+      snapshot: eligible ? await refreshSnapshot(previous, currentTime, fetcher, store) : previous,
+      currentTime,
+    };
+  }
+
   return {
     async getPokedex(options: GetPokemonOptions = {}): Promise<PokemonListResult> {
-      const currentTime = now();
-      const previous = await store.get(SNAPSHOT_KEY);
-      const lastAttempt = previous ? new Date(previous.lastAttemptAt).getTime() : 0;
-      const eligible = options.forceRefresh || !previous || currentTime.getTime() - lastAttempt >= REFRESH_COOLDOWN_MS;
-      const snapshot = eligible ? await refreshSnapshot(previous, currentTime, fetcher, store) : previous;
+      const { snapshot, currentTime } = await loadSnapshot(options);
       return resultFromSnapshot(snapshot, currentTime);
     },
 
     async getPokemon(pokemonKey: string, options: GetPokemonOptions = {}): Promise<PokemonDetailResult | undefined> {
-      const currentTime = now();
-      const previous = await store.get(SNAPSHOT_KEY);
-      const lastAttempt = previous ? new Date(previous.lastAttemptAt).getTime() : 0;
-      const eligible = options.forceRefresh || !previous || currentTime.getTime() - lastAttempt >= REFRESH_COOLDOWN_MS;
-      const snapshot = eligible ? await refreshSnapshot(previous, currentTime, fetcher, store) : previous;
+      const { snapshot, currentTime } = await loadSnapshot(options);
       if (!snapshot) return undefined;
       const entries = snapshotEntries(snapshot);
       const entry = entries.find((candidate) => candidate.pokemonKey === pokemonKey);
@@ -193,6 +274,18 @@ export function createPokemonService({ store, fetcher = fetch, now = () => new D
         ...entry,
         forms: forms.map(formSummary),
         battle: battleReference(snapshot, entry),
+        freshness: snapshotFreshness(snapshot, currentTime),
+        warnings: snapshot?.error ? ["The cached Pokédex is being served because the source refresh failed"] : [],
+      };
+    },
+
+    async getCounterCandidates(
+      counterTypes: string[],
+      options: GetPokemonOptions = {},
+    ): Promise<PokemonCounterCandidateResult> {
+      const { snapshot, currentTime } = await loadSnapshot(options);
+      return {
+        candidates: snapshot ? counterCandidates(snapshot, counterTypes) : [],
         freshness: snapshotFreshness(snapshot, currentTime),
         warnings: snapshot?.error ? ["The cached Pokédex is being served because the source refresh failed"] : [],
       };

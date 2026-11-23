@@ -1,6 +1,6 @@
 # Development process
 
-## Current stage: Pokédex battle foundation awaiting manual acceptance
+## Current stage: Generic raid counter suggestions awaiting manual acceptance
 
 Do not start feature implementation until the following are agreed:
 
@@ -20,10 +20,12 @@ finding, not speculative feature design.
 The raid foundation has passed automated checks and manual acceptance. The
 Pokédex foundation now has its first normalized PoGoAPI snapshot, list/detail
 API routes, searchable UI, one-entry-per-number grouping, retained form data,
-optional icon assets, and a generic battle reference. Manual acceptance should
-verify duplicate grouping, form selection, weaknesses, move metadata, image
-fallback, and freshness behaviour on desktop Firefox and Firefox for Android
-before extending the model.
+optional icon assets, and a generic battle reference. Raid details now resolve a
+small generic counter shortlist from the cached Pokédex when source counter
+types are available. Manual acceptance should verify the counter shortlist,
+Pokédex links, duplicate grouping, form selection, weaknesses, move metadata,
+image fallback, and freshness behaviour on desktop Firefox and Firefox for
+Android before extending the model.
 
 ## First vertical slice
 

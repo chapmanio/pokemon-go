@@ -49,6 +49,23 @@ export interface PokemonBattleReference {
   moveDetails: PokemonMoveDetails;
 }
 
+export interface PokemonCounterCandidate {
+  pokemonKey: string;
+  pokemonId: number;
+  displayName: string;
+  formId: string;
+  types: string[];
+  assetUrl?: string;
+  matchingMoveTypes: string[];
+  matchingMoves: string[];
+}
+
+export interface PokemonCounterCandidateResult {
+  candidates: PokemonCounterCandidate[];
+  freshness: Freshness;
+  warnings: string[];
+}
+
 export type PokemonFunctionalDifference = "none" | "moves" | "types" | "stats" | "multiple";
 
 export interface PokemonReference {
