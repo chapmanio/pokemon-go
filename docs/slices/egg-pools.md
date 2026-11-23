@@ -5,7 +5,7 @@
 Provide a simple generic reference for current Pokémon GO egg pools:
 
 1. Show each current egg group separately.
-2. Show distance, Pokémon, rarity tier and shiny availability.
+2. Show distance, Pokémon and shiny availability, grouped by relative rarity tier.
 3. Preserve groups with the same distance but different sources, such as gifts
    and Adventure Sync rewards.
 4. Show freshness and degraded-cache status.

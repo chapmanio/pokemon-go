@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { EggPool, EggPoolsResult } from "../../domain/egg";
+import type { EggPool, EggPoolEntry, EggPoolsResult } from "../../domain/egg";
 import type { Freshness } from "../../domain/raid";
 import { fetchEggPools } from "../../client/egg-api";
 import ShinyIndicator from "../shared/ShinyIndicator";
@@ -17,6 +17,39 @@ function formatUpdatedAt(asOf?: string): string | undefined {
   return Number.isNaN(date.getTime()) ? undefined : `Fetched ${date.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}`;
 }
 
+interface EggRarityGroup {
+  key: string;
+  label: string;
+  tier?: number;
+  entries: EggPoolEntry[];
+}
+
+function groupEntriesByRarity(entries: EggPoolEntry[]): EggRarityGroup[] {
+  const groups = new Map<string, EggRarityGroup>();
+
+  for (const entry of entries) {
+    const key = entry.rarityTier === undefined ? "unknown" : `tier-${entry.rarityTier}`;
+    const group = groups.get(key);
+    if (group) {
+      group.entries.push(entry);
+      continue;
+    }
+
+    groups.set(key, {
+      key,
+      label: entry.rarityTier === undefined ? "Rarity not listed" : `Rarity tier ${entry.rarityTier}`,
+      tier: entry.rarityTier,
+      entries: [entry],
+    });
+  }
+
+  return [...groups.values()].sort((first, second) => {
+    if (first.tier === undefined) return 1;
+    if (second.tier === undefined) return -1;
+    return first.tier - second.tier;
+  });
+}
+
 function EggPoolSection({ pool }: { pool: EggPool }) {
   return (
     <section className="egg-pool">
@@ -24,11 +57,16 @@ function EggPoolSection({ pool }: { pool: EggPool }) {
         <div><h2>{pool.displayName}</h2><p>{pool.hatchDistanceKm === null ? "Distance not specified" : `${pool.hatchDistanceKm} km hatch distance`}</p></div>
         <span>{pool.entries.length} Pokémon</span>
       </div>
-      <div className="egg-grid">
-        {pool.entries.map((entry) => <article className="egg-card" key={entry.name}>
-          {entry.assetUrl ? <img src={entry.assetUrl} alt="" loading="lazy" /> : <div className="egg-card__image--empty" aria-hidden="true">?</div>}
-          <div><h3>{entry.name}</h3><p>{entry.rarityTier ? `Rarity tier ${entry.rarityTier}` : "Rarity not listed"}</p><ShinyIndicator available={entry.shinyAvailable} /></div>
-        </article>)}
+      <div className="egg-rarity-groups">
+        {groupEntriesByRarity(pool.entries).map((group) => <section className="egg-rarity-group" key={group.key}>
+          <h3>{group.label}</h3>
+          <div className="egg-grid">
+            {group.entries.map((entry) => <article className="egg-card" key={entry.name}>
+              {entry.assetUrl ? <img src={entry.assetUrl} alt="" loading="lazy" /> : <div className="egg-card__image--empty" aria-hidden="true">?</div>}
+              <div><h4>{entry.name}</h4><ShinyIndicator available={entry.shinyAvailable} /></div>
+            </article>)}
+          </div>
+        </section>)}
       </div>
     </section>
   );
