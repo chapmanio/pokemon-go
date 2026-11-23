@@ -1,0 +1,26 @@
+{
+  "2 km Eggs": [
+    {
+      "name": "Pichu",
+      "shiny_available": true,
+      "asset_url": "https://cdn.example.test/pichu.png",
+      "hatch_distance": 2,
+      "rarity_tier": 1
+    },
+    {
+      "name": "Smoochum",
+      "shiny_available": false,
+      "asset_url": null,
+      "hatch_distance": 2,
+      "rarity_tier": 4
+    }
+  ],
+  "7 km Eggs (From Friend Gifts)": [
+    {
+      "name": "Galarian Meowth",
+      "shiny_available": true,
+      "asset_url": "https://cdn.example.test/meowth.png",
+      "hatch_distance": 7
+    }
+  ]
+}

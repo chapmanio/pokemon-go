@@ -25,7 +25,6 @@
 ## Phase 3: current-play tools — in progress
 
 - Add event calendar and event details.
-- Add Team GO Rocket lineups and counter guidance.
 - Add egg pools.
 
 ## Phase 4: deeper guidance

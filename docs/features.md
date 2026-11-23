@@ -9,7 +9,7 @@ form labels and numbers. Use detail sections for:
 - Overview: types, forms, stats and CP.
 - Battle: move metadata, weaknesses, resistances and raid relevance.
 - Evolution: family, candy, items and power-up information.
-- Availability: shiny, raid, egg, research, Rocket and other sources.
+- Availability: shiny, raid, egg, research and other sources.
 
 ## Raids
 
@@ -23,10 +23,6 @@ Each raid should support:
 
 Do not require users to maintain individual Pokémon teams.
 
-## Team GO Rocket
-
-Show current Leader, Giovanni and Grunt lineups with recommended counter types, Pokémon suggestions and short explanations.
-
 ## Eggs
 
 Keep this intentionally simple: show each egg distance/type and the Pokémon currently available from it. Show shiny availability and update time when available. Do not imply hatch odds unless a trusted source provides them.
@@ -37,7 +33,7 @@ Provide month, list and event-detail views. Show event name, category, start/end
 
 ## Shared behaviour
 
-- Global search covers Pokémon, raids, events, Rocket entries and egg species.
-- Pokémon pages are linked from raids, events, Rocket and eggs.
+- Global search covers Pokémon, raids, events and egg species.
+- Pokémon pages are linked from raids, events and eggs.
 - Current-data pages show last updated time and source status.
 - Raid estimates use one fixed, clearly labelled capable-trainer assumption and a four-trainer Party Play check; there are no per-user battle settings.

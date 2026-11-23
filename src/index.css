@@ -574,168 +574,6 @@ button:disabled {
   display: block;
 }
 
-.rocket-group {
-  margin-bottom: 2rem;
-}
-
-.rocket-group h2 {
-  color: #1e293b;
-  font-size: 1.35rem;
-  margin-bottom: 0.75rem;
-}
-
-.rocket-grid {
-  display: grid;
-  gap: 0.85rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-}
-
-.rocket-card,
-.rocket-detail__section {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 1rem;
-  box-shadow: 0 4px 16px rgb(15 23 42 / 5%);
-  padding: 1rem;
-}
-
-.rocket-card__heading,
-.rocket-slot__heading {
-  align-items: flex-start;
-  display: flex;
-  gap: 0.75rem;
-  justify-content: space-between;
-}
-
-.rocket-card__theme {
-  color: #64748b;
-  font-size: 0.75rem;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-  text-transform: uppercase;
-}
-
-.rocket-card h3 {
-  font-size: 1.05rem;
-  margin-bottom: 0;
-}
-
-.rocket-card h3 a {
-  color: #0f172a;
-  text-decoration: none;
-}
-
-.rocket-card h3 a:hover,
-.rocket-card h3 a:focus-visible {
-  color: #1d4ed8;
-  text-decoration: underline;
-}
-
-.rocket-card__count,
-.rocket-slot__heading span {
-  background: #dbeafe;
-  border-radius: 999px;
-  color: #1d4ed8;
-  flex: 0 0 auto;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 0.25rem 0.5rem;
-}
-
-.rocket-card__guidance,
-.rocket-card__encounter,
-.muted-note {
-  color: #475569;
-  font-size: 0.875rem;
-}
-
-.rocket-card__guidance {
-  margin: 0.75rem 0 0;
-}
-
-.rocket-card__encounter {
-  color: #166534;
-  font-size: 0.75rem;
-  font-weight: 700;
-  margin: 0.65rem 0 0;
-}
-
-.rocket-detail__heading {
-  padding-bottom: 1rem;
-}
-
-.rocket-detail__section {
-  margin: 1rem 0;
-}
-
-.rocket-detail__section h2 {
-  font-size: 1.25rem;
-  margin-bottom: 0.75rem;
-}
-
-.rocket-detail__section > p {
-  color: #475569;
-}
-
-.rocket-slots {
-  display: grid;
-  gap: 0.85rem;
-}
-
-.rocket-slot {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.75rem;
-  padding: 0.75rem;
-}
-
-.rocket-slot__heading h3 {
-  font-size: 1rem;
-  margin: 0;
-}
-
-.rocket-slot__pokemon {
-  display: grid;
-  gap: 0.55rem;
-  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-  margin-top: 0.75rem;
-}
-
-.rocket-pokemon {
-  align-items: center;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.65rem;
-  display: flex;
-  gap: 0.5rem;
-  min-width: 0;
-  padding: 0.5rem;
-}
-
-.rocket-pokemon img {
-  background: #eff6ff;
-  border-radius: 0.5rem;
-  flex: 0 0 2.5rem;
-  height: 2.5rem;
-  object-fit: contain;
-  width: 2.5rem;
-}
-
-.rocket-pokemon strong,
-.rocket-pokemon small {
-  display: block;
-}
-
-.rocket-pokemon strong {
-  font-size: 0.85rem;
-}
-
-.rocket-pokemon small {
-  color: #64748b;
-  font-size: 0.7rem;
-  margin-top: 0.15rem;
-}
-
 .event-reference strong {
   font-size: 0.875rem;
 }
@@ -744,6 +582,100 @@ button:disabled {
   color: #64748b;
   font-size: 0.75rem;
   margin-top: 0.15rem;
+}
+
+.egg-pool {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px rgb(15 23 42 / 5%);
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.egg-pool__heading {
+  align-items: flex-start;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.75rem;
+}
+
+.egg-pool__heading h2 {
+  color: #1e293b;
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.egg-pool__heading p {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.egg-pool__heading > span {
+  background: #dbeafe;
+  border-radius: 999px;
+  color: #1d4ed8;
+  flex: 0 0 auto;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0.55rem;
+}
+
+.egg-grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+}
+
+.egg-card {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  display: flex;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.65rem;
+}
+
+.egg-card img,
+.egg-card__image--empty {
+  background: #eff6ff;
+  border-radius: 0.6rem;
+  flex: 0 0 3rem;
+  height: 3rem;
+  object-fit: contain;
+  width: 3rem;
+}
+
+.egg-card__image--empty {
+  align-items: center;
+  color: #64748b;
+  display: flex;
+  font-size: 1.25rem;
+  justify-content: center;
+}
+
+.egg-card h3 {
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+.egg-card p,
+.egg-card small {
+  color: #64748b;
+  display: block;
+  font-size: 0.75rem;
+  margin: 0.15rem 0 0;
+}
+
+.egg-card small {
+  color: #166534;
+  font-weight: 700;
 }
 
 .counter-suggestion-grid {

@@ -244,7 +244,7 @@ export default function RaidDetailPage({ raidBossId }: { raidBossId: string }) {
           <a className="nav-link" href="/pokedex">Pokédex</a>
           <a className="nav-link nav-link--active" href="/raids">Raids</a>
           <a className="nav-link" href="/events">Events</a>
-          <a className="nav-link" href="/rocket">Rocket</a>
+          <a className="nav-link" href="/eggs">Eggs</a>
         </nav>
       </header>
 

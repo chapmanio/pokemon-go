@@ -1,6 +1,6 @@
 # Development process
 
-## Current stage: Team GO Rocket foundation awaiting manual acceptance
+## Current stage: Egg pools foundation awaiting manual acceptance
 
 Do not start feature implementation until the following are agreed:
 
@@ -37,12 +37,17 @@ The event calendar foundation has now passed automated checks and manual
 acceptance after deployment. Future calendar changes should preserve the
 accepted behaviour and be driven by adapter or fixture findings.
 
-The Team GO Rocket foundation now has a server-side Leak Duck adapter,
-manifest-based freshness detection, cached normalized member lineups, grouped
-list and detail routes, and derived generic Grunt counter suggestions. Manual
-acceptance should verify stale-source status, slot alternatives, encounter
-flags, Leader/Giovanni guidance, Grunt suggestions, direct detail URLs and
-Firefox for Android behaviour before expanding the model.
+The Team GO Rocket idea was removed after review because the available source
+produced mostly generic guidance without enough practical value. Its routes,
+adapter, cached model and product documentation were removed. Egg pools are
+now the current-play feature under implementation.
+
+The Egg Pools foundation now has a server-side Leak Duck adapter,
+manifest-based freshness detection, cached normalized groups, a simple pool
+view and source-aware rarity/shiny display. Manual acceptance should verify
+group labels, distance variants, duplicate Pokémon across groups, rarity
+labels, image fallback, stale/degraded behaviour and Firefox for Android
+before the slice is marked complete.
 
 ## First vertical slice
 

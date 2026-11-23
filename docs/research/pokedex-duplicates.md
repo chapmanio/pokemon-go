@@ -84,7 +84,7 @@ UI behaviour:
 5. Preserve equivalent form labels and provenance in the cached model so later image, availability, event, or collection features can use them.
 6. Add a normalisation test fixture covering Bulbasaur/Charmander, Pikachu, a regional form, and a multi-form pattern species. Assert that list output is unique by `pokemon_id` while detail data retains forms.
 
-This gives the requested one-entry-per-number behaviour without losing information that matters for raids, Rocket guidance, moves, or future event/costume features.
+This gives the requested one-entry-per-number behaviour without losing information that matters for raids, moves, or future event/costume features.
 
 ## Images
 

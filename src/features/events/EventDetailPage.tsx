@@ -34,7 +34,7 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
           <a className="nav-link" href="/pokedex">Pokédex</a>
           <a className="nav-link" href="/raids">Raids</a>
           <a className="nav-link nav-link--active" href="/events">Events</a>
-          <a className="nav-link" href="/rocket">Rocket</a>
+          <a className="nav-link" href="/eggs">Eggs</a>
         </nav>
       </header>
       <p className="back-link"><a href="/events">← Back to event calendar</a></p>

@@ -4,8 +4,7 @@ import PokedexListPage from "./features/pokedex/PokedexListPage";
 import PokedexDetailPage from "./features/pokedex/PokedexDetailPage";
 import EventCalendarPage from "./features/events/EventCalendarPage";
 import EventDetailPage from "./features/events/EventDetailPage";
-import RocketListPage from "./features/rocket/RocketListPage";
-import RocketDetailPage from "./features/rocket/RocketDetailPage";
+import EggPoolsPage from "./features/eggs/EggPoolsPage";
 
 export default function App() {
   const path = window.location.pathname.replace(/\/$/, "") || "/";
@@ -22,9 +21,10 @@ export default function App() {
     return <EventCalendarPage />;
   }
 
-  if (path === "/rocket") {
-    return <RocketListPage />;
+  if (path === "/eggs") {
+    return <EggPoolsPage />;
   }
+
 
   const pokedexDetailMatch = path.match(/^\/pokedex\/([^/]+)$/);
   if (pokedexDetailMatch) {
@@ -41,10 +41,6 @@ export default function App() {
     return <EventDetailPage eventId={decodeURIComponent(eventDetailMatch[1])} />;
   }
 
-  const rocketDetailMatch = path.match(/^\/rocket\/(.+)$/);
-  if (rocketDetailMatch) {
-    return <RocketDetailPage memberId={decodeURIComponent(rocketDetailMatch[1])} />;
-  }
 
   return (
     <main className="app-shell">

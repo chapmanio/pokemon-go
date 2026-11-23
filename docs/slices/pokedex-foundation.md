@@ -14,7 +14,7 @@ Provide a searchable, generic Pokémon GO reference from cached PoGoAPI data:
 
 - Personal Pokémon, inventory, or account integration.
 - Evolution planning, power-up planning, or battle rankings.
-- Shiny, egg, Rocket, and event availability until those sources are modelled.
+- Shiny, egg, and event availability until those sources are modelled.
 - Treating generic Pokémon data or any provider as official Niantic data.
 
 ## Source and storage

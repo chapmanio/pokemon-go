@@ -98,25 +98,23 @@ the source section, display name, optional asset and shiny flag. These are
 source references, not authoritative Pokémon or raid identities; resolve them
 only when an explicit safe match exists and retain unresolved names.
 
-### Egg pool and Rocket lineup
+### Egg pool
 
 These remain small feature-specific records for now. They reference
 `PokemonReference` by identity and carry their own source provenance. Do not
 create a general-purpose encounter model until the data requires it.
 
 ```text
-RocketMember {
-  member_id, display_name, kind, theme_type?, lineup[], counter_types[],
-  guidance, source, source_url, fetched_at, source_updated_at?, content_hash
+EggPool {
+  egg_pool_id, display_name, hatch_distance?, pokemon[],
+  source, source_url, fetched_at, source_updated_at?, content_hash
 }
 
-RocketSlot { slot, is_encounter, pokemons[] }
-RocketPokemon { name, asset_url?, shiny_available? }
+EggPokemon { name, rarity_tier?, shiny_available, asset_url? }
 ```
 
-Rocket slot candidates are alternatives, not a guaranteed battle sequence.
-Counter suggestions are derived separately from the cached Pokédex and must be
-labelled as generic guidance.
+Egg entries remain source references until a safe Pokédex identity match is
+available.
 
 ## Operational entities
 

@@ -36,18 +36,13 @@ Community-scraped data from Leek Duck:
 
 <https://github.com/pokelitee/leak-duck>
 
-Useful files include events, raid bosses, research tasks, egg pools and Rocket lineups. The published API includes a manifest with content hashes and change information. Scheduled updates may be delayed.
+Useful files include events, raid bosses, research tasks and egg pools. The published API includes a manifest with content hashes and change information. Scheduled updates may be delayed.
 
 The calendar uses `https://pokelitee.github.io/leak-duck/events.json` with
 `manifest.json` for the `events.json` SHA-256 and `updated_at` value. Event
 article URLs are the stable event identity; local-time event timestamps remain
 timezone-naive and must not be converted to UTC.
 
-The Team GO Rocket assistant uses
-`https://pokelitee.github.io/leak-duck/rocket_lineups.json` with the same
-manifest-based change detection. Its member keys and slot candidates do not
-include stable Pokémon IDs or counter data, so those facts remain source
-references and any counter guidance is explicitly derived by the app.
 
 ## PokéBattler
 
@@ -60,7 +55,7 @@ Use on demand through a backend adapter with aggressive caching. The API is unof
 ## Source policy
 
 - Prefer PoGoAPI for stable reference data.
-- Prefer leak-duck for event, egg, research and Rocket content.
+- Prefer leak-duck for event, egg and research content.
 - Cross-check raid rotations with a second source.
 - Treat all community feeds as replaceable and potentially stale.
 - Preserve source attribution and do not imply official Pokémon GO or Niantic endorsement.

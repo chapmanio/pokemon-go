@@ -49,7 +49,7 @@ requires them. The `SnapshotStore` interface keeps that change local.
 
 | Dataset | Eligibility cooldown | Fresh display state |
 | --- | ---: | --- |
-| Raids, events, eggs, Rocket | 30 minutes | Last successful fetch ≤ 2 hours |
+| Raids, events, eggs | 30 minutes | Last successful fetch ≤ 2 hours |
 | Pokémon and move reference data | 24 hours | Last successful fetch ≤ 48 hours |
 | PokéBattler counter result | On demand; cache 6 hours | Cache entry ≤ 6 hours |
 

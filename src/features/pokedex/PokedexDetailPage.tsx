@@ -96,7 +96,7 @@ export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }
           <a className="nav-link nav-link--active" href="/pokedex">Pokédex</a>
           <a className="nav-link" href="/raids">Raids</a>
           <a className="nav-link" href="/events">Events</a>
-          <a className="nav-link" href="/rocket">Rocket</a>
+          <a className="nav-link" href="/eggs">Eggs</a>
         </nav>
       </header>
 

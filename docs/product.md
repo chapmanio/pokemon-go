@@ -10,9 +10,8 @@ The app is for family use but does not depend on personal Pokémon GO accounts o
 
 1. Pokémon GO Pokédex
 2. Raids
-3. Team GO Rocket
-4. Eggs
-5. Event calendar
+3. Eggs
+4. Event calendar
 
 A lightweight Today view may summarise current events, raids and alerts.
 
