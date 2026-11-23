@@ -28,7 +28,7 @@ async function hashPayload(payload: unknown): Promise<string> {
 function freshnessForSnapshots(snapshots: StoredEventSnapshot[], now: Date): EventFreshness {
   if (snapshots.length === 0) return "unavailable";
   if (snapshots.some((snapshot) => snapshot.error)) return "degraded";
-  return snapshots.some((snapshot) => now.getTime() - new Date(snapshot.fetchedAt).getTime() > FRESH_AFTER_MS)
+  return snapshots.some((snapshot) => now.getTime() - new Date(snapshot.sourceUpdatedAt ?? snapshot.fetchedAt).getTime() > FRESH_AFTER_MS)
     ? "stale"
     : "fresh";
 }

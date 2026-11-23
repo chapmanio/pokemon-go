@@ -2,6 +2,7 @@ import {
   createRuntimeEventService,
   createRuntimePokemonService,
   createRuntimeRaidService,
+  createRuntimeRocketService,
 } from "../src/server/runtime-service";
 
 const jsonHeaders = { "content-type": "application/json; charset=utf-8" };
@@ -45,6 +46,13 @@ async function handleApiRequest(request: Request, environment: Env): Promise<Res
     return jsonResponse(result);
   }
 
+  if (url.pathname === "/api/v1/rocket") {
+    const result = await createRuntimeRocketService(environment).getRocket({
+      forceRefresh: url.searchParams.get("refresh") === "1",
+    });
+    return jsonResponse(result);
+  }
+
   const pokemonMatch = url.pathname.match(/^\/api\/v1\/pokemon\/([^/]+)$/);
   if (pokemonMatch) {
     const pokemonKey = decodeURIComponent(pokemonMatch[1]);
@@ -64,6 +72,23 @@ async function handleApiRequest(request: Request, environment: Env): Promise<Res
 
     if (!result) return jsonResponse({ error: "Event not found" }, 404);
     return jsonResponse(result);
+  }
+
+  const rocketMatch = url.pathname.match(/^\/api\/v1\/rocket\/(.+)$/);
+  if (rocketMatch) {
+    const memberId = decodeURIComponent(rocketMatch[1]);
+    const result = await createRuntimeRocketService(environment).getMember(memberId);
+    if (!result) return jsonResponse({ error: "Rocket member not found" }, 404);
+
+    const counterResult = result.counterTypes.length > 0
+      ? await createRuntimePokemonService(environment).getCounterCandidates(result.counterTypes)
+      : undefined;
+    return jsonResponse({
+      ...result,
+      counterSuggestions: counterResult?.candidates ?? [],
+      counterSuggestionsFreshness: counterResult?.freshness ?? "unavailable",
+      warnings: [...result.warnings, ...(counterResult?.warnings ?? [])],
+    });
   }
 
   const bossMatch = url.pathname.match(/^\/api\/v1\/raids\/([^/]+)$/);

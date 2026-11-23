@@ -83,6 +83,7 @@ export default function EventCalendarPage() {
           <a className="nav-link" href="/pokedex">Pokédex</a>
           <a className="nav-link" href="/raids">Raids</a>
           <a className="nav-link nav-link--active" href="/events">Events</a>
+          <a className="nav-link" href="/rocket">Rocket</a>
         </nav>
       </header>
 

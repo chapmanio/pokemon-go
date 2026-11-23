@@ -12,7 +12,7 @@ describe("event service", () => {
         fetch: async () => ({
           payload: fixture,
           contentHash: "events-hash",
-          sourceUpdatedAt: "2026-11-23T06:53:56Z",
+          sourceUpdatedAt: "2026-11-23T11:00:00Z",
         }),
       })],
       now: () => new Date("2026-11-23T12:00:00.000Z"),
@@ -25,7 +25,7 @@ describe("event service", () => {
     expect(result.sources).toEqual(["leekduck"]);
     expect(result.events[0].provenance).toMatchObject({
       contentHash: "events-hash",
-      sourceUpdatedAt: "2026-11-23T06:53:56Z",
+      sourceUpdatedAt: "2026-11-23T11:00:00Z",
     });
   });
 

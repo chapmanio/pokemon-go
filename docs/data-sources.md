@@ -43,6 +43,12 @@ The calendar uses `https://pokelitee.github.io/leak-duck/events.json` with
 article URLs are the stable event identity; local-time event timestamps remain
 timezone-naive and must not be converted to UTC.
 
+The Team GO Rocket assistant uses
+`https://pokelitee.github.io/leak-duck/rocket_lineups.json` with the same
+manifest-based change detection. Its member keys and slot candidates do not
+include stable Pokémon IDs or counter data, so those facts remain source
+references and any counter guidance is explicitly derived by the app.
+
 ## PokéBattler
 
 Battle simulations, counters, rankings and trainer estimates:

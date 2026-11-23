@@ -104,6 +104,20 @@ These remain small feature-specific records for now. They reference
 `PokemonReference` by identity and carry their own source provenance. Do not
 create a general-purpose encounter model until the data requires it.
 
+```text
+RocketMember {
+  member_id, display_name, kind, theme_type?, lineup[], counter_types[],
+  guidance, source, source_url, fetched_at, source_updated_at?, content_hash
+}
+
+RocketSlot { slot, is_encounter, pokemons[] }
+RocketPokemon { name, asset_url?, shiny_available? }
+```
+
+Rocket slot candidates are alternatives, not a guaranteed battle sequence.
+Counter suggestions are derived separately from the cached Pokédex and must be
+labelled as generic guidance.
+
 ## Operational entities
 
 ```text

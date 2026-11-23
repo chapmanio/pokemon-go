@@ -1,0 +1,42 @@
+{
+  "Giovanni": [
+    {
+      "slot": 1,
+      "pokemons": [
+        { "name": "Persian", "shiny_available": false, "asset_url": "https://cdn.example.test/persian.png" }
+      ],
+      "is_encounter": false
+    },
+    {
+      "slot": 2,
+      "pokemons": [
+        { "name": "Nidoking", "shiny_available": false, "asset_url": null }
+      ],
+      "is_encounter": false
+    }
+  ],
+  "Fire-type Female Grunt": [
+    {
+      "slot": 1,
+      "pokemons": [
+        { "name": "Litwick", "shiny_available": true, "asset_url": "https://cdn.example.test/litwick.png" },
+        { "name": "Ponyta", "shiny_available": true, "asset_url": null }
+      ],
+      "is_encounter": true
+    },
+    {
+      "slot": 2,
+      "pokemons": [
+        { "name": "Charcadet", "shiny_available": false, "asset_url": null }
+      ],
+      "is_encounter": false
+    },
+    {
+      "slot": 3,
+      "pokemons": [
+        { "name": "Arcanine", "shiny_available": true, "asset_url": null }
+      ],
+      "is_encounter": false
+    }
+  ]
+}

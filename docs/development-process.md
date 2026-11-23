@@ -1,6 +1,6 @@
 # Development process
 
-## Current stage: Event calendar foundation awaiting manual acceptance
+## Current stage: Team GO Rocket foundation awaiting manual acceptance
 
 Do not start feature implementation until the following are agreed:
 
@@ -29,9 +29,20 @@ behaviour and be driven by adapter or fixture findings.
 The event calendar foundation now has a server-side Leak Duck adapter,
 manifest-based change detection, cached normalized records, month-grouped list
 and detail routes, and optional related-content sections. Manual acceptance
-should verify current/upcoming status, local-time display, banners, source
-links, optional sections, stale/degraded behaviour, and direct event URLs on
-desktop Firefox and Firefox for Android before expanding the calendar.
+covered current/upcoming status, local-time display, banners, source links,
+optional sections, stale/degraded behaviour, and direct event URLs on desktop
+Firefox and Firefox for Android.
+
+The event calendar foundation has now passed automated checks and manual
+acceptance after deployment. Future calendar changes should preserve the
+accepted behaviour and be driven by adapter or fixture findings.
+
+The Team GO Rocket foundation now has a server-side Leak Duck adapter,
+manifest-based freshness detection, cached normalized member lineups, grouped
+list and detail routes, and derived generic Grunt counter suggestions. Manual
+acceptance should verify stale-source status, slot alternatives, encounter
+flags, Leader/Giovanni guidance, Grunt suggestions, direct detail URLs and
+Firefox for Android behaviour before expanding the model.
 
 ## First vertical slice
 

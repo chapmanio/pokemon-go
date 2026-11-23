@@ -22,7 +22,7 @@
 - Add raid detail pages, counters and generic estimates.
 - Add a simple capable-trainer estimate and four-trainer Party Play check.
 
-## Phase 3: current-play tools — next
+## Phase 3: current-play tools — in progress
 
 - Add event calendar and event details.
 - Add Team GO Rocket lineups and counter guidance.

@@ -6,6 +6,9 @@ import { createKvPokemonSnapshotStore } from "./pokemon-snapshot-store";
 import { createHttpEventAdapter } from "./event-source";
 import { createEventService } from "./event-service";
 import { createKvEventSnapshotStore, createMemoryEventSnapshotStore } from "./event-snapshot-store";
+import { createHttpRocketAdapter } from "./rocket-source";
+import { createRocketService } from "./rocket-service";
+import { createKvRocketSnapshotStore, createMemoryRocketSnapshotStore } from "./rocket-snapshot-store";
 
 export interface RuntimeEnvironment {
   RAID_SNAPSHOTS?: KvNamespaceLike;
@@ -14,6 +17,7 @@ export interface RuntimeEnvironment {
 const memoryStore = createMemorySnapshotStore();
 const memoryPokemonStore = createMemoryPokemonSnapshotStore();
 const memoryEventStore = createMemoryEventSnapshotStore();
+const memoryRocketStore = createMemoryRocketSnapshotStore();
 
 export function createRuntimeRaidService(environment: RuntimeEnvironment) {
   const store = environment.RAID_SNAPSHOTS
@@ -42,5 +46,16 @@ export function createRuntimeEventService(environment: RuntimeEnvironment) {
   return createEventService({
     store,
     adapters: [createHttpEventAdapter()],
+  });
+}
+
+export function createRuntimeRocketService(environment: RuntimeEnvironment) {
+  const store = environment.RAID_SNAPSHOTS
+    ? createKvRocketSnapshotStore(environment.RAID_SNAPSHOTS)
+    : memoryRocketStore;
+
+  return createRocketService({
+    store,
+    adapters: [createHttpRocketAdapter()],
   });
 }

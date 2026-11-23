@@ -63,6 +63,7 @@ export default function PokedexListPage() {
           <a className="nav-link nav-link--active" href="/pokedex">Pokédex</a>
           <a className="nav-link" href="/raids">Raids</a>
           <a className="nav-link" href="/events">Events</a>
+          <a className="nav-link" href="/rocket">Rocket</a>
         </nav>
       </header>
 
