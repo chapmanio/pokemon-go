@@ -1,0 +1,64 @@
+{
+  "Event": [
+    {
+      "title": "Dynamax Trails",
+      "article_url": "https://leekduck.com/events/dynamax-trails-2026/",
+      "banner_url": "https://cdn.leekduck.com/events/dynamax-trails.jpg",
+      "category": "Event",
+      "details": {
+        "bonuses": ["2× Catch Stardust"],
+        "features": [
+          {
+            "name": "Grookey",
+            "asset_url": "https://cdn.leekduck.com/pokemon/grookey.png",
+            "shiny_available": true
+          }
+        ],
+        "raids": [
+          {
+            "name": "Mega Charizard X",
+            "shiny_available": true
+          }
+        ],
+        "new-section": [
+          {
+            "name": "Future content",
+            "shiny_available": false
+          }
+        ]
+      },
+      "is_local_time": true,
+      "start_time": "2026-11-16T10:00:00",
+      "end_time": "2026-11-23T20:00:00",
+      "description": "A local-time event."
+    }
+  ],
+  "Community Day": [
+    {
+      "title": "Pawniard Community Day",
+      "article_url": "https://leekduck.com/events/november-communityday2026",
+      "category": "Community Day",
+      "details": {
+        "moves": [
+          {
+            "name": "Pawniard"
+          }
+        ]
+      },
+      "is_local_time": true,
+      "start_time": "2026-11-21T14:00:00",
+      "end_time": "2026-11-21T17:00:00"
+    }
+  ],
+  "GO Battle League": [
+    {
+      "title": "Great League",
+      "article_url": "https://leekduck.com/events/great-league-2026/",
+      "category": "GO Battle League",
+      "details": {},
+      "is_local_time": false,
+      "start_time": 1795000000,
+      "end_time": 1795003600
+    }
+  ]
+}

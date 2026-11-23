@@ -1,4 +1,8 @@
-import { createRuntimePokemonService, createRuntimeRaidService } from "../src/server/runtime-service";
+import {
+  createRuntimeEventService,
+  createRuntimePokemonService,
+  createRuntimeRaidService,
+} from "../src/server/runtime-service";
 
 const jsonHeaders = { "content-type": "application/json; charset=utf-8" };
 
@@ -34,6 +38,13 @@ async function handleApiRequest(request: Request, environment: Env): Promise<Res
     return jsonResponse(result);
   }
 
+  if (url.pathname === "/api/v1/events") {
+    const result = await createRuntimeEventService(environment).getEvents({
+      forceRefresh: url.searchParams.get("refresh") === "1",
+    });
+    return jsonResponse(result);
+  }
+
   const pokemonMatch = url.pathname.match(/^\/api\/v1\/pokemon\/([^/]+)$/);
   if (pokemonMatch) {
     const pokemonKey = decodeURIComponent(pokemonMatch[1]);
@@ -43,6 +54,15 @@ async function handleApiRequest(request: Request, environment: Env): Promise<Res
       return jsonResponse({ error: "Pokémon not found" }, 404);
     }
 
+    return jsonResponse(result);
+  }
+
+  const eventMatch = url.pathname.match(/^\/api\/v1\/events\/(.+)$/);
+  if (eventMatch) {
+    const eventId = decodeURIComponent(eventMatch[1]);
+    const result = await createRuntimeEventService(environment).getEvent(eventId);
+
+    if (!result) return jsonResponse({ error: "Event not found" }, 404);
     return jsonResponse(result);
   }
 

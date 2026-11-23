@@ -15,14 +15,14 @@
 - Add normalised Pokémon, move, raid and event models.
 - Add global search and shared freshness indicators.
 
-## Phase 2: core reference and raids
+## Phase 2: core reference and raids — complete
 
 - Build the Pokémon GO Pokédex.
 - Add current/upcoming raids.
 - Add raid detail pages, counters and generic estimates.
 - Add a simple capable-trainer estimate and four-trainer Party Play check.
 
-## Phase 3: current-play tools
+## Phase 3: current-play tools — next
 
 - Add event calendar and event details.
 - Add Team GO Rocket lineups and counter guidance.

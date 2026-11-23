@@ -1,6 +1,6 @@
 # Development process
 
-## Current stage: Generic raid counter suggestions awaiting manual acceptance
+## Current stage: Event calendar foundation awaiting manual acceptance
 
 Do not start feature implementation until the following are agreed:
 
@@ -17,15 +17,21 @@ model, captured fixtures, refresh policy, storage decision, and acceptance
 criteria. Further model changes should be driven by an adapter or fixture
 finding, not speculative feature design.
 
-The raid foundation has passed automated checks and manual acceptance. The
-Pokédex foundation now has its first normalized PoGoAPI snapshot, list/detail
-API routes, searchable UI, one-entry-per-number grouping, retained form data,
-optional icon assets, and a generic battle reference. Raid details now resolve a
-small generic counter shortlist from the cached Pokédex when source counter
-types are available. Manual acceptance should verify the counter shortlist,
-Pokédex links, duplicate grouping, form selection, weaknesses, move metadata,
-image fallback, and freshness behaviour on desktop Firefox and Firefox for
-Android before extending the model.
+The raid foundation and Pokédex foundation have passed automated checks and
+manual acceptance on desktop Firefox and Firefox for Android on the target
+Galaxy S8 device. The Pokédex has its first normalized PoGoAPI snapshot,
+list/detail API routes, searchable UI, one-entry-per-number grouping, retained
+form data, optional icon assets, and a generic battle reference. Raid details
+resolve a small generic counter shortlist from the cached Pokédex when source
+counter types are available. Future changes should preserve the accepted
+behaviour and be driven by adapter or fixture findings.
+
+The event calendar foundation now has a server-side Leak Duck adapter,
+manifest-based change detection, cached normalized records, month-grouped list
+and detail routes, and optional related-content sections. Manual acceptance
+should verify current/upcoming status, local-time display, banners, source
+links, optional sections, stale/degraded behaviour, and direct event URLs on
+desktop Firefox and Firefox for Android before expanding the calendar.
 
 ## First vertical slice
 

@@ -38,6 +38,11 @@ Community-scraped data from Leek Duck:
 
 Useful files include events, raid bosses, research tasks, egg pools and Rocket lineups. The published API includes a manifest with content hashes and change information. Scheduled updates may be delayed.
 
+The calendar uses `https://pokelitee.github.io/leak-duck/events.json` with
+`manifest.json` for the `events.json` SHA-256 and `updated_at` value. Event
+article URLs are the stable event identity; local-time event timestamps remain
+timezone-naive and must not be converted to UTC.
+
 ## PokéBattler
 
 Battle simulations, counters, rankings and trainer estimates:

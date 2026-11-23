@@ -88,13 +88,15 @@ and remains explicitly approximate.
 ```text
 Event {
   event_id, name, category?, starts_at, ends_at, is_local_time?,
-  featured_pokemon?, raids?, bonuses?, research?, exclusive_moves?,
-  details?, source, source_url, fetched_at, content_hash
+  bonuses[], related[], description?, article_url?, banner_url?,
+  source, source_url, fetched_at, source_updated_at?, content_hash
 }
 ```
 
-An event may reference Pokémon, raids, moves, bonuses, or research, but those
-references must not be duplicated as a second source of truth.
+`event_id` is derived from the canonical source article URL. `related[]` keeps
+the source section, display name, optional asset and shiny flag. These are
+source references, not authoritative Pokémon or raid identities; resolve them
+only when an explicit safe match exists and retain unresolved names.
 
 ### Egg pool and Rocket lineup
 

@@ -1,0 +1,81 @@
+import { useEffect, useState } from "react";
+import type { EventDetailResult, EventFreshness } from "../../domain/event";
+import { fetchEvent } from "../../client/event-api";
+import { formatEventDate, groupRelatedBySection } from "./event-calendar";
+
+const freshnessCopy: Record<EventFreshness, string> = {
+  fresh: "Fresh event data",
+  stale: "Stale event data",
+  degraded: "Degraded event data",
+  unavailable: "Event data unavailable",
+};
+
+export default function EventDetailPage({ eventId }: { eventId: string }) {
+  const [result, setResult] = useState<EventDetailResult>();
+  const [error, setError] = useState<string>();
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setError(undefined);
+    fetchEvent(eventId, controller.signal)
+      .then(setResult)
+      .catch((cause: unknown) => {
+        if (cause instanceof DOMException && cause.name === "AbortError") return;
+        setError(cause instanceof Error ? cause.message : "Unable to load this event");
+      });
+    return () => controller.abort();
+  }, [eventId]);
+
+  return (
+    <main className="app-shell">
+      <header className="site-header">
+        <a className="brand" href="/">PokéGO companion</a>
+        <nav aria-label="Primary navigation">
+          <a className="nav-link" href="/pokedex">Pokédex</a>
+          <a className="nav-link" href="/raids">Raids</a>
+          <a className="nav-link nav-link--active" href="/events">Events</a>
+        </nav>
+      </header>
+      <p className="back-link"><a href="/events">← Back to event calendar</a></p>
+      {error && <section className="error-panel" role="alert"><strong>We couldn’t load this event.</strong><p>{error}</p><p><a href="/events">Return to the event calendar</a></p></section>}
+      {!result && !error && <p className="loading-state">Loading event…</p>}
+      {result && <EventDetails result={result} />}
+    </main>
+  );
+}
+
+function EventDetails({ result }: { result: EventDetailResult }) {
+  const relatedGroups = groupRelatedBySection(result.details.related);
+  return (
+    <>
+      {result.bannerUrl && <img className="event-detail__banner" src={result.bannerUrl} alt="" />}
+      <section className="page-heading event-detail__heading">
+        <p className="eyebrow">{result.category} · {freshnessCopy[result.freshness]}</p>
+        <h1>{result.title}</h1>
+        <p className="event-detail__time">
+          {formatEventDate(result.startsAt)} – {formatEventDate(result.endsAt)}
+          {result.isLocalTime && " · local time"}
+        </p>
+        {result.description && <p>{result.description}</p>}
+        {result.articleUrl && <p><a href={result.articleUrl} target="_blank" rel="noreferrer">Read the source event page</a></p>}
+      </section>
+      {result.warnings.length > 0 && <section className="warning-panel" aria-label="Event warnings"><ul>{result.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></section>}
+      {result.details.bonuses.length > 0 && (
+        <section className="event-detail__section"><h2>Bonuses</h2><ul className="event-bonuses">{result.details.bonuses.map((bonus) => <li key={bonus}>{bonus}</li>)}</ul></section>
+      )}
+      {relatedGroups.map((group) => (
+        <section className="event-detail__section" key={group.section}>
+          <h2>{group.label}</h2>
+          <div className="event-reference-grid">
+            {group.items.map((item, index) => (
+              <article className="event-reference" key={`${item.name}-${index}`}>
+                {item.assetUrl && <img src={item.assetUrl} alt="" loading="lazy" />}
+                <div><strong>{item.name}</strong>{item.shinyAvailable !== undefined && <small>{item.shinyAvailable ? "Shiny available" : "Shiny not listed"}</small>}</div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))}
+    </>
+  );
+}
