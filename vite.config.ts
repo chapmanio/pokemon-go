@@ -11,10 +11,10 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
-        name: "Pokémon GO companion",
-        short_name: "PokéGO companion",
+        name: "PoGo Buddy",
+        short_name: "PoGo Buddy",
         description: "A generic Pokémon GO planning and reference app",
-        theme_color: "#172554",
+        theme_color: "#be123c",
         background_color: "#f8fafc",
         display: "standalone",
         orientation: "portrait",

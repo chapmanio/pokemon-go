@@ -257,8 +257,8 @@ h1 {
 }
 
 .search-input:focus {
-  border-color: #2563eb;
-  outline: 3px solid #dbeafe;
+  border-color: #be123c;
+  outline: 3px solid #ffe4e6;
 }
 
 .pokedex-toolbar > p {
@@ -297,7 +297,7 @@ h1 {
 }
 
 .pokedex-card__link:focus-visible {
-  outline: 3px solid #dbeafe;
+  outline: 3px solid #ffe4e6;
   outline-offset: -3px;
 }
 
@@ -315,7 +315,7 @@ h1 {
 
 .pokedex-card__image {
   flex: 0 0 3.5rem;
-  background: #eff6ff;
+  background: #fff1f2;
   border-radius: 0.75rem;
   height: 3.5rem;
   object-fit: contain;
@@ -347,7 +347,7 @@ h1 {
 
 .pokedex-card__link:hover h2,
 .pokedex-card__link:focus-visible h2 {
-  color: #1d4ed8;
+  color: #be123c;
 }
 
 .pokedex-card__types {
@@ -388,12 +388,12 @@ h1 {
 }
 
 .form-select:focus {
-  border-color: #2563eb;
-  outline: 3px solid #dbeafe;
+  border-color: #be123c;
+  outline: 3px solid #ffe4e6;
 }
 
 button {
-  background: #1d4ed8;
+  background: #be123c;
   border: 0;
   border-radius: 999px;
   color: white;
@@ -458,7 +458,7 @@ button:disabled {
 }
 
 .raid-card__image {
-  background: #eff6ff;
+  background: #fff1f2;
   border-radius: 0.75rem;
   height: 3.5rem;
   object-fit: contain;
@@ -486,7 +486,7 @@ button:disabled {
 
 .raid-card__link:hover,
 .raid-card__link:focus-visible {
-  color: #1d4ed8;
+  color: #be123c;
   text-decoration: underline;
 }
 
@@ -550,7 +550,7 @@ button:disabled {
 
 .event-card__banner,
 .event-detail__banner {
-  background: #eff6ff;
+  background: #fff1f2;
   display: block;
   max-height: 12rem;
   object-fit: cover;
@@ -600,8 +600,8 @@ button:disabled {
 }
 
 .event-status--upcoming {
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: #ffe4e6;
+  color: #be123c;
 }
 
 .event-status--ended {
@@ -621,7 +621,7 @@ button:disabled {
 
 .event-card h3 a:hover,
 .event-card h3 a:focus-visible {
-  color: #1d4ed8;
+  color: #be123c;
   text-decoration: underline;
 }
 
@@ -685,7 +685,7 @@ button:disabled {
 }
 
 .event-reference img {
-  background: #eff6ff;
+  background: #fff1f2;
   border-radius: 0.5rem;
   flex: 0 0 2.75rem;
   height: 2.75rem;
@@ -694,7 +694,7 @@ button:disabled {
 }
 
 .event-reference__image {
-  background: #eff6ff;
+  background: #fff1f2;
   border-radius: 0.5rem;
   flex: 0 0 2.75rem;
   height: 2.75rem;
@@ -763,9 +763,9 @@ button:disabled {
 }
 
 .egg-pool__heading > span {
-  background: #dbeafe;
+  background: #ffe4e6;
   border-radius: 999px;
-  color: #1d4ed8;
+  color: #be123c;
   flex: 0 0 auto;
   font-size: 0.75rem;
   font-weight: 700;
@@ -802,7 +802,7 @@ button:disabled {
 .egg-card img,
 .egg-card__image,
 .egg-card__image--empty {
-  background: #eff6ff;
+  background: #fff1f2;
   border-radius: 0.6rem;
   flex: 0 0 3rem;
   height: 3rem;
@@ -893,7 +893,7 @@ button:disabled {
 }
 
 .counter-suggestion__image {
-  background: #eff6ff;
+  background: #fff1f2;
   border-radius: 0.6rem;
   flex: 0 0 3rem;
   height: 3rem;
@@ -921,7 +921,7 @@ button:disabled {
 }
 
 .counter-suggestion h4 a {
-  color: #1d4ed8;
+  color: #be123c;
 }
 
 .counter-suggestion__form,
@@ -960,7 +960,7 @@ button:disabled {
 }
 
 .source-disclosure__icon {
-  color: #1d4ed8;
+  color: #be123c;
   font-size: 1rem;
 }
 
@@ -983,7 +983,7 @@ button:disabled {
 }
 
 .source-disclosure__content a {
-  color: #1d4ed8;
+  color: #be123c;
 }
 
 .disagreement-list {
@@ -1000,7 +1000,7 @@ button:disabled {
 }
 
 .back-link a {
-  color: #1d4ed8;
+  color: #be123c;
   font-weight: 700;
 }
 
@@ -1029,7 +1029,7 @@ button:disabled {
 }
 
 .detail-heading__image {
-  background: #eff6ff;
+  background: #fff1f2;
   border-radius: 1rem;
   height: 6rem;
   object-fit: contain;
@@ -1046,13 +1046,8 @@ button:disabled {
 
 @media (max-width: 480px) {
   .site-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .site-header nav {
-    justify-content: flex-start;
-    width: 100%;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
   }
 
   .nav-link {
@@ -1159,7 +1154,7 @@ button:disabled {
 }
 
 .type-pill {
-  background: #dbeafe;
+  background: #ffe4e6;
   border-radius: 999px;
   color: #1e40af;
   font-weight: 700;
@@ -1174,8 +1169,8 @@ button:disabled {
 }
 
 .estimate-card {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background: #fff1f2;
+  border: 1px solid #fda4af;
   border-radius: 0.75rem;
   padding: 0.85rem;
 }
