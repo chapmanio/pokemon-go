@@ -176,6 +176,10 @@ function sourceDisagreements(sourceBosses: Array<{ source: RaidSource; boss: Rai
 }
 
 function mergeBosses(snapshots: StoredRaidSnapshot[]): RaidBoss[] {
+  const preferredSnapshots = snapshots.filter((snapshot) => snapshot.source !== "pogoapi");
+  const hasPreferredRosterPair = preferredSnapshots.some((snapshot) => snapshot.source === "leekduck")
+    && preferredSnapshots.some((snapshot) => snapshot.source === "pokemon-go-api");
+  const rosterSnapshots = hasPreferredRosterPair ? preferredSnapshots : snapshots;
   const merged = new Map<string, {
     boss: RaidBoss;
     sourceReferences: RaidProvenance[];
@@ -183,7 +187,7 @@ function mergeBosses(snapshots: StoredRaidSnapshot[]): RaidBoss[] {
   }>();
 
   for (const source of SOURCE_ORDER) {
-    const snapshot = snapshots.find((candidate) => candidate.source === source);
+    const snapshot = rosterSnapshots.find((candidate) => candidate.source === source);
     if (!snapshot) continue;
 
     for (const boss of snapshot.bosses) {

@@ -214,4 +214,36 @@ describe("raid service", () => {
 
     expect(result.bosses).toHaveLength(2);
   });
+
+  it("uses PoGoAPI as roster fallback instead of adding stale source-only bosses", async () => {
+    const adapter = (source: "leekduck" | "pokemon-go-api" | "pogoapi", displayName: string, estimate?: number): RaidSourceAdapter => ({
+      source,
+      endpoint: `${source}.json`,
+      sourceUrl: `https://${source}.example.test/raids.json`,
+      fetchPayload: async () => ({}),
+      normalize: (_payload, provenance) => [{
+        raidBossId: `${displayName}:${source}`,
+        displayName,
+        tier: 1,
+        isShadow: false,
+        types: ["Normal"],
+        battleEstimator: estimate,
+        provenance,
+        sourceReferences: [provenance],
+      }],
+    });
+
+    const result = await createRaidService({
+      store: createMemorySnapshotStore(),
+      adapters: [
+        adapter("leekduck", "Current Boss"),
+        adapter("pokemon-go-api", "Current Boss", 1.2),
+        adapter("pogoapi", "Stale Boss"),
+      ],
+      now: () => new Date("2026-10-27T12:00:00.000Z"),
+    }).getRaids();
+
+    expect(result.bosses.map((boss) => boss.displayName)).toEqual(["Current Boss"]);
+    expect(result.bosses[0].battleEstimator).toBe(1.2);
+  });
 });

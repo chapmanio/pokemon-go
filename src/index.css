@@ -1101,6 +1101,11 @@ button:disabled {
   grid-template-columns: minmax(0, 1fr) auto;
 }
 
+.stats-grid {
+  gap: 0.35rem;
+  grid-template-columns: 1fr;
+}
+
 .detail-grid dt {
   color: #64748b;
   font-size: 0.7rem;
@@ -1315,9 +1320,10 @@ button:disabled {
 }
 
 .matchup-list__multiplier {
-  color: #334155;
+  color: #94a3b8;
+  font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .estimate-summary {

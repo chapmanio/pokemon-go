@@ -32,6 +32,8 @@ The browser reads only app-owned endpoints:
 
 - `GET /api/v1/raids`
 - `GET /api/v1/raids/:raidBossId`
+- `GET /api/v1/max-battles`
+- `GET /api/v1/max-battles/:maxBattleId`
 - Raid detail responses include generic counter guidance when the cached raid source provides it.
 - `GET /api/v1/health`
 

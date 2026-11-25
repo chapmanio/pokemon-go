@@ -41,4 +41,10 @@ describe("raid estimates", () => {
     expect(result.capableTrainersNeeded).toBeUndefined();
     expect(result.partyOfFour.result).toBe("unknown");
   });
+
+  it("does not apply the Party Play multiplier to Max Battle checks", () => {
+    const result = estimateRaid({ battleEstimator: 4.1 }, { partyPlay: false });
+
+    expect(result.partyOfFour.result).toBe("unlikely");
+  });
 });

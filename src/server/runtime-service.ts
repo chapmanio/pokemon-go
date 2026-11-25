@@ -9,6 +9,9 @@ import { createKvEventSnapshotStore, createMemoryEventSnapshotStore } from "./ev
 import { createHttpEggAdapter } from "./egg-source";
 import { createEggService } from "./egg-service";
 import { createKvEggSnapshotStore, createMemoryEggSnapshotStore } from "./egg-snapshot-store";
+import { createHttpMaxBattleAdapter } from "./max-battle-source";
+import { createMaxBattleService } from "./max-battle-service";
+import { createKvMaxBattleSnapshotStore, createMemoryMaxBattleSnapshotStore } from "./max-battle-snapshot-store";
 
 export interface RuntimeEnvironment {
   RAID_SNAPSHOTS?: KvNamespaceLike;
@@ -18,6 +21,7 @@ const memoryStore = createMemorySnapshotStore();
 const memoryPokemonStore = createMemoryPokemonSnapshotStore();
 const memoryEventStore = createMemoryEventSnapshotStore();
 const memoryEggStore = createMemoryEggSnapshotStore();
+const memoryMaxBattleStore = createMemoryMaxBattleSnapshotStore();
 
 export function createRuntimeRaidService(environment: RuntimeEnvironment) {
   const store = environment.RAID_SNAPSHOTS
@@ -57,6 +61,17 @@ export function createRuntimeEggService(environment: RuntimeEnvironment) {
   return createEggService({
     store,
     adapters: [createHttpEggAdapter()],
+  });
+}
+
+export function createRuntimeMaxBattleService(environment: RuntimeEnvironment) {
+  const store = environment.RAID_SNAPSHOTS
+    ? createKvMaxBattleSnapshotStore(environment.RAID_SNAPSHOTS)
+    : memoryMaxBattleStore;
+
+  return createMaxBattleService({
+    store,
+    adapters: [createHttpMaxBattleAdapter()],
   });
 }
 

@@ -16,7 +16,10 @@ const PARTY_SIZE = 4;
 const PARTY_PLAY_MULTIPLIER = 1.15;
 const PARTY_CAPABLE_EQUIVALENTS = PARTY_SIZE * PARTY_PLAY_MULTIPLIER;
 
-export function estimateRaid(boss: RaidBoss): RaidEstimateResult {
+export function estimateRaid(
+  boss: Pick<RaidBoss, "battleEstimator">,
+  options: { partyPlay?: boolean } = {},
+): RaidEstimateResult {
   const sourceEstimate = boss.battleEstimator;
   if (sourceEstimate === undefined) {
     return {
@@ -30,7 +33,8 @@ export function estimateRaid(boss: RaidBoss): RaidEstimateResult {
   }
 
   const capableTrainersNeeded = Math.max(1, Math.ceil(sourceEstimate));
-  const partyCanWin = sourceEstimate <= PARTY_CAPABLE_EQUIVALENTS;
+  const partyPlay = options.partyPlay ?? true;
+  const partyCanWin = sourceEstimate <= (partyPlay ? PARTY_CAPABLE_EQUIVALENTS : PARTY_SIZE);
 
   return {
     capableTrainersNeeded,
@@ -39,8 +43,12 @@ export function estimateRaid(boss: RaidBoss): RaidEstimateResult {
       result: partyCanWin ? "likely" : "unlikely",
       headline: partyCanWin ? "Likely yes" : "Probably not",
       detail: partyCanWin
-        ? "Four capable trainers with Party Play should have enough estimated strength."
-        : "Four capable trainers with Party Play are unlikely to have enough estimated strength.",
+        ? partyPlay
+          ? "Four capable trainers with Party Play should have enough estimated strength."
+          : "Four capable players should have enough estimated strength."
+        : partyPlay
+          ? "Four capable trainers with Party Play are unlikely to have enough estimated strength."
+          : "Four capable players are unlikely to have enough estimated strength.",
     },
   };
 }

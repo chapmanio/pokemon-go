@@ -22,6 +22,12 @@ Secondary source for raid bosses and Max Battles:
 
 Use it to cross-check raid data and provide fallback data. It is unofficial and educational, so do not treat it as the sole authority.
 
+The current Max Battle roster is published at
+`https://pokemon-go-api.github.io/pokemon-go-api/api/maxbattles.json`. The feed
+provides Pokémon, Max Battle tier, typing, shiny availability and catch CP when
+available. It does not currently provide a machine-readable capable-trainer
+estimate, so the app must not derive one from the ordinary raid estimator.
+
 ## Pokémon GO assets
 
 The community-maintained [`pokemon-go-api/assets` repository](https://github.com/pokemon-go-api/assets/tree/main/Pokemon)
@@ -51,6 +57,16 @@ Battle simulations, counters, rankings and trainer estimates:
 <https://v2.pokebattler.com/developers>
 
 Use on demand through a backend adapter with aggressive caching. The API is unofficial, has no published SLA and may change without notice.
+
+For ordinary raid detail pages, use the documented per-boss endpoint as a
+six-hour cached fallback when the normalized roster does not include an
+estimate. Keep the request parameters in the adapter's cache key and preserve
+`Unknown` when the endpoint cannot resolve a boss.
+
+PokéBattler also publishes Max/Dynamax battle counters and role-specific Max
+Battle rankings. Treat those as a separate Max Battle adapter: Max Battle teams
+and roles differ from ordinary raid teams, and raid estimates must not be
+reused for Max Battles.
 
 ## Source policy
 

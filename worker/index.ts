@@ -3,8 +3,10 @@ import {
   createRuntimeEggService,
   createRuntimePokemonService,
   createRuntimeRaidService,
+  createRuntimeMaxBattleService,
 } from "../src/server/runtime-service";
-import { resolveRaidPokedexKey } from "../src/server/raid-identity";
+import { resolvePokedexKey, resolveRaidPokedexKey } from "../src/server/raid-identity";
+import { fetchPokebattlerEstimate } from "../src/server/pokebattler-estimate";
 
 const jsonHeaders = { "content-type": "application/json; charset=utf-8" };
 
@@ -23,19 +25,21 @@ async function handleApiRequest(request: Request, environment: Env): Promise<Res
   }
 
   if (url.pathname === "/api/v1/health") {
-    const [raids, pokemon, events, eggs] = await Promise.all([
+    const [raids, maxBattles, pokemon, events, eggs] = await Promise.all([
       createRuntimeRaidService(environment).getRaids(),
+      createRuntimeMaxBattleService(environment).getMaxBattles(),
       createRuntimePokemonService(environment).getPokedex(),
       createRuntimeEventService(environment).getEvents(),
       createRuntimeEggService(environment).getEggs(),
     ]);
-    const values = [raids.freshness, pokemon.freshness, events.freshness, eggs.freshness];
+    const values = [raids.freshness, maxBattles.freshness, pokemon.freshness, events.freshness, eggs.freshness];
     const status = values.includes("unavailable") ? "unavailable" : values.includes("degraded") ? "degraded" : values.includes("stale") ? "stale" : "ok";
     return jsonResponse({
       status,
       service: "pokemon-go",
       datasets: {
         raids: { freshness: raids.freshness, asOf: raids.asOf, sources: raids.sources, warnings: raids.warnings },
+        maxBattles: { freshness: maxBattles.freshness, asOf: maxBattles.asOf, sources: maxBattles.sources, warnings: maxBattles.warnings },
         pokemon: { freshness: pokemon.freshness, asOf: pokemon.asOf, warnings: pokemon.warnings },
         events: { freshness: events.freshness, asOf: events.asOf, sources: events.sources, warnings: events.warnings },
         eggs: { freshness: eggs.freshness, asOf: eggs.asOf, sources: eggs.sources, warnings: eggs.warnings },
@@ -45,6 +49,11 @@ async function handleApiRequest(request: Request, environment: Env): Promise<Res
 
   if (url.pathname === "/api/v1/raids") {
     const result = await createRuntimeRaidService(environment).getRaids();
+    return jsonResponse(result);
+  }
+
+  if (url.pathname === "/api/v1/max-battles") {
+    const result = await createRuntimeMaxBattleService(environment).getMaxBattles();
     return jsonResponse(result);
   }
 
@@ -96,19 +105,63 @@ async function handleApiRequest(request: Request, environment: Env): Promise<Res
       return jsonResponse({ error: "Raid boss not found", ...result }, 404);
     }
 
+    const sourceEstimate = boss.battleEstimator === undefined
+      ? await fetchPokebattlerEstimate(boss)
+      : undefined;
+    const hydratedBoss = sourceEstimate === undefined ? boss : { ...boss, battleEstimator: sourceEstimate };
+
     const pokemonService = createRuntimePokemonService(environment);
     const pokedex = await pokemonService.getPokedex();
-    const counterResult = boss.counterTypes && boss.counterTypes.length > 0
-      ? await pokemonService.getCounterCandidates(boss.counterTypes)
+    const counterResult = hydratedBoss.counterTypes && hydratedBoss.counterTypes.length > 0
+      ? await pokemonService.getCounterCandidates(hydratedBoss.counterTypes)
       : undefined;
 
     return jsonResponse({
-      ...boss,
-      pokedexKey: resolveRaidPokedexKey(boss, pokedex.entries),
+      ...hydratedBoss,
+      pokedexKey: resolveRaidPokedexKey(hydratedBoss, pokedex.entries),
       counterSuggestions: counterResult?.candidates ?? [],
       counterSuggestionsFreshness: counterResult?.freshness,
       freshness: result.freshness,
       warnings: [...result.warnings, ...(counterResult?.warnings ?? [])],
+    });
+  }
+
+  const maxBattleMatch = url.pathname.match(/^\/api\/v1\/max-battles\/([^/]+)$/);
+  if (maxBattleMatch) {
+    const maxBattleId = decodeURIComponent(maxBattleMatch[1]);
+    const result = await createRuntimeMaxBattleService(environment).getMaxBattles();
+    const battle = result.battles.find((candidate) => candidate.maxBattleId === maxBattleId);
+
+    if (!battle) return jsonResponse({ error: "Max Battle not found", ...result }, 404);
+
+    const pokemonService = createRuntimePokemonService(environment);
+    const pokedex = await pokemonService.getPokedex();
+    const pokedexKey = resolvePokedexKey(battle, pokedex.entries);
+    const pokemonDetail = pokedexKey ? await pokemonService.getPokemon(pokedexKey) : undefined;
+    const counterTypes = battle.counterTypes && battle.counterTypes.length > 0
+      ? battle.counterTypes
+      : pokemonDetail?.battle.weaknesses
+        .filter((matchup) => matchup.multiplier > 1)
+        .map((matchup) => matchup.attackType);
+    const counterResult = counterTypes && counterTypes.length > 0
+      ? await pokemonService.getCounterCandidates(counterTypes)
+      : undefined;
+
+    return jsonResponse({
+      ...battle,
+      pokedexKey,
+      counterTypes,
+      counterSource: battle.counterSource ?? (counterTypes ? "pogoapi" : undefined),
+      counterSuggestions: counterResult?.candidates ?? [],
+      counterSuggestionsFreshness: counterResult?.freshness,
+      freshness: result.freshness,
+      warnings: [
+        ...result.warnings,
+        ...(counterResult?.warnings ?? []),
+        ...(battle.battleEstimator === undefined
+          ? ["The Max Battle source does not currently provide a machine-readable trainer estimate."]
+          : []),
+      ],
     });
   }
 

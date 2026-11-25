@@ -203,7 +203,7 @@ export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }
             <h2>Base stats</h2>
             {detail.stats ? (
               <>
-                <dl className="detail-grid">
+                <dl className="detail-grid stats-grid">
                   <div><dt>Attack</dt><dd className={`stat-value stat-value--${detail.statRatings?.attack ?? "average"}`} title={statRatingLabel(detail.statRatings?.attack ?? "average")}>{detail.stats.attack}</dd></div>
                   <div><dt>Defense</dt><dd className={`stat-value stat-value--${detail.statRatings?.defense ?? "average"}`} title={statRatingLabel(detail.statRatings?.defense ?? "average")}>{detail.stats.defense}</dd></div>
                   <div><dt>Stamina</dt><dd className={`stat-value stat-value--${detail.statRatings?.stamina ?? "average"}`} title={statRatingLabel(detail.statRatings?.stamina ?? "average")}>{detail.stats.stamina}</dd></div>
@@ -212,8 +212,7 @@ export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }
             ) : <p className="detail-panel__note">Stats are not available for this form.</p>}
           </section>
           <section className="detail-panel">
-            <h2>Battle reference</h2>
-            <p className="detail-panel__note detail-panel__explanation">Multipliers show damage from an attacking type: above 1× is super effective, below 1× is resisted. “Effective against” uses the types of this Pokémon’s listed moves.</p>
+            <h2>Battle</h2>
             <div className="battle-tabs" role="tablist" aria-label="Battle matchups">
               {([
                 ["strong", "Strong vs"],
@@ -257,10 +256,10 @@ export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }
             <h2>Moveset</h2>
             {detail.battle.moveDetails.fast.length + detail.battle.moveDetails.charged.length + detail.battle.moveDetails.eliteFast.length + detail.battle.moveDetails.eliteCharged.length > 0 ? (
               <div className="move-groups">
-                <MoveList title="Fast moves" moves={detail.battle.moveDetails.fast} />
-                <MoveList title="Charged moves" moves={detail.battle.moveDetails.charged} charged />
-                <MoveList title="Elite fast moves" moves={detail.battle.moveDetails.eliteFast} />
-                <MoveList title="Elite charged moves" moves={detail.battle.moveDetails.eliteCharged} charged />
+                <MoveList title="Fast" moves={detail.battle.moveDetails.fast} />
+                <MoveList title="Charged" moves={detail.battle.moveDetails.charged} charged />
+                <MoveList title="Elite fast" moves={detail.battle.moveDetails.eliteFast} />
+                <MoveList title="Elite charged" moves={detail.battle.moveDetails.eliteCharged} charged />
               </div>
             ) : <p className="detail-panel__note">Move pools are not available for this form.</p>}
           </section>

@@ -39,6 +39,8 @@ Show the timestamp and source on detailed data pages.
 ## Estimates
 
 Raid trainer counts are approximate. Round the source estimate up to a whole
-number of capable trainers. The party check assumes four capable trainers with
-Party Play and applies a small documented heuristic multiplier. Treat it as a
-quick planning signal, not an exact simulation or guarantee.
+number of capable trainers. The raid party check assumes four capable trainers
+with Party Play and applies a small documented heuristic multiplier. Max Battle
+estimates must come from a Max Battle-aware source and use Max Battle semantics;
+never reuse an ordinary raid estimate. Treat both as quick planning signals,
+not exact simulations or guarantees.

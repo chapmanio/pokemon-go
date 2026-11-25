@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 
-export type AppSection = "pokedex" | "raids" | "events" | "eggs";
+export type AppSection = "pokedex" | "battles" | "events" | "eggs";
 
 const navigation: Array<{ section: AppSection; label: string; href: string }> = [
   { section: "pokedex", label: "Pokédex", href: "/pokedex" },
-  { section: "raids", label: "Raids", href: "/raids" },
+  { section: "battles", label: "Battles", href: "/raids" },
   { section: "events", label: "Events", href: "/events" },
   { section: "eggs", label: "Eggs", href: "/eggs" },
 ];

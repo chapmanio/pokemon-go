@@ -9,7 +9,7 @@ The app is for family use but does not depend on personal Pokémon GO accounts o
 ## Primary areas
 
 1. Pokémon GO Pokédex
-2. Raids
+2. Battles (Raids and Max Battles)
 3. Eggs
 4. Event calendar
 

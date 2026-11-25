@@ -56,4 +56,30 @@ describe("raid source normalizers", () => {
       counterTypes: ["Dragon", "Ground", "Rock"],
     });
   });
+
+  it("normalizes shadow raid lists and keeps their precomputed estimates", () => {
+    const raids = normalizePokemonGoApiRaids({
+      currentList: {
+        shadow_lvl1: [{
+          id: "GASTLY",
+          form: "GASTLY",
+          level: "shadow_lvl1",
+          names: { English: "Gastly" },
+          shiny: false,
+          types: ["Ghost", "Poison"],
+          battleResult: { normal: { totalEstimator: 0.75 } },
+        }],
+      },
+    }, {
+      ...provenance,
+      source: "pokemon-go-api",
+    });
+
+    expect(raids).toMatchObject([{
+      displayName: "Gastly",
+      tier: 1,
+      isShadow: true,
+      battleEstimator: 0.75,
+    }]);
+  });
 });

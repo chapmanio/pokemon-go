@@ -70,6 +70,21 @@ the source counter types and the cached Pokédex. These are examples of Pokémon
 with matching attack types, not a user's team recommendation or a battle
 ranking.
 
+### Max Battle
+
+`MaxBattle` is a separate encounter model for Dynamax and Gigantamax battles.
+It shares Pokémon identity, counter guidance, provenance and freshness concepts
+with `RaidBoss`, but keeps its Max Battle tier/kind and does not inherit raid
+Party Play or trainer-estimate assumptions.
+
+```text
+MaxBattle {
+  max_battle_id, species_id?, form_id?, display_name, level, kind,
+  shiny_available?, types, catch_cp?, asset_url?,
+  counter_types?, battle_estimator?, provenance
+}
+```
+
 ### Battle estimate
 
 ```text

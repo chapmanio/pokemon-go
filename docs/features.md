@@ -23,6 +23,23 @@ Each raid should support:
 
 Do not require users to maintain individual Pokémon teams.
 
+## Max Battles
+
+Max Battles live under the Battles area beside Raids, using an inner tab rather
+than a new bottom-navigation item. Keep Max Battles as a separate encounter
+model because Dynamax and Gigantamax battles have different mechanics and
+Power Spot context.
+
+Each Max Battle should support:
+
+- Current Dynamax and Gigantamax roster, grouped by Max Battle tier.
+- Generic counter types and Pokémon examples when the reference data supports
+  the boss typing.
+- A capable-player estimate and four-player check only when a Max Battle-aware
+  source provides a valid estimate; do not reuse raid estimates.
+- Explicit source and freshness status, including when the current source has
+  no machine-readable estimate.
+
 ## Eggs
 
 Keep this intentionally simple: show each egg distance/type and the Pokémon currently available from it. Show shiny availability and update time when available. Do not imply hatch odds unless a trusted source provides them.

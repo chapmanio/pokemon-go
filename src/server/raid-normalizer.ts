@@ -77,7 +77,7 @@ function withIdentity(
 
 function tierFromKey(key: string): RaidTier | undefined {
   if (key === "mega") return "mega";
-  const match = /^\d+$/.exec(key.replace(/^lvl/, ""));
+  const match = /^\d+$/.exec(key.replace(/^shadow_/, "").replace(/^lvl/, ""));
   return match ? Number(match[0]) : undefined;
 }
 

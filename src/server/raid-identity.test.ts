@@ -48,4 +48,10 @@ describe("raid identity helpers", () => {
       raidMergeKey(boss({})),
     );
   });
+
+  it("allows Shadow labels from different sources to merge", () => {
+    expect(raidMergeKey(boss({ displayName: "Shadow Gastly", isShadow: true, speciesId: undefined, formId: undefined }))).toBe(
+      raidMergeKey(boss({ displayName: "Gastly", isShadow: true, speciesId: "GASTLY", formId: undefined })),
+    );
+  });
 });

@@ -1,5 +1,7 @@
 import RaidListPage from "./features/raids/RaidListPage";
 import RaidDetailPage from "./features/raids/RaidDetailPage";
+import MaxBattleListPage from "./features/battles/MaxBattleListPage";
+import MaxBattleDetailPage from "./features/battles/MaxBattleDetailPage";
 import PokedexListPage from "./features/pokedex/PokedexListPage";
 import PokedexDetailPage from "./features/pokedex/PokedexDetailPage";
 import EventCalendarPage from "./features/events/EventCalendarPage";
@@ -16,6 +18,10 @@ export default function App() {
 
   if (path === "/raids") {
     return <RaidListPage />;
+  }
+
+  if (path === "/max-battles") {
+    return <MaxBattleListPage />;
   }
 
   if (path === "/pokedex") {
@@ -39,6 +45,11 @@ export default function App() {
   const raidDetailMatch = path.match(/^\/raids\/([^/]+)$/);
   if (raidDetailMatch) {
     return <RaidDetailPage raidBossId={decodeURIComponent(raidDetailMatch[1])} />;
+  }
+
+  const maxBattleDetailMatch = path.match(/^\/max-battles\/([^/]+)$/);
+  if (maxBattleDetailMatch) {
+    return <MaxBattleDetailPage maxBattleId={decodeURIComponent(maxBattleDetailMatch[1])} />;
   }
 
   const eventDetailMatch = path.match(/^\/events\/(.+)$/);
