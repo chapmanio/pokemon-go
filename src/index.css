@@ -1090,8 +1090,15 @@ button:disabled {
 .detail-grid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin: 0;
+}
+
+.detail-grid > div {
+  align-items: baseline;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .detail-grid dt {
@@ -1103,6 +1110,32 @@ button:disabled {
 
 .detail-grid dd {
   margin: 0.25rem 0 0;
+}
+
+.stat-value {
+  border-radius: 0.35rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  padding: 0.15rem 0.35rem;
+}
+
+.stat-value--strong {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.stat-value--average {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.stat-value--weak {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.detail-form-select {
+  margin: 0.75rem 0 1rem;
 }
 
 .source-disclosure--detail {
@@ -1250,20 +1283,6 @@ button:disabled {
   min-height: 4rem;
 }
 
-.battle-matchups {
-  margin-bottom: 1rem;
-}
-
-.battle-matchups:last-child {
-  margin-bottom: 0;
-}
-
-.battle-matchups h3 {
-  color: #475569;
-  font-size: 0.9rem;
-  margin-bottom: 0.6rem;
-}
-
 .type-pills {
   display: flex;
   flex-wrap: wrap;
@@ -1277,6 +1296,28 @@ button:disabled {
   color: #1e40af;
   font-weight: 700;
   padding: 0.45rem 0.75rem;
+}
+
+.matchup-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.matchup-list__row {
+  align-items: baseline;
+  border-bottom: 1px solid #f1f5f9;
+  color: #475569;
+  display: flex;
+  font-size: 0.85rem;
+  justify-content: space-between;
+  padding: 0.45rem 0;
+}
+
+.matchup-list__multiplier {
+  color: #334155;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
 }
 
 .estimate-summary {

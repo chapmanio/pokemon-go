@@ -8,6 +8,9 @@ import type {
   PokemonListEntry,
   PokemonListResult,
   PokemonReference,
+  PokemonStatRating,
+  PokemonStatRatings,
+  PokemonStats,
 } from "../domain/pokemon";
 import {
   annotatePokemonReferences,
@@ -66,6 +69,29 @@ function formOrder(left: PokemonReference, right: PokemonReference): number {
 
 function formsFor(entries: PokemonReference[], pokemonId: number): PokemonReference[] {
   return entries.filter((entry) => entry.pokemonId === pokemonId).sort(formOrder);
+}
+
+function statRatingsFor(entries: PokemonReference[], entry: PokemonReference): PokemonStatRatings | undefined {
+  if (!entry.stats) return undefined;
+
+  function ratingFor(stat: keyof PokemonStats): PokemonStatRating {
+    const values = entries
+      .flatMap((candidate) => candidate.stats ? [candidate.stats[stat]] : [])
+      .sort((left, right) => left - right);
+    if (values.length < 3) return "average";
+
+    const lowerValues = values.filter((value) => value < entry.stats![stat]).length;
+    const percentile = lowerValues / (values.length - 1);
+    if (percentile >= 0.67) return "strong";
+    if (percentile <= 0.33) return "weak";
+    return "average";
+  }
+
+  return {
+    attack: ratingFor("attack"),
+    defense: ratingFor("defense"),
+    stamina: ratingFor("stamina"),
+  };
 }
 
 function formSummary(entry: PokemonReference): PokemonFormSummary {
@@ -275,6 +301,7 @@ export function createPokemonService({ store, fetcher = fetch, now = () => new D
       return {
         ...entry,
         forms: forms.map(formSummary),
+        statRatings: statRatingsFor(entries, entry),
         battle: battleReference(snapshot, entry),
         freshness: snapshotFreshness(snapshot, currentTime),
         warnings: snapshot?.error

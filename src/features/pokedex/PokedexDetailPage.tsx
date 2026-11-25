@@ -4,6 +4,7 @@ import type { MouseEvent } from "react";
 import type {
   PokemonDetailResult,
   PokemonMoveReference,
+  PokemonStatRating,
   PokemonTypeEffectiveness,
   PokemonTypeMatchup,
 } from "../../domain/pokemon";
@@ -44,7 +45,6 @@ function EnergyBars({ energyDelta }: { energyDelta?: number }) {
 
   return (
     <span className="move-energy" aria-label={`Uses ${energyCost} energy`}>
-      <span aria-hidden="true">×</span>
       <span className={`move-energy__bars move-energy__bars--${bars}`} aria-hidden="true">
         {Array.from({ length: bars }, (_, index) => <span className="move-energy__bar" key={index} />)}
       </span>
@@ -54,10 +54,15 @@ function EnergyBars({ energyDelta }: { energyDelta?: number }) {
 
 function MoveList({ title, moves, charged = false }: { title: string; moves: PokemonMoveReference[]; charged?: boolean }) {
   if (moves.length === 0) return null;
+  const orderedMoves = [...moves].sort((left, right) => (
+    (right.power ?? 0) * (charged ? energyBarCount(right.energyDelta) ?? 1 : 1)
+    - (left.power ?? 0) * (charged ? energyBarCount(left.energyDelta) ?? 1 : 1)
+  ) || left.name.localeCompare(right.name));
+
   return (
     <div className="move-group">
       <h3>{title}</h3>
-      <ul>{moves.map((move) => (
+      <ul>{orderedMoves.map((move) => (
         <li key={move.name}>
           <span className="move-info">
             <span className="move-name">{move.name}</span>
@@ -79,38 +84,25 @@ function formatMultiplier(multiplier: number): string {
   return multiplier.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
 }
 
-function MatchupList({ title, matchups, empty }: { title: string; matchups: PokemonTypeMatchup[]; empty: string }) {
+function MatchupRows({ rows, empty }: { rows: Array<{ label: string; multiplier: number }>; empty: string }) {
   return (
-    <div className="battle-matchups">
-      <h3>{title}</h3>
-      {matchups.length > 0 ? (
-        <div className="type-pills" aria-label={title}>
-          {matchups.map((matchup) => (
-            <span className="type-pill" key={matchup.attackType}>
-              {matchup.attackType} ×{formatMultiplier(matchup.multiplier)}
-            </span>
-          ))}
-        </div>
-      ) : <p className="detail-panel__note">{empty}</p>}
-    </div>
+    rows.length > 0 ? (
+      <ul className="matchup-list">
+        {rows.map((row) => (
+          <li className="matchup-list__row" key={row.label}>
+            <span>{row.label}</span>
+            <span className="matchup-list__multiplier">×{formatMultiplier(row.multiplier)}</span>
+          </li>
+        ))}
+      </ul>
+    ) : <p className="detail-panel__note">{empty}</p>
   );
 }
 
-function EffectiveAgainstList({ matchups }: { matchups: PokemonTypeEffectiveness[] }) {
-  return (
-    <div className="battle-matchups">
-      <h3>Effective against</h3>
-      {matchups.length > 0 ? (
-        <div className="type-pills" aria-label="Effective against">
-          {matchups.map((matchup) => (
-            <span className="type-pill" key={matchup.defenderType}>
-              {matchup.defenderType} ×{formatMultiplier(matchup.multiplier)}
-            </span>
-          ))}
-        </div>
-      ) : <p className="detail-panel__note">No effective matchups are available from the listed move types.</p>}
-    </div>
-  );
+function statRatingLabel(rating: PokemonStatRating): string {
+  return rating === "strong" ? "Strong relative to the current Pokédex"
+    : rating === "weak" ? "Weak relative to the current Pokédex"
+      : "Average relative to the current Pokédex";
 }
 
 function differenceLabel(difference: PokemonDetailResult["functionalDifference"]): string {
@@ -186,12 +178,11 @@ export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }
             </section>
           )}
           {detail.forms.length > 1 && (
-            <section className="detail-panel form-panel">
-              <h2>Forms</h2>
-              <label className="search-label" htmlFor="pokemon-form">Choose a form</label>
+            <div className="detail-form-select">
               <select
                 id="pokemon-form"
                 className="form-select"
+                aria-label="Choose a form"
                 value={detail.pokemonKey}
                 onChange={(event) => { window.location.href = `/pokedex/${encodeURIComponent(event.target.value)}`; }}
               >
@@ -206,21 +197,17 @@ export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }
                   </option>
                 ))}
               </select>
-              {detail.functionalDifference !== "none" && (
-                <p className="detail-panel__note">This form has {differenceLabel(detail.functionalDifference).toLowerCase()} compared with the default form.</p>
-              )}
-            </section>
+            </div>
           )}
           <section className="detail-panel">
             <h2>Base stats</h2>
             {detail.stats ? (
               <>
                 <dl className="detail-grid">
-                  <div><dt>Attack</dt><dd>{detail.stats.attack}</dd></div>
-                  <div><dt>Defense</dt><dd>{detail.stats.defense}</dd></div>
-                  <div><dt>Stamina</dt><dd>{detail.stats.stamina}</dd></div>
+                  <div><dt>Attack</dt><dd className={`stat-value stat-value--${detail.statRatings?.attack ?? "average"}`} title={statRatingLabel(detail.statRatings?.attack ?? "average")}>{detail.stats.attack}</dd></div>
+                  <div><dt>Defense</dt><dd className={`stat-value stat-value--${detail.statRatings?.defense ?? "average"}`} title={statRatingLabel(detail.statRatings?.defense ?? "average")}>{detail.stats.defense}</dd></div>
+                  <div><dt>Stamina</dt><dd className={`stat-value stat-value--${detail.statRatings?.stamina ?? "average"}`} title={statRatingLabel(detail.statRatings?.stamina ?? "average")}>{detail.stats.stamina}</dd></div>
                 </dl>
-                <p className="detail-panel__note detail-panel__explanation">These are base battle stats used in Pokémon GO’s damage, CP, and HP calculations. They are not scores out of a fixed total, and the three stats use different scales.</p>
               </>
             ) : <p className="detail-panel__note">Stats are not available for this form.</p>}
           </section>
@@ -246,18 +233,21 @@ export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }
               ))}
             </div>
             <div className="battle-tab-panel">
-              {battleTab === "strong" && <EffectiveAgainstList matchups={detail.battle.effectiveAgainst} />}
+              {battleTab === "strong" && (
+                <MatchupRows
+                  rows={detail.battle.effectiveAgainst.map((matchup: PokemonTypeEffectiveness) => ({ label: matchup.defenderType, multiplier: matchup.multiplier }))}
+                  empty="No strong matchups are available from the listed move types."
+                />
+              )}
               {battleTab === "weak" && (
-                <MatchupList
-                  title="Weaknesses"
-                  matchups={detail.battle.weaknesses}
+                <MatchupRows
+                  rows={detail.battle.weaknesses.map((matchup: PokemonTypeMatchup) => ({ label: matchup.attackType, multiplier: matchup.multiplier }))}
                   empty="Weakness data is not available for this form."
                 />
               )}
               {battleTab === "resistant" && (
-                <MatchupList
-                  title="Resistances"
-                  matchups={detail.battle.resistances}
+                <MatchupRows
+                  rows={detail.battle.resistances.map((matchup: PokemonTypeMatchup) => ({ label: matchup.attackType, multiplier: matchup.multiplier }))}
                   empty="No resistances are listed for this form."
                 />
               )}

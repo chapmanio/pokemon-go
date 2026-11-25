@@ -15,6 +15,14 @@ export interface PokemonStats {
   stamina: number;
 }
 
+export type PokemonStatRating = "strong" | "average" | "weak";
+
+export interface PokemonStatRatings {
+  attack: PokemonStatRating;
+  defense: PokemonStatRating;
+  stamina: PokemonStatRating;
+}
+
 export interface PokemonMovePools {
   fast: string[];
   charged: string[];
@@ -117,6 +125,7 @@ export interface PokemonListResult {
 
 export interface PokemonDetailResult extends PokemonReference {
   forms: PokemonFormSummary[];
+  statRatings?: PokemonStatRatings;
   battle: PokemonBattleReference;
   freshness: Freshness;
   warnings: string[];
