@@ -18,7 +18,7 @@ function StatusPanel({ result }: { result: PokemonListResult }) {
   if (!updatedAt) return null;
 
   return (
-    <section className={`status-panel status-panel--${result.freshness}`} aria-label="Pokédex data status">
+    <section className={`status-panel pokedex-status-panel status-panel--${result.freshness}`} aria-label="Pokédex data status">
       <p className="status-panel__time">
         <RefreshCw aria-hidden="true" size={14} strokeWidth={2.5} />
         {updatedAt}
@@ -76,10 +76,6 @@ export default function PokedexListPage() {
 
   return (
     <AppShell activeSection="pokedex">
-      <section className="page-heading">
-        <h1>Pokédex</h1>
-      </section>
-
       {loading && !result && <p className="loading-state">Loading the Pokédex…</p>}
 
       {error && (
@@ -92,13 +88,6 @@ export default function PokedexListPage() {
 
       {result && (
         <>
-          <StatusPanel result={result} />
-          {result.warnings.length > 0 && (
-            <section className="warning-panel" aria-label="Pokédex warnings">
-              <strong>Source notes</strong>
-              <ul>{result.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul>
-            </section>
-          )}
           <div className="pokedex-toolbar">
             <label className="search-label" htmlFor="pokemon-search">Search Pokémon, form, or number</label>
             <input
@@ -110,6 +99,13 @@ export default function PokedexListPage() {
               placeholder="Try Pikachu, Alola, or 25"
             />
           </div>
+          <StatusPanel result={result} />
+          {result.warnings.length > 0 && (
+            <section className="warning-panel" aria-label="Pokédex warnings">
+              <strong>Source notes</strong>
+              <ul>{result.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul>
+            </section>
+          )}
           {entries.length > 0 ? (
             <div className="pokedex-grid">
               {entries.map((entry) => (

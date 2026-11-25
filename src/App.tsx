@@ -10,7 +10,11 @@ import AppShell from "./features/shared/AppShell";
 export default function App() {
   const path = window.location.pathname.replace(/\/$/, "") || "/";
 
-  if (path === "/" || path === "/raids") {
+  if (path === "/") {
+    return <PokedexListPage />;
+  }
+
+  if (path === "/raids") {
     return <RaidListPage />;
   }
 
