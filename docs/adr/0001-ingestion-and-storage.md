@@ -32,7 +32,7 @@ The browser reads only app-owned endpoints:
 
 - `GET /api/v1/raids`
 - `GET /api/v1/raids/:raidBossId`
-- `GET /api/v1/raid-counters/:raidBossId` with explicit estimate parameters
+- Raid detail responses include generic counter guidance when the cached raid source provides it.
 - `GET /api/v1/health`
 
 Each response includes data plus freshness, `as_of`, source provenance, and

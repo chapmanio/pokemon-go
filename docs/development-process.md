@@ -1,10 +1,10 @@
 # Development process
 
-## Current stage: Egg pools foundation awaiting manual acceptance
+## Current stage: Reliability and mobile review follow-ups awaiting S8 acceptance
 
 Do not start feature implementation until the following are agreed:
 
-- Product scope and five primary areas are stable.
+- Product scope and four primary areas are stable.
 - Initial stack and deployment approach are chosen.
 - First data sources have been fetched and sample payloads inspected.
 - Initial normalized domain models are defined for Pokémon, moves, raids and events.
@@ -40,14 +40,15 @@ accepted behaviour and be driven by adapter or fixture findings.
 The Team GO Rocket idea was removed after review because the available source
 produced mostly generic guidance without enough practical value. Its routes,
 adapter, cached model and product documentation were removed. Egg pools are
-now the current-play feature under implementation.
+now the fourth current-play feature.
 
 The Egg Pools foundation now has a server-side Leak Duck adapter,
 manifest-based freshness detection, cached normalized groups, a simple pool
 view and source-aware rarity/shiny display. Manual acceptance should verify
 group labels, distance variants, duplicate Pokémon across groups, rarity
 labels, image fallback, stale/degraded behaviour and Firefox for Android
-before the slice is marked complete.
+before the slice is marked complete. The next manual pass also covers mobile
+navigation and image fallbacks from the full-app review.
 
 ## First vertical slice
 

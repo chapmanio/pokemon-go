@@ -2,7 +2,7 @@
 
 ## Baseline
 
-- Reuse the existing app's React, TypeScript, Vite, TanStack Router/Query, Tailwind, and PWA approach as the front-end baseline.
+- Reuse the existing app's React, TypeScript, Vite, Tailwind, and PWA approach as the front-end baseline. The current app uses small manual route handling and direct typed API clients; do not introduce a router or query layer until a concrete need justifies it.
 - Reuse its mobile-first visual patterns, but do not reuse its PokéAPI-specific models or browser-only cache unchanged.
 - Put community-source access behind an app-owned server-side ingestion boundary. The browser should consume normalized app data, not call community endpoints directly.
 - Keep source adapters, validation, freshness metadata, and last-known-good snapshots behind that boundary.

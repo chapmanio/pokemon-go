@@ -6,10 +6,10 @@ Show one list entry per Pokédex number while retaining regional, battle,
 costume, pattern and event forms under that number. Search matches species,
 form labels and numbers. Use detail sections for:
 
-- Overview: types, forms, stats and CP.
+- Overview: types, forms and stats.
 - Battle: move metadata, weaknesses, resistances and raid relevance.
-- Evolution: family, candy, items and power-up information.
-- Availability: shiny, raid, egg, research and other sources.
+- Availability details are added only when a trusted current source supports them;
+  they are not a personal planning system.
 
 ## Raids
 

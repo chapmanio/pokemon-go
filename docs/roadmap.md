@@ -10,7 +10,7 @@
 
 ## Phase 1: foundation
 
-- Create app shell and five primary routes.
+- Create app shell and four primary routes.
 - Add source adapters, caching and health status.
 - Add normalised Pokémon, move, raid and event models.
 - Add global search and shared freshness indicators.
@@ -22,15 +22,15 @@
 - Add raid detail pages, counters and generic estimates.
 - Add a simple capable-trainer estimate and four-trainer Party Play check.
 
-## Phase 3: current-play tools — in progress
+## Phase 3: current-play tools — complete
 
 - Add event calendar and event details.
 - Add egg pools.
 
-## Phase 4: deeper guidance
+## Phase 4: deeper guidance — complete for the current scope
 
 - Add richer raid alternatives and explanations.
-- Optionally add a low-visibility source change log linked from the footer.
+- Keep source change history out of the main product; revisit only if it becomes useful.
 
 ## Completion rule
 
