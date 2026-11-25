@@ -33,6 +33,22 @@ function freshnessForSnapshots(snapshots: StoredEventSnapshot[], now: Date, expe
     : "fresh";
 }
 
+function calendarDate(value: string): string | undefined {
+  const datePart = /^(\d{4}-\d{2}-\d{2})/.exec(value)?.[1];
+  if (datePart) return datePart;
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString().slice(0, 10);
+}
+
+function currentEvents(events: PokemonGoEvent[], now: Date): PokemonGoEvent[] {
+  const currentDate = now.toISOString().slice(0, 10);
+  return events.filter((event) => {
+    const endDate = calendarDate(event.endsAt);
+    return endDate !== undefined && endDate >= currentDate;
+  });
+}
+
 async function refreshAdapter(
   adapter: EventSourceAdapter,
   store: EventSnapshotStore,
@@ -91,7 +107,7 @@ export function createEventService({ store, adapters, now = () => new Date() }: 
       const snapshots = (await Promise.all(
         adapters.map((adapter) => refreshAdapter(adapter, store, currentTime, options.forceRefresh ?? false)),
       )).filter((snapshot): snapshot is StoredEventSnapshot => snapshot !== undefined);
-      const events = snapshots.flatMap((snapshot) => snapshot.events);
+      const events = currentEvents(snapshots.flatMap((snapshot) => snapshot.events), currentTime);
       const primary = snapshots[0];
       const warnings = snapshots.length < adapters.length || snapshots.some((snapshot) => snapshot.error)
         ? ["The event source could not be refreshed; showing the last known-good calendar."]

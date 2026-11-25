@@ -20,13 +20,34 @@ describe("event service", () => {
 
     const result = await service.getEvents();
 
-    expect(result.events).toHaveLength(3);
+    expect(result.events).toHaveLength(1);
+    expect(result.events[0].title).toBe("Dynamax Trails");
     expect(result.freshness).toBe("fresh");
     expect(result.sources).toEqual(["leekduck"]);
     expect(result.events[0].provenance).toMatchObject({
       contentHash: "events-hash",
       sourceUpdatedAt: "2026-11-23T11:00:00Z",
     });
+  });
+
+  it("keeps events through their ending date and hides them from the following date", async () => {
+    const service = createEventService({
+      store: createMemoryEventSnapshotStore(),
+      adapters: [createFixtureEventAdapter(fixture)],
+      now: () => new Date("2026-11-23T23:59:59.000Z"),
+    });
+
+    const onEndingDate = await service.getEvents();
+    expect(onEndingDate.events.map((event) => event.title)).toEqual(["Dynamax Trails"]);
+
+    const nextDayService = createEventService({
+      store: createMemoryEventSnapshotStore(),
+      adapters: [createFixtureEventAdapter(fixture)],
+      now: () => new Date("2026-11-24T00:00:00.000Z"),
+    });
+
+    const afterEndingDate = await nextDayService.getEvents();
+    expect(afterEndingDate.events).toEqual([]);
   });
 
   it("retains last-known-good data after refresh failure", async () => {
