@@ -5,6 +5,7 @@ import type {
   PokemonFunctionalDifference,
   PokemonReference,
   PokemonStats,
+  PokemonTypeEffectiveness,
   PokemonTypeMatchup,
 } from "../domain/pokemon";
 import type { PokemonNormalizationProvenance } from "./pokemon-source";
@@ -109,6 +110,23 @@ function typeMatchups(
     .sort((left, right) => right.multiplier - left.multiplier || left.attackType.localeCompare(right.attackType));
 }
 
+function effectiveAgainst(
+  moveTypes: string[],
+  effectiveness: Record<string, Record<string, number>>,
+): PokemonTypeEffectiveness[] {
+  const defenderTypes = new Set(Object.values(effectiveness).flatMap((matchups) => Object.keys(matchups)));
+  return [...defenderTypes]
+    .map((defenderType) => ({
+      defenderType,
+      multiplier: Math.max(
+        1,
+        ...moveTypes.map((moveType) => effectiveness[moveType]?.[defenderType] ?? 1),
+      ),
+    }))
+    .filter((matchup) => matchup.multiplier > 1)
+    .sort((left, right) => right.multiplier - left.multiplier || left.defenderType.localeCompare(right.defenderType));
+}
+
 function battleReferenceFromCatalog(
   types: string[],
   moves: PokemonMovePools,
@@ -117,16 +135,24 @@ function battleReferenceFromCatalog(
   effectiveness: Record<string, Record<string, number>>,
 ): PokemonBattleReference {
   const matchups = typeMatchups(types, effectiveness);
+  const moveDetails = {
+    fast: moveDetailsForNames(moves.fast, fastCatalog),
+    charged: moveDetailsForNames(moves.charged, chargedCatalog),
+    eliteFast: moveDetailsForNames(moves.eliteFast, fastCatalog),
+    eliteCharged: moveDetailsForNames(moves.eliteCharged, chargedCatalog),
+  };
+  const moveTypes = [...new Set([
+    ...moveDetails.fast,
+    ...moveDetails.charged,
+    ...moveDetails.eliteFast,
+    ...moveDetails.eliteCharged,
+  ].flatMap((move) => move.type ? [move.type] : []))];
 
   return {
     weaknesses: matchups.filter((matchup) => matchup.multiplier > 1),
     resistances: matchups.filter((matchup) => matchup.multiplier < 1),
-    moveDetails: {
-      fast: moveDetailsForNames(moves.fast, fastCatalog),
-      charged: moveDetailsForNames(moves.charged, chargedCatalog),
-      eliteFast: moveDetailsForNames(moves.eliteFast, fastCatalog),
-      eliteCharged: moveDetailsForNames(moves.eliteCharged, chargedCatalog),
-    },
+    effectiveAgainst: effectiveAgainst(moveTypes, effectiveness),
+    moveDetails,
   };
 }
 

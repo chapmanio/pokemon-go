@@ -43,9 +43,15 @@ export interface PokemonTypeMatchup {
   multiplier: number;
 }
 
+export interface PokemonTypeEffectiveness {
+  defenderType: string;
+  multiplier: number;
+}
+
 export interface PokemonBattleReference {
   weaknesses: PokemonTypeMatchup[];
   resistances: PokemonTypeMatchup[];
+  effectiveAgainst: PokemonTypeEffectiveness[];
   moveDetails: PokemonMoveDetails;
 }
 
