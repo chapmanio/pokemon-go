@@ -152,7 +152,7 @@ function battleReferenceFromCatalog(
     weaknesses: matchups.filter((matchup) => matchup.multiplier > 1),
     resistances: matchups
       .filter((matchup) => matchup.multiplier < 1)
-      .sort((left, right) => left.multiplier - right.multiplier || left.attackType.localeCompare(right.attackType)),
+      .sort((left, right) => right.multiplier - left.multiplier || left.attackType.localeCompare(right.attackType)),
     effectiveAgainst: effectiveAgainst(moveTypes, effectiveness),
     moveDetails,
   };
