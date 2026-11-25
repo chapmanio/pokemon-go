@@ -5,6 +5,7 @@ import PokedexDetailPage from "./features/pokedex/PokedexDetailPage";
 import EventCalendarPage from "./features/events/EventCalendarPage";
 import EventDetailPage from "./features/events/EventDetailPage";
 import EggPoolsPage from "./features/eggs/EggPoolsPage";
+import AppShell from "./features/shared/AppShell";
 
 export default function App() {
   const path = window.location.pathname.replace(/\/$/, "") || "/";
@@ -43,10 +44,10 @@ export default function App() {
 
 
   return (
-    <main className="app-shell">
+    <AppShell pageTitle="Not found">
       <p className="eyebrow">Pokémon GO companion</p>
       <h1>Page not found</h1>
       <p><a href="/raids">Open the raid roster</a></p>
-    </main>
+    </AppShell>
   );
 }

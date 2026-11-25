@@ -4,6 +4,7 @@ import { fetchEvent } from "../../client/event-api";
 import { formatEventDate, groupRelatedBySection } from "./event-calendar";
 import ShinyIndicator from "../shared/ShinyIndicator";
 import FallbackImage from "../shared/FallbackImage";
+import AppShell from "../shared/AppShell";
 
 const freshnessCopy: Record<EventFreshness, string> = {
   fresh: "Fresh event data",
@@ -31,21 +32,12 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
   }, [eventId, reloadKey]);
 
   return (
-    <main className="app-shell">
-      <header className="site-header">
-        <a className="brand" href="/">PokéGO companion</a>
-        <nav aria-label="Primary navigation">
-          <a className="nav-link" href="/pokedex">Pokédex</a>
-          <a className="nav-link" href="/raids">Raids</a>
-          <a className="nav-link nav-link--active" href="/events">Events</a>
-          <a className="nav-link" href="/eggs">Eggs</a>
-        </nav>
-      </header>
+    <AppShell activeSection="events">
       <p className="back-link"><a href="/events">← Back to event calendar</a></p>
       {error && <section className="error-panel" role="alert"><strong>We couldn’t load this event.</strong><p>{error}</p><button type="button" onClick={() => setReloadKey((key) => key + 1)}>Try again</button><p><a href="/events">Return to the event calendar</a></p></section>}
       {!result && !error && <p className="loading-state">Loading event…</p>}
       {result && <EventDetails result={result} />}
-    </main>
+    </AppShell>
   );
 }
 

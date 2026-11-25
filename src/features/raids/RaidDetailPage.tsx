@@ -5,6 +5,7 @@ import { formatCpRange, groupCounterSuggestions, sourceLabel } from "./raid-list
 import { estimateRaid } from "./raid-estimate";
 import ShinyIndicator from "../shared/ShinyIndicator";
 import FallbackImage from "../shared/FallbackImage";
+import AppShell from "../shared/AppShell";
 
 const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "This raid detail was recently fetched and validated." },
@@ -245,17 +246,7 @@ export default function RaidDetailPage({ raidBossId }: { raidBossId: string }) {
   }, [raidBossId, reloadKey]);
 
   return (
-    <main className="app-shell">
-      <header className="site-header">
-        <a className="brand" href="/">PokéGO companion</a>
-        <nav aria-label="Primary navigation">
-          <a className="nav-link" href="/pokedex">Pokédex</a>
-          <a className="nav-link nav-link--active" href="/raids">Raids</a>
-          <a className="nav-link" href="/events">Events</a>
-          <a className="nav-link" href="/eggs">Eggs</a>
-        </nav>
-      </header>
-
+    <AppShell activeSection="raids">
       <p className="back-link"><a href="/raids">← Back to raid roster</a></p>
 
       {error && (
@@ -293,6 +284,6 @@ export default function RaidDetailPage({ raidBossId }: { raidBossId: string }) {
           <EstimatePanel detail={detail} />
         </>
       )}
-    </main>
+    </AppShell>
   );
 }

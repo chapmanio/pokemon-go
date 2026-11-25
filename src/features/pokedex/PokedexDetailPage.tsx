@@ -1,29 +1,25 @@
 import { useEffect, useState } from "react";
-import type { Freshness, PokemonDetailResult, PokemonMoveReference, PokemonTypeMatchup } from "../../domain/pokemon";
+import { RefreshCw } from "lucide-react";
+import type { MouseEvent } from "react";
+import type { PokemonDetailResult, PokemonMoveReference, PokemonTypeMatchup } from "../../domain/pokemon";
 import { fetchPokemonDetail } from "../../client/pokemon-api";
 import { formLabel, functionalDifferenceLabel } from "./pokedex";
 import PokemonImage from "./PokemonImage";
-
-const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
-  fresh: { label: "Fresh data", detail: "This Pokémon detail was recently fetched and validated." },
-  stale: { label: "Stale data", detail: "This detail is usable, but may have changed since the last refresh." },
-  degraded: { label: "Degraded data", detail: "Showing last known-good data because the source refresh failed." },
-  unavailable: { label: "Unavailable", detail: "No validated detail is currently available." },
-};
+import AppShell from "../shared/AppShell";
 
 function DetailStatus({ detail }: { detail: PokemonDetailResult }) {
-  const status = freshnessCopy[detail.freshness];
   const date = new Date(detail.provenance.fetchedAt);
   const fetchedAt = Number.isNaN(date.getTime())
     ? undefined
-    : date.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+    : `Updated ${date.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}`;
+  if (!fetchedAt) return null;
+
   return (
     <section className={`status-panel status-panel--${detail.freshness}`} aria-label="Pokédex data status">
-      <div>
-        <p className="status-panel__label">{status.label}</p>
-        <p>{status.detail}</p>
-      </div>
-      {fetchedAt && <p className="status-panel__time">Fetched {fetchedAt}</p>}
+      <p className="status-panel__time">
+        <RefreshCw aria-hidden="true" size={14} strokeWidth={2.5} />
+        {fetchedAt}
+      </p>
     </section>
   );
 }
@@ -88,19 +84,19 @@ export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }
     return () => controller.abort();
   }, [pokemonKey, reloadKey]);
 
-  return (
-    <main className="app-shell">
-      <header className="site-header">
-        <a className="brand" href="/">PokéGO companion</a>
-        <nav aria-label="Primary navigation">
-          <a className="nav-link nav-link--active" href="/pokedex">Pokédex</a>
-          <a className="nav-link" href="/raids">Raids</a>
-          <a className="nav-link" href="/events">Events</a>
-          <a className="nav-link" href="/eggs">Eggs</a>
-        </nav>
-      </header>
+  function handleBackToPokedex(event: MouseEvent<HTMLAnchorElement>) {
+    const referrer = document.referrer;
+    const cameFromPokedex = referrer.startsWith(window.location.origin)
+      && new URL(referrer).pathname.replace(/\/$/, "") === "/pokedex";
+    if (cameFromPokedex) {
+      event.preventDefault();
+      window.history.back();
+    }
+  }
 
-      <p className="back-link"><a href="/pokedex">← Back to Pokédex</a></p>
+  return (
+    <AppShell activeSection="pokedex">
+      <p className="back-link"><a href="/pokedex" onClick={handleBackToPokedex}>← Back to Pokédex</a></p>
 
       {error && (
         <section className="error-panel" role="alert">
@@ -197,6 +193,6 @@ export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }
           </section>
         </>
       )}
-    </main>
+    </AppShell>
   );
 }

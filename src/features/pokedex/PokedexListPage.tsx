@@ -1,15 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Freshness, PokemonListResult } from "../../domain/pokemon";
+import { ArrowUp, RefreshCw } from "lucide-react";
+import type { PokemonListResult } from "../../domain/pokemon";
 import { fetchPokemonList } from "../../client/pokemon-api";
 import { filterPokemon } from "./pokedex";
 import PokemonImage from "./PokemonImage";
-
-const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
-  fresh: { label: "Fresh data", detail: "The Pokédex was recently fetched and validated." },
-  stale: { label: "Stale data", detail: "The Pokédex is usable, but may have changed since the last refresh." },
-  degraded: { label: "Degraded data", detail: "Showing the last known-good Pokédex because the source refresh failed." },
-  unavailable: { label: "Unavailable", detail: "No validated Pokédex data is currently available." },
-};
+import AppShell from "../shared/AppShell";
 
 function formatUpdatedAt(asOf?: string): string | undefined {
   if (!asOf) return undefined;
@@ -19,16 +14,40 @@ function formatUpdatedAt(asOf?: string): string | undefined {
 }
 
 function StatusPanel({ result }: { result: PokemonListResult }) {
-  const status = freshnessCopy[result.freshness];
   const updatedAt = formatUpdatedAt(result.asOf);
+  if (!updatedAt) return null;
+
   return (
     <section className={`status-panel status-panel--${result.freshness}`} aria-label="Pokédex data status">
-      <div>
-        <p className="status-panel__label">{status.label}</p>
-        <p>{status.detail}</p>
-      </div>
-      {updatedAt && <p className="status-panel__time">{updatedAt}</p>}
+      <p className="status-panel__time">
+        <RefreshCw aria-hidden="true" size={14} strokeWidth={2.5} />
+        {updatedAt}
+      </p>
     </section>
+  );
+}
+
+function ScrollToTopButton() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const updateVisibility = () => setVisible(window.scrollY > window.innerHeight * 2);
+    updateVisibility();
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+    return () => window.removeEventListener("scroll", updateVisibility);
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <button
+      className="scroll-top-button"
+      type="button"
+      aria-label="Scroll back to the top"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    >
+      <ArrowUp aria-hidden="true" size={20} strokeWidth={2.5} />
+    </button>
   );
 }
 
@@ -56,21 +75,9 @@ export default function PokedexListPage() {
   const entries = useMemo(() => filterPokemon(result?.entries ?? [], query), [result?.entries, query]);
 
   return (
-    <main className="app-shell">
-      <header className="site-header">
-        <a className="brand" href="/">PokéGO companion</a>
-        <nav aria-label="Primary navigation">
-          <a className="nav-link nav-link--active" href="/pokedex">Pokédex</a>
-          <a className="nav-link" href="/raids">Raids</a>
-          <a className="nav-link" href="/events">Events</a>
-          <a className="nav-link" href="/eggs">Eggs</a>
-        </nav>
-      </header>
-
+    <AppShell activeSection="pokedex">
       <section className="page-heading">
-        <p className="eyebrow">Reference</p>
-        <h1>Pokémon GO Pokédex</h1>
-        <p>Search Pokémon species and forms for Pokémon GO-specific stats, types, and move pools.</p>
+        <h1>Pokédex</h1>
       </section>
 
       {loading && !result && <p className="loading-state">Loading the Pokédex…</p>}
@@ -102,23 +109,21 @@ export default function PokedexListPage() {
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Try Pikachu, Alola, or 25"
             />
-            <p>{entries.length.toLocaleString()} of {result.entries.length.toLocaleString()} Pokédex numbers</p>
           </div>
           {entries.length > 0 ? (
             <div className="pokedex-grid">
               {entries.map((entry) => (
                 <article className="pokedex-card" key={entry.pokemonId}>
-                  <div className="pokedex-card__header">
+                  <a className="pokedex-card__link" href={`/pokedex/${encodeURIComponent(entry.pokemonKey)}`}>
                     <PokemonImage className="pokedex-card__image" src={entry.assetUrl} alt={`${entry.displayName} icon`} />
-                    <div>
+                    <div className="pokedex-card__content">
                       <p className="pokedex-card__number">#{String(entry.pokemonId).padStart(4, "0")}</p>
-                      <h2><a href={`/pokedex/${encodeURIComponent(entry.pokemonKey)}`}>{entry.displayName}</a></h2>
+                      <div className="pokedex-card__details">
+                        <h2>{entry.displayName}</h2>
+                        <p className="pokedex-card__types">{entry.types.join(" · ") || "Types not listed"}</p>
+                      </div>
                     </div>
-                  </div>
-                  <p className="pokedex-card__types">{entry.types.join(" · ") || "Types not listed"}</p>
-                  {entry.formCount > 1 && (
-                    <p className="pokedex-card__forms">{entry.formCount} forms{entry.meaningfulFormCount > 0 ? ` · ${entry.meaningfulFormCount} with different battle data` : ""}</p>
-                  )}
+                  </a>
                 </article>
               ))}
             </div>
@@ -127,6 +132,7 @@ export default function PokedexListPage() {
           )}
         </>
       )}
-    </main>
+      <ScrollToTopButton />
+    </AppShell>
   );
 }

@@ -4,6 +4,7 @@ import type { Freshness } from "../../domain/raid";
 import { fetchEggPools } from "../../client/egg-api";
 import ShinyIndicator from "../shared/ShinyIndicator";
 import FallbackImage from "../shared/FallbackImage";
+import AppShell from "../shared/AppShell";
 
 const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "Egg pools were recently fetched and validated." },
@@ -95,8 +96,7 @@ export default function EggPoolsPage() {
 
   const status = result ? freshnessCopy[result.freshness] : undefined;
   return (
-    <main className="app-shell">
-      <header className="site-header"><a className="brand" href="/">PokéGO companion</a><nav aria-label="Primary navigation"><a className="nav-link" href="/pokedex">Pokédex</a><a className="nav-link" href="/raids">Raids</a><a className="nav-link" href="/events">Events</a><a className="nav-link nav-link--active" href="/eggs">Eggs</a></nav></header>
+    <AppShell activeSection="eggs">
       <section className="page-heading"><p className="eyebrow">Reference</p><h1>Egg pools</h1><p>See which Pokémon can currently hatch from each egg type. Rarity tiers are relative source labels, not hatch probabilities.</p></section>
       {loading && !result && <p className="loading-state">Loading egg pools…</p>}
       {error && <section className="error-panel" role="alert"><strong>We couldn’t load the egg pools.</strong><p>{error}</p><button type="button" onClick={() => setReloadKey((key) => key + 1)}>Try again</button></section>}
@@ -106,6 +106,6 @@ export default function EggPoolsPage() {
         <div className="roster-summary"><p><strong>{result.pools.length}</strong> egg groups listed</p><p>Source: {result.sources.join(", ") || "None"}</p><button type="button" onClick={() => setReloadKey((key) => key + 1)} disabled={loading}>{loading ? "Refreshing…" : "Refresh"}</button></div>
         {result.pools.map((pool) => <EggPoolSection key={pool.eggPoolId} pool={pool} />)}
       </>}
-    </main>
+    </AppShell>
   );
 }

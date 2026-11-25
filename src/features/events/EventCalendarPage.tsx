@@ -3,6 +3,7 @@ import type { EventFreshness, EventCalendarResult, PokemonGoEvent } from "../../
 import { fetchEventCalendar } from "../../client/event-api";
 import { eventStatus, formatEventDate, groupEventsByMonth } from "./event-calendar";
 import FallbackImage from "../shared/FallbackImage";
+import AppShell from "../shared/AppShell";
 
 const freshnessCopy: Record<EventFreshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "The event calendar was recently fetched and validated." },
@@ -77,17 +78,7 @@ export default function EventCalendarPage() {
   const groups = result ? groupEventsByMonth(result.events) : [];
 
   return (
-    <main className="app-shell">
-      <header className="site-header">
-        <a className="brand" href="/">PokéGO companion</a>
-        <nav aria-label="Primary navigation">
-          <a className="nav-link" href="/pokedex">Pokédex</a>
-          <a className="nav-link" href="/raids">Raids</a>
-          <a className="nav-link nav-link--active" href="/events">Events</a>
-          <a className="nav-link" href="/eggs">Eggs</a>
-        </nav>
-      </header>
-
+    <AppShell activeSection="events">
       <section className="page-heading">
         <p className="eyebrow">Plan ahead</p>
         <h1>Event calendar</h1>
@@ -126,6 +117,6 @@ export default function EventCalendarPage() {
           )) : <p className="empty-state">No events are available right now.</p>}
         </>
       )}
-    </main>
+    </AppShell>
   );
 }

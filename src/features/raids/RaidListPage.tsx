@@ -4,6 +4,7 @@ import { fetchRaidRoster } from "../../client/raid-api";
 import { formatCpRange, groupRaidsByTier, sourceLabel } from "./raid-list";
 import ShinyIndicator from "../shared/ShinyIndicator";
 import FallbackImage from "../shared/FallbackImage";
+import AppShell from "../shared/AppShell";
 
 const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "The roster was recently fetched and validated." },
@@ -106,17 +107,7 @@ export default function RaidListPage() {
   const groups = result ? groupRaidsByTier(result.bosses) : [];
 
   return (
-    <main className="app-shell">
-      <header className="site-header">
-        <a className="brand" href="/">PokéGO companion</a>
-        <nav aria-label="Primary navigation">
-          <a className="nav-link" href="/pokedex">Pokédex</a>
-          <a className="nav-link nav-link--active" href="/raids">Raids</a>
-          <a className="nav-link" href="/events">Events</a>
-          <a className="nav-link" href="/eggs">Eggs</a>
-        </nav>
-      </header>
-
+    <AppShell activeSection="raids">
       <section className="page-heading">
         <p className="eyebrow">Current play</p>
         <h1>Raid roster</h1>
@@ -170,6 +161,6 @@ export default function RaidListPage() {
           )}
         </>
       )}
-    </main>
+    </AppShell>
   );
 }
