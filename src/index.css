@@ -33,8 +33,17 @@ body {
   align-items: center;
   border-bottom: 1px solid #e2e8f0;
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   justify-content: space-between;
   padding: 0.5rem 0 1rem;
+}
+
+.site-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  justify-content: flex-end;
 }
 
 .brand,
@@ -476,6 +485,24 @@ button:disabled {
   width: 100%;
 }
 
+.event-card__banner--empty,
+.event-detail__banner--empty {
+  align-items: center;
+  color: #64748b;
+  display: flex;
+  justify-content: center;
+  min-height: 5rem;
+}
+
+.event-card__banner--empty,
+.event-detail__banner--empty {
+  align-items: center;
+  color: #64748b;
+  display: flex;
+  justify-content: center;
+  min-height: 5rem;
+}
+
 .event-card__body {
   padding: 1rem;
 }
@@ -594,6 +621,29 @@ button:disabled {
   width: 2.75rem;
 }
 
+.event-reference__image {
+  background: #eff6ff;
+  border-radius: 0.5rem;
+  flex: 0 0 2.75rem;
+  height: 2.75rem;
+  object-fit: contain;
+  width: 2.75rem;
+}
+
+.event-reference__image--empty {
+  align-items: center;
+  color: #64748b;
+  display: flex;
+  justify-content: center;
+}
+
+.event-reference__image--empty {
+  align-items: center;
+  color: #64748b;
+  display: flex;
+  justify-content: center;
+}
+
 .event-reference strong,
 .event-reference small {
   display: block;
@@ -678,6 +728,7 @@ button:disabled {
 }
 
 .egg-card img,
+.egg-card__image,
 .egg-card__image--empty {
   background: #eff6ff;
   border-radius: 0.6rem;
@@ -776,6 +827,20 @@ button:disabled {
   height: 3rem;
   object-fit: contain;
   width: 3rem;
+}
+
+.counter-suggestion__image--empty {
+  align-items: center;
+  color: #64748b;
+  display: flex;
+  justify-content: center;
+}
+
+.counter-suggestion__image--empty {
+  align-items: center;
+  color: #64748b;
+  display: flex;
+  justify-content: center;
 }
 
 .counter-suggestion h4 {
@@ -905,6 +970,22 @@ button:disabled {
   display: flex;
   font-size: 2rem;
   justify-content: center;
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .site-header nav {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .nav-link {
+    padding: 0.45rem 0.6rem;
+  }
 }
 
 .detail-panel {

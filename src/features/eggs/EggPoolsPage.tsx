@@ -3,6 +3,7 @@ import type { EggPool, EggPoolEntry, EggPoolsResult } from "../../domain/egg";
 import type { Freshness } from "../../domain/raid";
 import { fetchEggPools } from "../../client/egg-api";
 import ShinyIndicator from "../shared/ShinyIndicator";
+import FallbackImage from "../shared/FallbackImage";
 
 const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "Egg pools were recently fetched and validated." },
@@ -62,7 +63,7 @@ function EggPoolSection({ pool }: { pool: EggPool }) {
           <h3>{group.label}</h3>
           <div className="egg-grid">
             {group.entries.map((entry) => <article className="egg-card" key={entry.name}>
-              {entry.assetUrl ? <img src={entry.assetUrl} alt="" loading="lazy" /> : <div className="egg-card__image--empty" aria-hidden="true">?</div>}
+              <FallbackImage className="egg-card__image" src={entry.assetUrl} alt="" />
               <div><h4>{entry.name}</h4><ShinyIndicator available={entry.shinyAvailable} /></div>
             </article>)}
           </div>

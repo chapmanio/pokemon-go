@@ -53,6 +53,7 @@ export interface RaidBoss {
   boostedCatchCp?: RaidRange;
   boostedWeather?: string[];
   assetUrl?: string;
+  pokedexKey?: string;
   startsAt?: string;
   endsAt?: string;
   isLocalTime?: boolean;

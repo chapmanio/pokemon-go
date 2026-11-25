@@ -6,11 +6,17 @@ A generic Pokémon GO planning and reference app for family play.
 
 ```bash
 npm install
+npm run build
+# terminal 1
+npm run dev:worker
+# terminal 2
 npm run dev
 npm test
 npm run lint
-npm run build
 ```
+
+The Vite dev server proxies `/api` to Wrangler on port 8787. Rebuild after
+front-end changes so Wrangler serves the latest `dist` assets.
 
 ## Documentation
 

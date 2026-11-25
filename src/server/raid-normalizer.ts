@@ -32,20 +32,20 @@ function asRange(value: unknown): RaidRange | undefined {
   const record = asRecord(value);
   const min = asNumber(record?.min);
   const max = asNumber(record?.max);
-  return min !== undefined && max !== undefined ? { min, max } : undefined;
+  return min !== undefined && max !== undefined && min <= max ? { min, max } : undefined;
 }
 
 function asArrayRange(value: unknown): RaidRange | undefined {
   if (!Array.isArray(value) || value.length < 2) return undefined;
   const min = asNumber(value[0]);
   const max = asNumber(value[1]);
-  return min !== undefined && max !== undefined ? { min, max } : undefined;
+  return min !== undefined && max !== undefined && min <= max ? { min, max } : undefined;
 }
 
 function asValueRange(minValue: unknown, maxValue: unknown): RaidRange | undefined {
   const min = asNumber(minValue);
   const max = asNumber(maxValue);
-  return min !== undefined && max !== undefined ? { min, max } : undefined;
+  return min !== undefined && max !== undefined && min <= max ? { min, max } : undefined;
 }
 
 function slug(value: string): string {

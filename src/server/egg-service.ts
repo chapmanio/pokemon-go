@@ -26,9 +26,9 @@ async function hashPayload(payload: unknown): Promise<string> {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-function freshnessForSnapshots(snapshots: StoredEggSnapshot[], now: Date): Freshness {
+function freshnessForSnapshots(snapshots: StoredEggSnapshot[], now: Date, expectedSources: number): Freshness {
   if (snapshots.length === 0) return "unavailable";
-  if (snapshots.some((snapshot) => snapshot.error)) return "degraded";
+  if (snapshots.length < expectedSources || snapshots.some((snapshot) => snapshot.error)) return "degraded";
   return snapshots.some((snapshot) => now.getTime() - new Date(snapshot.sourceUpdatedAt ?? snapshot.fetchedAt).getTime() > FRESH_AFTER_MS)
     ? "stale"
     : "fresh";
@@ -89,9 +89,9 @@ export function createEggService({ store, adapters, now = () => new Date() }: Eg
       return {
         pools: snapshots.flatMap((snapshot) => snapshot.pools),
         sources: snapshots.map((snapshot) => snapshot.source),
-        freshness: freshnessForSnapshots(snapshots, currentTime),
+        freshness: freshnessForSnapshots(snapshots, currentTime, adapters.length),
         asOf: primary?.fetchedAt,
-        warnings: snapshots.some((snapshot) => snapshot.error)
+        warnings: snapshots.length < adapters.length || snapshots.some((snapshot) => snapshot.error)
           ? ["The egg source could not be refreshed; showing the last known-good pools."]
           : [],
       };

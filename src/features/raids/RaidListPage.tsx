@@ -3,6 +3,7 @@ import type { Freshness, RaidBoss, RaidRosterResult } from "../../domain/raid";
 import { fetchRaidRoster } from "../../client/raid-api";
 import { formatCpRange, groupRaidsByTier, sourceLabel } from "./raid-list";
 import ShinyIndicator from "../shared/ShinyIndicator";
+import FallbackImage from "../shared/FallbackImage";
 
 const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "The roster was recently fetched and validated." },
@@ -24,11 +25,7 @@ function RaidCard({ boss }: { boss: RaidBoss }) {
   return (
     <article className="raid-card">
       <div className="raid-card__header">
-        {boss.assetUrl ? (
-          <img className="raid-card__image" src={boss.assetUrl} alt="" loading="lazy" />
-        ) : (
-          <div className="raid-card__image raid-card__image--empty" aria-hidden="true">?</div>
-        )}
+        <FallbackImage className="raid-card__image" src={boss.assetUrl} alt="" />
         <div>
           <h3><a className="raid-card__link" href={`/raids/${encodeURIComponent(boss.raidBossId)}`}>{boss.displayName}</a></h3>
           <p className="raid-card__types">{boss.types.join(" · ")}</p>

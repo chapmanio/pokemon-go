@@ -4,6 +4,7 @@ import {
   createRuntimePokemonService,
   createRuntimeRaidService,
 } from "../src/server/runtime-service";
+import { resolveRaidPokedexKey } from "../src/server/raid-identity";
 
 const jsonHeaders = { "content-type": "application/json; charset=utf-8" };
 
@@ -22,34 +23,43 @@ async function handleApiRequest(request: Request, environment: Env): Promise<Res
   }
 
   if (url.pathname === "/api/v1/health") {
-    return jsonResponse({ status: "ok", service: "pokemon-go" });
+    const [raids, pokemon, events, eggs] = await Promise.all([
+      createRuntimeRaidService(environment).getRaids(),
+      createRuntimePokemonService(environment).getPokedex(),
+      createRuntimeEventService(environment).getEvents(),
+      createRuntimeEggService(environment).getEggs(),
+    ]);
+    const values = [raids.freshness, pokemon.freshness, events.freshness, eggs.freshness];
+    const status = values.includes("unavailable") ? "unavailable" : values.includes("degraded") ? "degraded" : values.includes("stale") ? "stale" : "ok";
+    return jsonResponse({
+      status,
+      service: "pokemon-go",
+      datasets: {
+        raids: { freshness: raids.freshness, asOf: raids.asOf, sources: raids.sources, warnings: raids.warnings },
+        pokemon: { freshness: pokemon.freshness, asOf: pokemon.asOf, warnings: pokemon.warnings },
+        events: { freshness: events.freshness, asOf: events.asOf, sources: events.sources, warnings: events.warnings },
+        eggs: { freshness: eggs.freshness, asOf: eggs.asOf, sources: eggs.sources, warnings: eggs.warnings },
+      },
+    }, status === "ok" ? 200 : 503);
   }
 
   if (url.pathname === "/api/v1/raids") {
-    const result = await createRuntimeRaidService(environment).getRaids({
-      forceRefresh: url.searchParams.get("refresh") === "1",
-    });
+    const result = await createRuntimeRaidService(environment).getRaids();
     return jsonResponse(result);
   }
 
   if (url.pathname === "/api/v1/pokemon") {
-    const result = await createRuntimePokemonService(environment).getPokedex({
-      forceRefresh: url.searchParams.get("refresh") === "1",
-    });
+    const result = await createRuntimePokemonService(environment).getPokedex();
     return jsonResponse(result);
   }
 
   if (url.pathname === "/api/v1/events") {
-    const result = await createRuntimeEventService(environment).getEvents({
-      forceRefresh: url.searchParams.get("refresh") === "1",
-    });
+    const result = await createRuntimeEventService(environment).getEvents();
     return jsonResponse(result);
   }
 
   if (url.pathname === "/api/v1/eggs") {
-    const result = await createRuntimeEggService(environment).getEggs({
-      forceRefresh: url.searchParams.get("refresh") === "1",
-    });
+    const result = await createRuntimeEggService(environment).getEggs();
     return jsonResponse(result);
   }
 
@@ -86,12 +96,15 @@ async function handleApiRequest(request: Request, environment: Env): Promise<Res
       return jsonResponse({ error: "Raid boss not found", ...result }, 404);
     }
 
+    const pokemonService = createRuntimePokemonService(environment);
+    const pokedex = await pokemonService.getPokedex();
     const counterResult = boss.counterTypes && boss.counterTypes.length > 0
-      ? await createRuntimePokemonService(environment).getCounterCandidates(boss.counterTypes)
+      ? await pokemonService.getCounterCandidates(boss.counterTypes)
       : undefined;
 
     return jsonResponse({
       ...boss,
+      pokedexKey: resolveRaidPokedexKey(boss, pokedex.entries),
       counterSuggestions: counterResult?.candidates ?? [],
       counterSuggestionsFreshness: counterResult?.freshness,
       freshness: result.freshness,
@@ -106,8 +119,13 @@ export default {
   async fetch(request: Request, environment: Env): Promise<Response> {
     const url = new URL(request.url);
 
-    if (url.pathname.startsWith("/api/")) {
-      return handleApiRequest(request, environment);
+    try {
+      if (url.pathname.startsWith("/api/")) {
+        return await handleApiRequest(request, environment);
+      }
+    } catch (error) {
+      console.error("Unhandled API request error", error);
+      return jsonResponse({ error: "Internal server error" }, 500);
     }
 
     return environment.ASSETS.fetch(request);

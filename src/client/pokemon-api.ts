@@ -29,7 +29,7 @@ function isPokemonDetailResult(value: unknown): value is PokemonDetailResult {
 export async function fetchPokemonList(signal?: AbortSignal): Promise<PokemonListResult> {
   const response = await fetch("/api/v1/pokemon", {
     signal,
-    cache: "no-store",
+    cache: "default",
     headers: { accept: "application/json" },
   });
   if (!response.ok) throw new Error(`Pokédex service returned HTTP ${response.status}`);
@@ -44,7 +44,7 @@ export async function fetchPokemonDetail(
 ): Promise<PokemonDetailResult> {
   const response = await fetch(`/api/v1/pokemon/${encodeURIComponent(pokemonKey)}`, {
     signal,
-    cache: "no-store",
+    cache: "default",
     headers: { accept: "application/json" },
   });
   if (!response.ok) throw new Error(`Pokédex service returned HTTP ${response.status}`);

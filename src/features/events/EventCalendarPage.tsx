@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { EventFreshness, EventCalendarResult, PokemonGoEvent } from "../../domain/event";
 import { fetchEventCalendar } from "../../client/event-api";
 import { eventStatus, formatEventDate, groupEventsByMonth } from "./event-calendar";
+import FallbackImage from "../shared/FallbackImage";
 
 const freshnessCopy: Record<EventFreshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "The event calendar was recently fetched and validated." },
@@ -22,7 +23,7 @@ function EventCard({ event }: { event: PokemonGoEvent }) {
   const status = eventStatus(event);
   return (
     <article className="event-card">
-      {event.bannerUrl && <img className="event-card__banner" src={event.bannerUrl} alt="" loading="lazy" />}
+      {event.bannerUrl && <FallbackImage className="event-card__banner" fallbackClassName="event-card__banner--empty" src={event.bannerUrl} alt="" />}
       <div className="event-card__body">
         <div className="event-card__meta">
           <span className={`event-status event-status--${status}`}>{status}</span>

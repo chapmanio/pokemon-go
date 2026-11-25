@@ -47,4 +47,13 @@ describe("event source normalizer", () => {
     expect(() => normalizeEventPayload({ Event: [fixture.Event[0], fixture.Event[0]] }, provenance))
       .toThrow("Duplicate event article URL");
   });
+
+  it("skips events whose end is before their start", () => {
+    expect(normalizeEventPayload({ Event: [{
+      title: "Invalid event",
+      start_time: 1_800_000_000,
+      end_time: 1_799_999_999,
+      article_url: "https://example.test/invalid",
+    }] }, provenance)).toEqual([]);
+  });
 });

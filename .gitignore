@@ -60,6 +60,7 @@ build/Release
 .next
 out/
 .nuxt
+.wrangler/
 
 # dotenv environment variable files
 .env

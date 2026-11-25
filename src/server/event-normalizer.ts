@@ -90,7 +90,9 @@ export function normalizeEventPayload(
       const hasValidTimeShape = isLocalTime
         ? typeof event?.start_time === "string" && typeof event?.end_time === "string"
         : typeof event?.start_time === "number" && typeof event?.end_time === "number";
-      if (!title || !startsAt || !endsAt || !articleUrl || !isHttpUrl(articleUrl) || !hasValidTimeShape) {
+      if (!title || !startsAt || !endsAt || !articleUrl || !isHttpUrl(articleUrl) || !hasValidTimeShape
+        || Number.isNaN(Date.parse(startsAt)) || Number.isNaN(Date.parse(endsAt))
+        || Date.parse(endsAt) < Date.parse(startsAt)) {
         continue;
       }
 

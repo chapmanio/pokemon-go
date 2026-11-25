@@ -39,7 +39,7 @@ function isRaidBossDetailResult(value: unknown): value is RaidBossDetailResult {
 export async function fetchRaidRoster(signal?: AbortSignal): Promise<RaidRosterResult> {
   const response = await fetch("/api/v1/raids", {
     signal,
-    cache: "no-store",
+    cache: "default",
     headers: { accept: "application/json" },
   });
 
@@ -61,7 +61,7 @@ export async function fetchRaidBoss(
 ): Promise<RaidBossDetailResult> {
   const response = await fetch(`/api/v1/raids/${encodeURIComponent(raidBossId)}`, {
     signal,
-    cache: "no-store",
+    cache: "default",
     headers: { accept: "application/json" },
   });
 

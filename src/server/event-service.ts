@@ -25,9 +25,9 @@ async function hashPayload(payload: unknown): Promise<string> {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-function freshnessForSnapshots(snapshots: StoredEventSnapshot[], now: Date): EventFreshness {
+function freshnessForSnapshots(snapshots: StoredEventSnapshot[], now: Date, expectedSources: number): EventFreshness {
   if (snapshots.length === 0) return "unavailable";
-  if (snapshots.some((snapshot) => snapshot.error)) return "degraded";
+  if (snapshots.length < expectedSources || snapshots.some((snapshot) => snapshot.error)) return "degraded";
   return snapshots.some((snapshot) => now.getTime() - new Date(snapshot.sourceUpdatedAt ?? snapshot.fetchedAt).getTime() > FRESH_AFTER_MS)
     ? "stale"
     : "fresh";
@@ -93,14 +93,14 @@ export function createEventService({ store, adapters, now = () => new Date() }: 
       )).filter((snapshot): snapshot is StoredEventSnapshot => snapshot !== undefined);
       const events = snapshots.flatMap((snapshot) => snapshot.events);
       const primary = snapshots[0];
-      const warnings = snapshots.some((snapshot) => snapshot.error)
+      const warnings = snapshots.length < adapters.length || snapshots.some((snapshot) => snapshot.error)
         ? ["The event source could not be refreshed; showing the last known-good calendar."]
         : [];
 
       return {
         events,
         sources: snapshots.map((snapshot) => snapshot.source),
-        freshness: freshnessForSnapshots(snapshots, currentTime),
+        freshness: freshnessForSnapshots(snapshots, currentTime, adapters.length),
         asOf: primary?.fetchedAt,
         warnings,
       };

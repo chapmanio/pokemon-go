@@ -187,4 +187,31 @@ describe("raid service", () => {
     expect(second.bosses).toEqual(first.bosses);
     expect(second.freshness).toBe("degraded");
   });
+
+  it("does not merge distinct forms with the same display name and tier", async () => {
+    const adapter = (source: "pogoapi" | "pokemon-go-api", formId: string): RaidSourceAdapter => ({
+      source,
+      endpoint: `${formId}.json`,
+      sourceUrl: `https://example.test/${formId}.json`,
+      fetchPayload: async () => ({}),
+      normalize: (_payload, provenance) => [{
+        raidBossId: `pikachu:${formId}:3:normal`,
+        speciesId: "PIKACHU",
+        formId,
+        displayName: "Pikachu",
+        tier: 3,
+        isShadow: false,
+        types: ["Electric"],
+        provenance,
+      }],
+    });
+
+    const result = await createRaidService({
+      store: createMemorySnapshotStore(),
+      adapters: [adapter("pogoapi", "PIKACHU_NORMAL"), adapter("pokemon-go-api", "PIKACHU_FLYING")],
+      now: () => new Date("2026-10-27T12:00:00.000Z"),
+    }).getRaids();
+
+    expect(result.bosses).toHaveLength(2);
+  });
 });

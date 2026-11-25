@@ -27,7 +27,7 @@ function isEventDetailResult(value: unknown): value is EventDetailResult {
 export async function fetchEventCalendar(signal?: AbortSignal): Promise<EventCalendarResult> {
   const response = await fetch("/api/v1/events", {
     signal,
-    cache: "no-store",
+    cache: "default",
     headers: { accept: "application/json" },
   });
   if (!response.ok) throw new Error(`Event service returned HTTP ${response.status}`);
@@ -39,7 +39,7 @@ export async function fetchEventCalendar(signal?: AbortSignal): Promise<EventCal
 export async function fetchEvent(eventId: string, signal?: AbortSignal): Promise<EventDetailResult> {
   const response = await fetch(`/api/v1/events/${encodeURIComponent(eventId)}`, {
     signal,
-    cache: "no-store",
+    cache: "default",
     headers: { accept: "application/json" },
   });
   if (!response.ok) throw new Error(`Event service returned HTTP ${response.status}`);

@@ -4,6 +4,7 @@ import { fetchRaidBoss, RaidApiError } from "../../client/raid-api";
 import { formatCpRange, groupCounterSuggestions, sourceLabel } from "./raid-list";
 import { estimateRaid } from "./raid-estimate";
 import ShinyIndicator from "../shared/ShinyIndicator";
+import FallbackImage from "../shared/FallbackImage";
 
 const freshnessCopy: Record<Freshness, { label: string; detail: string }> = {
   fresh: { label: "Fresh data", detail: "This raid detail was recently fetched and validated." },
@@ -19,12 +20,7 @@ function formatUpdatedAt(provenance: RaidProvenance): string | undefined {
 }
 
 function pokedexUrl(detail: RaidBossDetailResult): string | undefined {
-  if (typeof detail.speciesId !== "number") return undefined;
-  const rawForm = detail.formId?.trim();
-  const form = !rawForm || rawForm.toLowerCase() === detail.displayName.toLowerCase() || rawForm.toLowerCase() === "normal"
-    ? "normal"
-    : rawForm.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  return `/pokedex/${detail.speciesId}:${form}`;
+  return detail.pokedexKey ? `/pokedex/${encodeURIComponent(detail.pokedexKey)}` : undefined;
 }
 
 function DetailStatus({ detail }: { detail: RaidBossDetailResult }) {
@@ -174,7 +170,7 @@ function CounterGuidance({ detail }: { detail: RaidBossDetailResult }) {
                     <div className="counter-suggestion-grid">
                       {group.suggestions.map((suggestion) => (
                         <article className="counter-suggestion" key={suggestion.pokemonKey}>
-                          {suggestion.assetUrl && <img className="counter-suggestion__image" src={suggestion.assetUrl} alt="" loading="lazy" />}
+                          <FallbackImage className="counter-suggestion__image" src={suggestion.assetUrl} alt="" />
                           <div>
                             <h4>
                               <a href={`/pokedex/${encodeURIComponent(suggestion.pokemonKey)}`}>{suggestion.displayName}</a>
@@ -277,11 +273,7 @@ export default function RaidDetailPage({ raidBossId }: { raidBossId: string }) {
         <>
           <section className="detail-heading">
             <div className="detail-heading__identity">
-              {detail.assetUrl ? (
-                <img className="detail-heading__image" src={detail.assetUrl} alt="" />
-              ) : (
-                <div className="detail-heading__image detail-heading__image--empty" aria-hidden="true">?</div>
-              )}
+              <FallbackImage className="detail-heading__image" src={detail.assetUrl} alt="" />
               <div>
                 <p className="eyebrow">Raid details</p>
                 <h1>{detail.displayName}</h1>

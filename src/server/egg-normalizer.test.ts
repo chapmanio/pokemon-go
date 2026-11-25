@@ -33,4 +33,11 @@ describe("egg source normalizer", () => {
       { name: "Smoochum", shiny_available: true, hatch_distance: 5 },
     ] }, provenance)).toThrow("Inconsistent egg hatch distance");
   });
+
+  it("rejects duplicate names within one egg group", () => {
+    expect(() => normalizeEggPayload({ "2 km Eggs": [
+      { name: "Pichu", shiny_available: true, hatch_distance: 2 },
+      { name: "pichu", shiny_available: false, hatch_distance: 2 },
+    ] }, provenance)).toThrow("Duplicate egg entry");
+  });
 });

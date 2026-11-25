@@ -13,6 +13,7 @@ import {
   type SnapshotStore,
   type StoredRaidSnapshot,
 } from "./snapshot-store";
+import { raidMergeKey } from "./raid-identity";
 
 const SOURCE_ORDER: RaidSource[] = ["leekduck", "pogoapi", "pokemon-go-api"];
 const REFRESH_COOLDOWN_MS = 30 * 60 * 1000;
@@ -43,9 +44,10 @@ async function hashPayload(payload: unknown): Promise<string> {
 function sourceFreshness(
   snapshots: StoredRaidSnapshot[],
   now: Date,
+  expectedSources: number,
 ): Freshness {
   if (snapshots.length === 0) return "unavailable";
-  if (snapshots.some((snapshot) => snapshot.error)) return "degraded";
+  if (snapshots.length < expectedSources || snapshots.some((snapshot) => snapshot.error)) return "degraded";
   if (snapshots.some((snapshot) => freshnessForSnapshot(snapshot, now, FRESH_AFTER_MS) === "stale")) {
     return "stale";
   }
@@ -108,11 +110,6 @@ function sourceReferencesForBoss(boss: RaidBoss): RaidProvenance[] {
   return boss.sourceReferences?.length ? boss.sourceReferences : [boss.provenance];
 }
 
-function mergeKey(boss: RaidBoss): string {
-  const displayIdentity = boss.displayName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  return `${displayIdentity}:${boss.tier}:${boss.isShadow ? "shadow" : "normal"}`;
-}
-
 function fallbackOptional<T>(primary: T | undefined, secondary: T | undefined): T | undefined {
   if (Array.isArray(primary) && primary.length === 0) return secondary;
   return primary ?? secondary;
@@ -129,6 +126,7 @@ function mergeBossFacts(primary: RaidBoss, secondary: RaidBoss): RaidBoss {
     boostedCatchCp: primary.boostedCatchCp ?? secondary.boostedCatchCp,
     boostedWeather: fallbackOptional(primary.boostedWeather, secondary.boostedWeather),
     assetUrl: primary.assetUrl ?? secondary.assetUrl,
+    pokedexKey: primary.pokedexKey ?? secondary.pokedexKey,
     startsAt: primary.startsAt ?? secondary.startsAt,
     endsAt: primary.endsAt ?? secondary.endsAt,
     isLocalTime: primary.isLocalTime ?? secondary.isLocalTime,
@@ -190,9 +188,9 @@ function mergeBosses(snapshots: StoredRaidSnapshot[]): RaidBoss[] {
 
     for (const boss of snapshot.bosses) {
       const sourceReferences = sourceReferencesForBoss(boss);
-      const current = merged.get(mergeKey(boss));
+      const current = merged.get(raidMergeKey(boss));
       if (!current) {
-        merged.set(mergeKey(boss), {
+        merged.set(raidMergeKey(boss), {
           boss,
           sourceReferences: [...sourceReferences],
           sourceBosses: [{ source: snapshot.source, boss }],
@@ -230,14 +228,14 @@ export function createRaidService({ store, adapters, now = () => new Date() }: R
       const primary = primarySnapshot(snapshots);
       const warnings: string[] = [];
 
-      if (snapshots.some((snapshot) => snapshot.error)) {
+      if (snapshots.length < adapters.length || snapshots.some((snapshot) => snapshot.error)) {
         warnings.push("Some raid sources could not be refreshed");
       }
 
       return {
         bosses: mergeBosses(snapshots),
         sources: snapshots.map((snapshot) => snapshot.source),
-        freshness: sourceFreshness(snapshots, currentTime),
+        freshness: sourceFreshness(snapshots, currentTime, adapters.length),
         asOf: primary?.fetchedAt,
         warnings,
       };

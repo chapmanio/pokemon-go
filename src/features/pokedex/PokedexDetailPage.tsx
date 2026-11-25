@@ -195,10 +195,6 @@ export default function PokedexDetailPage({ pokemonKey }: { pokemonKey: string }
               </div>
             ) : <p className="detail-panel__note">Move pools are not available for this form.</p>}
           </section>
-          <section className="detail-panel detail-panel--placeholder">
-            <h2>More about this Pokémon</h2>
-            <p>Evolution, availability, CP, and richer raid guidance will be added as the shared Pokédex model grows.</p>
-          </section>
         </>
       )}
     </main>

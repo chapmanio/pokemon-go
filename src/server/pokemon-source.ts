@@ -33,6 +33,20 @@ async function fetchJson(url: string, fetcher: typeof fetch): Promise<unknown> {
   return response.json();
 }
 
+function validatePayloadShape(payload: Record<string, unknown>): void {
+  for (const file of ["stats", "types", "moves", "fastMoves", "chargedMoves"] as const) {
+    if (!Array.isArray(payload[file])) throw new Error(`PoGoAPI ${file} response was not an array`);
+  }
+  const effectiveness = payload.typeEffectiveness;
+  if (!effectiveness || typeof effectiveness !== "object" || Array.isArray(effectiveness)) {
+    throw new Error("PoGoAPI type effectiveness response was not an object");
+  }
+  if (!Array.isArray(payload.stats) || !Array.isArray(payload.types) || !Array.isArray(payload.moves)
+    || payload.stats.length === 0 || payload.types.length === 0 || payload.moves.length === 0) {
+    throw new Error("PoGoAPI required Pokédex files were empty");
+  }
+}
+
 function hashForManifest(manifest: unknown, file: string): string | undefined {
   if (!manifest || typeof manifest !== "object") return undefined;
   const item = (manifest as Record<string, unknown>)[file];
@@ -54,7 +68,9 @@ export async function fetchPokemonSourcePayload(fetcher: typeof fetch = fetch): 
     files.map((file) => fetchJson(`${BASE_URL}/${file}`, fetcher)),
   );
 
-  return { payload: { stats, types, moves, fastMoves, chargedMoves, typeEffectiveness }, upstreamHashes };
+  const payload = { stats, types, moves, fastMoves, chargedMoves, typeEffectiveness };
+  validatePayloadShape(payload);
+  return { payload, upstreamHashes };
 }
 
 export function pokemonProvenance(fetchedAt: Date, contentHash?: string): PokemonNormalizationProvenance {

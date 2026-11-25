@@ -3,6 +3,7 @@ import type { EventDetailResult, EventFreshness } from "../../domain/event";
 import { fetchEvent } from "../../client/event-api";
 import { formatEventDate, groupRelatedBySection } from "./event-calendar";
 import ShinyIndicator from "../shared/ShinyIndicator";
+import FallbackImage from "../shared/FallbackImage";
 
 const freshnessCopy: Record<EventFreshness, string> = {
   fresh: "Fresh event data",
@@ -14,9 +15,11 @@ const freshnessCopy: Record<EventFreshness, string> = {
 export default function EventDetailPage({ eventId }: { eventId: string }) {
   const [result, setResult] = useState<EventDetailResult>();
   const [error, setError] = useState<string>();
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
+    setResult(undefined);
     setError(undefined);
     fetchEvent(eventId, controller.signal)
       .then(setResult)
@@ -25,7 +28,7 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
         setError(cause instanceof Error ? cause.message : "Unable to load this event");
       });
     return () => controller.abort();
-  }, [eventId]);
+  }, [eventId, reloadKey]);
 
   return (
     <main className="app-shell">
@@ -39,7 +42,7 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
         </nav>
       </header>
       <p className="back-link"><a href="/events">← Back to event calendar</a></p>
-      {error && <section className="error-panel" role="alert"><strong>We couldn’t load this event.</strong><p>{error}</p><p><a href="/events">Return to the event calendar</a></p></section>}
+      {error && <section className="error-panel" role="alert"><strong>We couldn’t load this event.</strong><p>{error}</p><button type="button" onClick={() => setReloadKey((key) => key + 1)}>Try again</button><p><a href="/events">Return to the event calendar</a></p></section>}
       {!result && !error && <p className="loading-state">Loading event…</p>}
       {result && <EventDetails result={result} />}
     </main>
@@ -50,7 +53,7 @@ function EventDetails({ result }: { result: EventDetailResult }) {
   const relatedGroups = groupRelatedBySection(result.details.related);
   return (
     <>
-      {result.bannerUrl && <img className="event-detail__banner" src={result.bannerUrl} alt="" />}
+      {result.bannerUrl && <FallbackImage className="event-detail__banner" fallbackClassName="event-detail__banner--empty" src={result.bannerUrl} alt="" />}
       <section className="page-heading event-detail__heading">
         <p className="eyebrow">{result.category} · {freshnessCopy[result.freshness]}</p>
         <h1>{result.title}</h1>
@@ -71,7 +74,7 @@ function EventDetails({ result }: { result: EventDetailResult }) {
           <div className="event-reference-grid">
             {group.items.map((item, index) => (
               <article className="event-reference" key={`${item.name}-${index}`}>
-                {item.assetUrl && <img src={item.assetUrl} alt="" loading="lazy" />}
+                {item.assetUrl && <FallbackImage className="event-reference__image" fallbackClassName="event-reference__image--empty" src={item.assetUrl} alt="" />}
                 <div><strong>{item.name}</strong>{item.shinyAvailable !== undefined && <ShinyIndicator available={item.shinyAvailable} />}</div>
               </article>
             ))}

@@ -192,7 +192,9 @@ function resultFromSnapshot(snapshot: StoredPokemonSnapshot | undefined, now: Da
     entries: snapshot ? listEntries(snapshot) : [],
     freshness: snapshotFreshness(snapshot, now),
     asOf: snapshot?.fetchedAt,
-    warnings: snapshot?.error ? ["The cached Pokédex is being served because the source refresh failed"] : [],
+      warnings: snapshot?.error
+        ? ["The cached Pokédex is being served because the source refresh failed"]
+        : snapshot ? [] : ["No validated Pokédex data is currently available"],
   };
 }
 
@@ -275,7 +277,9 @@ export function createPokemonService({ store, fetcher = fetch, now = () => new D
         forms: forms.map(formSummary),
         battle: battleReference(snapshot, entry),
         freshness: snapshotFreshness(snapshot, currentTime),
-        warnings: snapshot?.error ? ["The cached Pokédex is being served because the source refresh failed"] : [],
+        warnings: snapshot?.error
+          ? ["The cached Pokédex is being served because the source refresh failed"]
+          : snapshot ? [] : ["No validated Pokédex data is currently available"],
       };
     },
 

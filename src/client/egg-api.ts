@@ -16,7 +16,7 @@ function isEggPoolsResult(value: unknown): value is EggPoolsResult {
 export async function fetchEggPools(signal?: AbortSignal): Promise<EggPoolsResult> {
   const response = await fetch("/api/v1/eggs", {
     signal,
-    cache: "no-store",
+    cache: "default",
     headers: { accept: "application/json" },
   });
   if (!response.ok) throw new Error(`Egg service returned HTTP ${response.status}`);

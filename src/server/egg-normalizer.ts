@@ -61,6 +61,8 @@ export function normalizeEggPayload(payload: unknown, provenance: EggProvenance)
     if (entries.length === 0 || entries.length !== rawEntries.length) {
       throw new Error(`Invalid egg pool entries for ${displayName}`);
     }
+    const names = entries.map((entry) => slug(entry.name));
+    if (new Set(names).size !== names.length) throw new Error(`Duplicate egg entry for ${displayName}`);
 
     const distances = rawEntries.map((entry) => asRecord(entry)?.hatch_distance);
     if (distances.some((distance) => distance !== null && (typeof distance !== "number" || !Number.isInteger(distance) || distance < 0))) {
