@@ -15,7 +15,10 @@ import {
 } from "./snapshot-store";
 import { raidMergeKey } from "./raid-identity";
 
-const SOURCE_ORDER: RaidSource[] = ["leekduck", "pogoapi", "pokemon-go-api"];
+// Pokémon GO API supplies the most useful raid-specific fields, including
+// machine-readable battle estimates. Keep the other feeds for corroboration,
+// fallback coverage and source disagreement reporting.
+const SOURCE_ORDER: RaidSource[] = ["pokemon-go-api", "leekduck", "pogoapi"];
 const REFRESH_COOLDOWN_MS = 30 * 60 * 1000;
 const FRESH_AFTER_MS = 2 * 60 * 60 * 1000;
 

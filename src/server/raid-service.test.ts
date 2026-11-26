@@ -94,6 +94,43 @@ describe("raid service", () => {
     });
   });
 
+  it("uses the estimate-capable source as the preferred merged record", async () => {
+    const adapter = (source: "leekduck" | "pokemon-go-api"): RaidSourceAdapter => ({
+      source,
+      endpoint: `${source}.json`,
+      sourceUrl: `https://${source}.example.test/raids.json`,
+      fetchPayload: async () => ({}),
+      normalize: (_payload, provenance) => [{
+        raidBossId: source === "leekduck" ? "deoxys-normal:normal:5:normal" : "DEOXYS:DEOXYS:5:normal",
+        speciesId: source === "leekduck" ? undefined : "DEOXYS",
+        formId: source === "leekduck" ? undefined : "DEOXYS",
+        displayName: source === "leekduck" ? "Deoxys (Normal)" : "Deoxys",
+        tier: 5,
+        isShadow: false,
+        types: ["Psychic"],
+        battleEstimator: source === "pokemon-go-api" ? 1.37 : undefined,
+        provenance,
+        sourceReferences: [provenance],
+      }],
+    });
+
+    const result = await createRaidService({
+      store: createMemorySnapshotStore(),
+      adapters: [adapter("leekduck"), adapter("pokemon-go-api")],
+      now: () => new Date("2026-10-27T12:00:00.000Z"),
+    }).getRaids();
+
+    expect(result.bosses).toHaveLength(1);
+    expect(result.bosses[0]).toMatchObject({
+      displayName: "Deoxys",
+      battleEstimator: 1.37,
+    });
+    expect(result.bosses[0].sourceReferences?.map((reference) => reference.source)).toEqual([
+      "pokemon-go-api",
+      "leekduck",
+    ]);
+  });
+
   it("surfaces important field differences between sources", async () => {
     const adapter = (
       source: "leekduck" | "pogoapi",

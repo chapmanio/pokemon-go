@@ -72,6 +72,10 @@ reused for Max Battles.
 
 - Prefer PoGoAPI for stable reference data.
 - Prefer leak-duck for event, egg and research content.
-- Cross-check raid rotations with a second source.
+- Prefer `pokemon-go-api` for the normalized current raid record when it is
+  available because it supplies machine-readable raid estimates and counter
+  types. Keep Leek Duck as a cross-check and fallback source, and preserve
+  source references and disagreements instead of treating either feed as an
+  official authority.
 - Treat all community feeds as replaceable and potentially stale.
 - Preserve source attribution and do not imply official Pokémon GO or Niantic endorsement.

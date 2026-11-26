@@ -54,4 +54,46 @@ describe("raid identity helpers", () => {
       raidMergeKey(boss({ displayName: "Gastly", isShadow: true, speciesId: "GASTLY", formId: undefined })),
     );
   });
+
+  it("matches source-specific labels for the same raid forms", () => {
+    expect(raidMergeKey(boss({
+      speciesId: undefined,
+      formId: undefined,
+      displayName: "Deoxys (Normal)",
+    }))).toBe(raidMergeKey(boss({
+      speciesId: "DEOXYS",
+      formId: "DEOXYS",
+      displayName: "Deoxys",
+    })));
+
+    expect(raidMergeKey(boss({
+      speciesId: undefined,
+      formId: undefined,
+      displayName: "Deoxys (Attack)",
+    }))).toBe(raidMergeKey(boss({
+      speciesId: "DEOXYS",
+      formId: "DEOXYS_ATTACK",
+      displayName: "Deoxys (Attack Forme)",
+    })));
+
+    expect(raidMergeKey(boss({
+      speciesId: undefined,
+      formId: undefined,
+      displayName: "Espeon wearing a sun scarf",
+    }))).toBe(raidMergeKey(boss({
+      speciesId: "ESPEON",
+      formId: "ESPEON_GOFEST_2024_SSCARF",
+      displayName: "Espeon",
+    })));
+
+    expect(raidMergeKey(boss({
+      speciesId: undefined,
+      formId: undefined,
+      displayName: "Sun Crown Pikachu",
+    }))).toBe(raidMergeKey(boss({
+      speciesId: "PIKACHU",
+      formId: "PIKACHU_GOFEST_2024_STIARA",
+      displayName: "Pikachu",
+    })));
+  });
 });

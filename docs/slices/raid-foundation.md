@@ -42,8 +42,11 @@ battle-simulation result.
 ## Source strategy
 
 - **PoGoAPI** is the primary reference for Pokémon, forms, types, moves, weather, type effectiveness, and CP data.
-- **Leek Duck** is the preferred source for current raid rosters and event context when its published feed is available.
-- **pokemon-go-api** is a cross-check and fallback for raid data and form-aware identifiers.
+- **pokemon-go-api** is the preferred source for current raid display fields,
+  form-aware identifiers, counter types and machine-readable estimates when
+  its published feed is available.
+- **Leek Duck** remains a cross-check and fallback for raid rosters and event
+  context.
 - **PokéBattler** is an on-demand source for selected boss counter estimates, not a roster authority.
 
 Keep raid roster and raid window as separate concepts. Join a window to a boss only when identity matching is safe. Preserve source disagreement in the normalized result and UI.

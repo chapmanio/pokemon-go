@@ -9,8 +9,40 @@ function speciesToken(encounter: Pick<RaidBoss, "speciesId">): string | undefine
   return typeof encounter.speciesId === "string" ? slug(encounter.speciesId) : undefined;
 }
 
+function normalizeFormToken(value: string): string {
+  const normalized = slug(value)
+    .replace(/-forme$/, "")
+    .replace(/-form$/, "");
+  const withoutEventPrefix = normalized.replace(/^gofest-\d{4}-/, "");
+
+  const aliases: Record<string, string> = {
+    normal: "normal",
+    attack: "attack",
+    defense: "defense",
+    speed: "speed",
+    sscarf: "sun-scarf",
+    mscarf: "moon-scarf",
+    stiara: "sun-crown",
+    mtiara: "moon-crown",
+    "sun-scarf": "sun-scarf",
+    "moon-scarf": "moon-scarf",
+    "sun-crown": "sun-crown",
+    "moon-crown": "moon-crown",
+  };
+
+  return aliases[withoutEventPrefix] ?? withoutEventPrefix;
+}
+
 function inferFormFromName(displayName: string): string {
   const name = slug(displayName);
+  if (name.startsWith("sun-crown-") || name.includes("-sun-crown-")) return "sun-crown";
+  if (name.startsWith("moon-crown-") || name.includes("-moon-crown-")) return "moon-crown";
+  if (name.includes("-wearing-a-sun-scarf")) return "sun-scarf";
+  if (name.includes("-wearing-a-moon-scarf")) return "moon-scarf";
+  if (name.endsWith("-attack") || name.endsWith("-attack-forme")) return "attack";
+  if (name.endsWith("-defense") || name.endsWith("-defense-forme")) return "defense";
+  if (name.endsWith("-speed") || name.endsWith("-speed-forme")) return "speed";
+  if (name.endsWith("-normal") || name.endsWith("-normal-forme")) return "normal";
   if (name.startsWith("alolan-")) return "alola";
   if (name.startsWith("galarian-")) return "galarian";
   if (name.startsWith("hisuian-")) return "hisuian";
@@ -26,6 +58,23 @@ function inferFormFromName(displayName: string): string {
   return "normal";
 }
 
+function displaySpeciesToken(displayName: string): string {
+  let name = slug(displayName)
+    .replace(/^shadow-/, "")
+    .replace(/^(alolan|galarian|hisuian|paldean)-/, "")
+    .replace(/^sun-crown-/, "")
+    .replace(/^moon-crown-/, "")
+    .replace(/-wearing-a-(sun|moon)-scarf$/, "");
+
+  if (name.startsWith("mega-")) {
+    name = name.slice("mega-".length).replace(/-[xy]$/, "");
+  }
+
+  return name
+    .replace(/-(normal|attack|defense|speed|origin|therian|incarnate|zen)(-forme)?$/, "")
+    .replace(/-forme$/, "");
+}
+
 export function canonicalRaidFormId(encounter: Pick<RaidBoss, "speciesId" | "formId" | "displayName">): string {
   const rawForm = slug(encounter.formId ?? "");
   const sourceSpecies = speciesToken(encounter);
@@ -34,18 +83,14 @@ export function canonicalRaidFormId(encounter: Pick<RaidBoss, "speciesId" | "for
   }
 
   if (sourceSpecies && rawForm.startsWith(`${sourceSpecies}-`)) {
-    return rawForm.slice(sourceSpecies.length + 1) || "normal";
+    return normalizeFormToken(rawForm.slice(sourceSpecies.length + 1) || "normal");
   }
 
-  return rawForm;
+  return normalizeFormToken(rawForm);
 }
 
 export function raidMergeKey(boss: RaidBoss): string {
-  const displayIdentity = slug(boss.displayName)
-    .replace(/^(alolan|galarian|hisuian|paldean)-/, "")
-    .replace(/^shadow-/, "")
-    .replace(/^mega-/, "")
-    .replace(/-(origin|therian|incarnate|zen)(-forme)?(-[xy])?$/, "");
+  const displayIdentity = speciesToken(boss) ?? displaySpeciesToken(boss.displayName);
   return `${displayIdentity}:${canonicalRaidFormId(boss)}:${boss.tier}:${boss.isShadow ? "shadow" : "normal"}`;
 }
 
